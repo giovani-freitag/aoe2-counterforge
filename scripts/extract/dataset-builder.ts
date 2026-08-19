@@ -597,15 +597,25 @@ export class DatasetBuilder {
     private bonusEffects(index: number, researchable: ReadonlySet<number>): TechEffectRecord[] {
         if (index < 0) return [];
 
-        const teamBonusId = this.config.game.civilizations[index]?.teamBonusId ?? -1;
+        const teamBonus = this.config.game.civilizations[index]?.teamBonusId ?? -1;
 
         return this.config.game.technologies.flatMap((tech, id) => {
-            if (tech.civ !== index || id === teamBonusId || researchable.has(id)) return [];
+            if (tech.civ !== index || tech.effectId === teamBonus || researchable.has(id)) return [];
 
             const age = this.ageOf(id);
 
             return this.effectsOf(tech.effectId).map((effect) => (age === null ? effect : { ...effect, age }));
         });
+    }
+
+    /**
+     * The numbers behind a civilization's team bonus, which reaches its allies too.
+     *
+     * @param index - Position of the civilization in the data file.
+     * @returns Every modelled effect of the one technology the file marks as the team bonus.
+     */
+    private teamBonusEffects(index: number): TechEffectRecord[] {
+        return this.effectsOf(this.config.game.civilizations[index]?.teamBonusId ?? -1);
     }
 
     /**
@@ -975,6 +985,7 @@ export class DatasetBuilder {
                 uniqueUnits: [...uniqueUnits],
                 uniqueTechs: [...uniqueTechs],
                 bonusEffects: this.bonusEffects(this.config.civilizations.indexOf(meta), researchable),
+                teamBonusEffects: this.teamBonusEffects(this.config.civilizations.indexOf(meta)),
             });
 
             for (const locale of this.config.strings.keys()) {

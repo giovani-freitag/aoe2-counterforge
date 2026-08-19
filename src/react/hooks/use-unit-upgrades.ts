@@ -12,6 +12,8 @@ export interface CivilizationUpgrades {
     upgrades: AppliedUpgrade[];
     /** The bonus it is given at the start of the match, when it has one that reaches the unit. */
     bonus: StatDelta | null;
+    /** The bonus it hands its whole team, when that one reaches the unit. */
+    teamBonus: StatDelta | null;
 }
 
 export interface UnitUpgradeView {
@@ -43,13 +45,17 @@ export function useUnitUpgrades(unit: Unit | null): UnitUpgradeView | null {
 
         const byCiv = new Map<string, CivilizationUpgrades>();
         const entryFor = (civ: string) => {
-            const known = byCiv.get(civ) ?? { civ, upgrades: [], bonus: null };
+            const known = byCiv.get(civ) ?? { civ, upgrades: [], bonus: null, teamBonus: null };
             byCiv.set(civ, known);
 
             return known;
         };
 
-        for (const { civ, delta } of upgrades.civilizationBonuses(unit)) entryFor(civ).bonus = delta;
+        for (const { civ, delta, team } of upgrades.civilizationBonuses(unit)) {
+            const entry = entryFor(civ);
+            if (Object.keys(delta).length > 0) entry.bonus = delta;
+            if (Object.keys(team).length > 0) entry.teamBonus = team;
+        }
         for (const upgrade of reaching) {
             if (!upgrade.technology.isUnique) continue;
 

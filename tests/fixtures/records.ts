@@ -115,7 +115,9 @@ export function technologyRecord(overrides: TechnologyRecordOverrides): Technolo
  */
 export function civilizationRecord(
     key: string,
-    overrides: Partial<Pick<CivilizationRecord, 'uniqueUnits' | 'uniqueTechs' | 'bonusEffects'>> = {},
+    overrides: Partial<
+        Pick<CivilizationRecord, 'uniqueUnits' | 'uniqueTechs' | 'bonusEffects' | 'teamBonusEffects'>
+    > = {},
 ): CivilizationRecord {
     return {
         key,
@@ -124,5 +126,6 @@ export function civilizationRecord(
         uniqueUnits: overrides.uniqueUnits ?? [],
         uniqueTechs: overrides.uniqueTechs ?? [],
         bonusEffects: overrides.bonusEffects ?? [],
+        teamBonusEffects: overrides.teamBonusEffects ?? [],
     };
 }

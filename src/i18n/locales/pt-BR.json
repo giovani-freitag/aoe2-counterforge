@@ -228,7 +228,9 @@
         "uniqueHint": "Bônus que a civilização já ganha, e as tecnologias de castelo que alcançam a unidade.",
         "noUnique": "Nenhuma civilização muda esta unidade por conta própria.",
         "civBonus": "Bônus da civilização",
-        "civBonusHint": "Vem no início da partida, sem nada para pesquisar."
+        "civBonusHint": "Vem no início da partida, sem nada para pesquisar.",
+        "teamBonus": "Bônus de equipe",
+        "teamBonusHint": "Vai para todo o time, então conta quando esta civilização é aliada."
     },
     "economy": {
         "title": "Quantos aldeões para produzir sem parar",

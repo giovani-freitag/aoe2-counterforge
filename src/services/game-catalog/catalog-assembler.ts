@@ -93,6 +93,7 @@ export class CatalogAssembler {
             uniqueUnits: record.uniqueUnits,
             uniqueTechs: record.uniqueTechs,
             bonuses: record.bonusEffects.map((effect) => new TechEffect(effect)),
+            teamBonuses: record.teamBonusEffects.map((effect) => new TechEffect(effect)),
         });
     }
 

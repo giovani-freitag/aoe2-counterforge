@@ -228,7 +228,9 @@
         "uniqueHint": "Bonuses a civilization is given, and the castle technologies that reach this unit.",
         "noUnique": "No civilization changes this unit on its own.",
         "civBonus": "Civilization bonus",
-        "civBonusHint": "Given at the start of the match, with nothing to research."
+        "civBonusHint": "Given at the start of the match, with nothing to research.",
+        "teamBonus": "Team bonus",
+        "teamBonusHint": "Given to everyone on its team, so it counts when this civilization is an ally."
     },
     "economy": {
         "title": "Villagers needed to produce non-stop",

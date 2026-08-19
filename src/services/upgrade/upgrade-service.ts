@@ -22,6 +22,8 @@ export interface CivilizationBonus {
     civ: string;
     /** What the civilization's own bonuses do to the unit, with nothing researched. */
     delta: StatDelta;
+    /** What its team bonus does to the unit, which needs it on the team rather than in the seat. */
+    team: StatDelta;
 }
 
 export interface UpgradeSelection {
@@ -166,8 +168,12 @@ export class UpgradeService {
     public civilizationBonuses(unit: Unit): CivilizationBonus[] {
         return this.catalog
             .civilizations()
-            .map((civilization) => ({ civ: civilization.key, delta: this.bonusFor(unit, civilization.key) }))
-            .filter((entry) => Object.keys(entry.delta).length > 0)
+            .map((civilization) => ({
+                civ: civilization.key,
+                delta: this.toDelta(civilization.bonuses.filter((effect) => effect.reaches(unit))),
+                team: this.toDelta(civilization.teamBonuses.filter((effect) => effect.reaches(unit))),
+            }))
+            .filter((entry) => Object.keys(entry.delta).length > 0 || Object.keys(entry.team).length > 0)
             .sort((left, right) => left.civ.localeCompare(right.civ));
     }
 

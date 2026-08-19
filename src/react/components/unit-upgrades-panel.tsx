@@ -181,21 +181,29 @@ export function UnitUpgradesPanel({ unit }: UnitUpgradesPanelProps) {
                                 <Link to={`/civ/${entry.civ}`}>{text.civilization(entry.civ).name}</Link>
                             </div>
                             <ul className="list">
-                                {entry.bonus === null ? null : (
-                                    <li className="upgrade-item">
-                                        <Icon name="civilizations" className="upgrade-item__mark" />
-                                        <div className="upgrade-item__body">
-                                            <span className="list-item__title">{t('upgrades.civBonus')}</span>
-                                            <p className="card__hint">{t('upgrades.civBonusHint')}</p>
-                                            <div className="upgrade-item__effects">
-                                                {describeEffect(entry.bonus, t).map((effect) => (
-                                                    <span key={effect} className="effect-chip">
-                                                        {effect}
-                                                    </span>
-                                                ))}
+                                {([
+                                    ['civBonus', entry.bonus],
+                                    ['teamBonus', entry.teamBonus],
+                                ] as const).map(([kind, delta]) =>
+                                    delta === null ? null : (
+                                        <li className="upgrade-item" key={kind}>
+                                            <Icon
+                                                name={kind === 'teamBonus' ? 'population' : 'civilizations'}
+                                                className="upgrade-item__mark"
+                                            />
+                                            <div className="upgrade-item__body">
+                                                <span className="list-item__title">{t(`upgrades.${kind}`)}</span>
+                                                <p className="card__hint">{t(`upgrades.${kind}Hint`)}</p>
+                                                <div className="upgrade-item__effects">
+                                                    {describeEffect(delta, t).map((effect) => (
+                                                        <span key={effect} className="effect-chip">
+                                                            {effect}
+                                                        </span>
+                                                    ))}
+                                                </div>
                                             </div>
-                                        </div>
-                                    </li>
+                                        </li>
+                                    ),
                                 )}
                                 {entry.upgrades.map((upgrade) => (
                                     <TechnologyItem

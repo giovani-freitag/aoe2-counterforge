@@ -116,6 +116,8 @@ export interface CivilizationRecord {
     uniqueTechs: string[];
     /** What the civilization is simply given, with no technology to research. */
     bonusEffects: TechEffectRecord[];
+    /** What it gives its allies, and itself, for being in the game. */
+    teamBonusEffects: TechEffectRecord[];
 }
 
 export interface UnitTextRecord {

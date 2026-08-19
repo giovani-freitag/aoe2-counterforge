@@ -7,6 +7,7 @@ export interface CivilizationConfig {
     uniqueUnits: readonly string[];
     uniqueTechs: readonly string[];
     bonuses: readonly TechEffect[];
+    teamBonuses: readonly TechEffect[];
 }
 
 /** A playable civilization and the pieces of the tech tree only it owns. */
@@ -40,5 +41,10 @@ export class Civilization {
     /** Always-on effects the civilization starts with, with nothing to research. */
     public get bonuses(): readonly TechEffect[] {
         return this.config.bonuses;
+    }
+
+    /** Effects it gives everyone on its team, itself included, for being in the game. */
+    public get teamBonuses(): readonly TechEffect[] {
+        return this.config.teamBonuses;
     }
 }
