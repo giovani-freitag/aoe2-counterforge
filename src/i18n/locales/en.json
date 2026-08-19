@@ -222,7 +222,8 @@
             "reload": "{{value}} s reload",
             "hpPercent": "{{value}}% HP",
             "attackPercent": "{{value}}% attack{{against}}",
-            "armourPercent": "{{value}}% armour{{against}}"
+            "armourPercent": "{{value}}% armour{{against}}",
+            "perAge": "{{effect}} per age"
         },
         "uniqueHint": "Bonuses a civilization is given, and the castle technologies that reach this unit.",
         "noUnique": "No civilization changes this unit on its own.",

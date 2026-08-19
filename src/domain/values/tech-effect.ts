@@ -11,6 +11,8 @@ export interface TechEffectConfig {
     value: number;
     /** For attack and armour, the damage class the value belongs to. */
     damageClass?: string;
+    /** Age the change arrives in, for a bonus the game hands out once per age. */
+    age?: number;
 }
 
 /** One change a technology makes, taken from the game's own effect table. */
@@ -31,6 +33,11 @@ export class TechEffect {
 
     public get value(): number {
         return this.config.value;
+    }
+
+    /** Age the change arrives in, or null when the game states it without one. */
+    public get age(): number | null {
+        return this.config.age ?? null;
     }
 
     public get damageClass(): string | undefined {

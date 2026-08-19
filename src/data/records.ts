@@ -55,6 +55,8 @@ export interface TechEffectRecord {
     value: number;
     /** For attack and armour, which damage class the value belongs to. */
     damageClass?: string;
+    /** Age the change arrives in, for a bonus the game hands out once per age. */
+    age?: number;
 }
 
 export interface TechnologyRecord {

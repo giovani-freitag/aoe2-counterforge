@@ -14,6 +14,13 @@ const BROAD_ENOUGH = 3;
  * @returns One label per measurable change, empty when the effect is qualitative.
  */
 export function describeEffect(change: StatDelta, t: TFunction): string[] {
+    const ages = change.perAge ?? 1;
+    if (ages > 1) {
+        return describeEffect({ ...divided(change, ages), perAge: undefined }, t).map((effect) =>
+            t('upgrades.effect.perAge', { effect }),
+        );
+    }
+
     const labels: string[] = [];
     const against = (armourClass: string) =>
         armourClass === 'base-melee' || armourClass === 'base-pierce'
@@ -78,6 +85,24 @@ export function describeEffect(change: StatDelta, t: TFunction): string[] {
     }
 
     return labels;
+}
+
+/** One age's worth of a bonus the game hands out once per age. */
+function divided(change: StatDelta, ages: number): StatDelta {
+    const share = (value: number | undefined) => (value === undefined ? undefined : value / ages);
+    const shares = (entries: readonly ClassAmount[] | undefined) =>
+        entries?.map((entry) => ({ ...entry, amount: entry.amount / ages }));
+
+    return {
+        ...change,
+        hp: share(change.hp),
+        range: share(change.range),
+        lineOfSight: share(change.lineOfSight),
+        speed: share(change.speed),
+        reloadTime: share(change.reloadTime),
+        attack: shares(change.attack),
+        armour: shares(change.armour),
+    };
 }
 
 /** Groups the classes that share a factor, so a blanket multiplier reads as one statement. */

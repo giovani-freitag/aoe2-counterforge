@@ -49,6 +49,45 @@ const MODELLED = new Set(['hp', 'attack', 'armour', 'range', 'accuracy', 'lineOf
 /** Attack and armour multipliers are written as whole percentages, unlike every other factor. */
 const PERCENT = 100;
 
+/** A stat delta written so that two equal deltas produce the same string, whatever their order. */
+function canonical(delta: StatDelta): string {
+    const scalars = [
+        delta.hp,
+        delta.hpMultiplier,
+        delta.accuracyFloor,
+        delta.lineOfSightFloor,
+        delta.range,
+        delta.accuracy,
+        delta.lineOfSight,
+        delta.speed,
+        delta.speedMultiplier,
+        delta.reloadTime,
+        delta.reloadTimeMultiplier,
+        delta.trainTimeMultiplier,
+    ].map((value) => String(value ?? ''));
+
+    const classes = [delta.attack, delta.attackMultipliers, delta.armour, delta.armourMultipliers].map((entries) =>
+        (entries ?? [])
+            .map((entry) => `${entry.armourClass}=${String(entry.amount)}`)
+            .sort()
+            .join(','),
+    );
+
+    return [...scalars, ...classes].join('|');
+}
+
+/** Whether the change is a factor, which cannot be split into equal parts the way a sum can. */
+function scaled(delta: StatDelta): boolean {
+    return (
+        delta.hpMultiplier !== undefined ||
+        delta.speedMultiplier !== undefined ||
+        delta.reloadTimeMultiplier !== undefined ||
+        delta.trainTimeMultiplier !== undefined ||
+        delta.attackMultipliers !== undefined ||
+        delta.armourMultipliers !== undefined
+    );
+}
+
 /** Answers which technologies touch a unit, and what the unit looks like once they are researched. */
 export class UpgradeService {
     private readonly catalog: GameCatalogService;
@@ -154,6 +193,39 @@ export class UpgradeService {
     }
 
     private toDelta(effects: readonly TechEffect[]): StatDelta {
+        const delta = this.accumulate(effects);
+        const ages = this.agesRepeating(effects);
+
+        return ages === null ? delta : { ...delta, perAge: ages };
+    }
+
+    /**
+     * How many ages hand out the same change, for a bonus the game grants once per age.
+     *
+     * Only an unbroken pattern counts: every effect carries an age, and every age contributes
+     * exactly the same change. Anything else is a total that cannot be divided honestly.
+     *
+     * @param effects - Effects that reach one unit.
+     * @returns The number of ages, or null when this is not that kind of bonus.
+     */
+    private agesRepeating(effects: readonly TechEffect[]): number | null {
+        const byAge = new Map<number, TechEffect[]>();
+        for (const effect of effects) {
+            if (effect.age === null) return null;
+
+            byAge.set(effect.age, [...(byAge.get(effect.age) ?? []), effect]);
+        }
+
+        if (byAge.size < 2) return null;
+
+        const deltas = [...byAge.values()].map((group) => this.accumulate(group));
+        const shapes = deltas.map(canonical);
+        const uniform = shapes.every((shape) => shape === shapes[0]);
+
+        return uniform && !deltas.some(scaled) ? byAge.size : null;
+    }
+
+    private accumulate(effects: readonly TechEffect[]): StatDelta {
         const delta: StatDelta = {};
         // The game states a class at a time, and often twice for the same one; a reader wants the
         // total, so the classes are accumulated here rather than listed as they arrive.

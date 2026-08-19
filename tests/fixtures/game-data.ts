@@ -152,6 +152,7 @@ export function sampleGameData(): GenieData {
         technologies: [
             {
                 effectId: 0,
+                prerequisites: [],
                 nameStringId: STRING_IDS.forgingTech,
                 descriptionStringId: 0,
                 iconId: 1,
@@ -162,6 +163,7 @@ export function sampleGameData(): GenieData {
             },
             {
                 effectId: 1,
+                prerequisites: [],
                 nameStringId: 7068,
                 descriptionStringId: 0,
                 iconId: 2,
@@ -175,6 +177,7 @@ export function sampleGameData(): GenieData {
             },
             {
                 effectId: 2,
+                prerequisites: [],
                 nameStringId: 0,
                 descriptionStringId: 0,
                 iconId: -1,

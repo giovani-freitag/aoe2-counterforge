@@ -160,6 +160,9 @@ const PACKED = new Set(['attack', 'armour']);
 const FLOAT_DECIMALS = 3;
 const CASTLE_LIKE = new Set([82, 1251, 1665]);
 
+/** The age advances, in the order the game numbers the ages. */
+const AGE_NAMES = ['Dark Age', 'Feudal Age', 'Castle Age', 'Imperial Age'];
+
 interface LineUpgrade {
     techIndex: number;
     cost: CostRecord;
@@ -169,6 +172,9 @@ interface LineUpgrade {
 /** Assembles the shipped dataset out of the pieces read from the game. */
 export class DatasetBuilder {
     private readonly config: DatasetBuilderConfig;
+
+    /** Age of every age advance, resolved once because every bonus asks for it. */
+    private ages: Map<number, number> | null = null;
 
     constructor(config: DatasetBuilderConfig) {
         this.config = config;
@@ -460,9 +466,54 @@ export class DatasetBuilder {
 
         const teamBonusId = this.config.game.civilizations[index]?.teamBonusId ?? -1;
 
-        return this.config.game.technologies.flatMap((tech, id) =>
-            tech.civ === index && id !== teamBonusId && !researchable.has(id) ? this.effectsOf(tech.effectId) : [],
-        );
+        return this.config.game.technologies.flatMap((tech, id) => {
+            if (tech.civ !== index || id === teamBonusId || researchable.has(id)) return [];
+
+            const age = this.ageOf(id);
+
+            return this.effectsOf(tech.effectId).map((effect) => (age === null ? effect : { ...effect, age }));
+        });
+    }
+
+    /**
+     * The age a technology becomes true in, followed through what it waits for.
+     *
+     * A bonus handed out once per age is three technologies in the file, each waiting on a
+     * different age advance, and that chain is the only place the age is written down.
+     *
+     * @param id - Technology to resolve.
+     * @param seen - Technologies already visited, which stops a chain that loops.
+     * @returns The age, or null when nothing in the chain names one.
+     */
+    private ageOf(id: number, seen = new Set<number>()): number | null {
+        if (seen.has(id)) return null;
+        seen.add(id);
+
+        const direct = this.ageTechs().get(id);
+        if (direct !== undefined) return direct;
+
+        for (const prerequisite of this.config.game.technologies[id]?.prerequisites ?? []) {
+            const age = this.ageOf(prerequisite, seen);
+            if (age !== null) return age;
+        }
+
+        return null;
+    }
+
+    /** The four age advances, found by the names the game gives them. */
+    private ageTechs(): Map<number, number> {
+        if (!this.ages) {
+            const names = new Map(AGE_NAMES.map((name, index) => [name, index + 1]));
+            this.ages = new Map(
+                this.config.game.technologies.flatMap((tech, id) => {
+                    const age = names.get(this.text(this.config.fallbackLocale, tech.nameStringId));
+
+                    return age === undefined ? [] : [[id, age] as const];
+                }),
+            );
+        }
+
+        return this.ages;
     }
 
     /** Turns the game's own effect commands into the guide's vocabulary. */

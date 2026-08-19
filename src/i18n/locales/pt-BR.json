@@ -222,7 +222,8 @@
             "reload": "{{value}} s de recarga",
             "hpPercent": "{{value}}% de PV",
             "attackPercent": "{{value}}% de ataque{{against}}",
-            "armourPercent": "{{value}}% de armadura{{against}}"
+            "armourPercent": "{{value}}% de armadura{{against}}",
+            "perAge": "{{effect}} por era"
         },
         "uniqueHint": "Bônus que a civilização já ganha, e as tecnologias de castelo que alcançam a unidade.",
         "noUnique": "Nenhuma civilização muda esta unidade por conta própria.",

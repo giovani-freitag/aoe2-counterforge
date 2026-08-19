@@ -80,6 +80,8 @@ export interface GenieEffect {
 export interface GenieTech {
     /** Index into the effect table, or -1 for a technology that changes nothing directly. */
     effectId: number;
+    /** Technologies that must be researched first; -1 fills the unused slots. */
+    prerequisites: number[];
     nameStringId: number;
     descriptionStringId: number;
     iconId: number;
@@ -479,7 +481,7 @@ export class GenieDatReader {
         const count = this.expect(this.reader.int16(), 20000, 'technology');
 
         return this.reader.list(count, (): GenieTech => {
-            this.reader.skip(REQUIRED_TECH_COUNT * 2);
+            const prerequisites = this.reader.list(REQUIRED_TECH_COUNT, () => this.reader.int16());
             const costs = this.reader.list(3, () => {
                 const type = this.reader.int16();
                 const amount = this.reader.int16();
@@ -510,6 +512,7 @@ export class GenieDatReader {
 
             return {
                 effectId,
+                prerequisites: prerequisites.filter((id) => id >= 0),
                 costs,
                 civ,
                 nameStringId,
