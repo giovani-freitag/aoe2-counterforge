@@ -594,41 +594,50 @@
     mask-image: linear-gradient(to right, #000 calc(100% - 1.5rem), transparent);
 }
 
-.line-track {
-    display: flex;
-    gap: var(--space-2);
-    overflow-x: auto;
-    scrollbar-width: none;
+.line-diagram {
+    display: block;
+    font-family: inherit;
 }
 
-.line-track::-webkit-scrollbar {
-    display: none;
+.line-diagram__edge {
+    fill: none;
+    stroke: var(--border-strong);
+    stroke-width: 1.5;
 }
 
-.line-node {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-1);
-    min-width: 5rem;
-    padding: var(--space-2);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    background: var(--surface-2);
-    font-size: 0.75rem;
-    text-align: center;
+.line-diagram__head {
+    fill: var(--border-strong);
 }
 
-.line-node[data-current='true'] {
-    border-color: var(--gold);
-    background: var(--gold-dim);
+.line-diagram__node rect {
+    fill: var(--surface);
+    stroke: var(--border);
+    transition:
+        stroke 0.15s ease,
+        fill 0.15s ease;
 }
 
-.line-node__name {
+.line-diagram a:hover .line-diagram__node rect,
+.line-diagram a:focus-visible .line-diagram__node rect {
+    stroke: var(--gold);
+}
+
+.line-diagram__node[data-current='true'] rect {
+    fill: color-mix(in srgb, var(--gold) 12%, var(--surface));
+    stroke: var(--gold);
+}
+
+.line-diagram__name {
+    fill: var(--text);
+    font-size: 0.8125rem;
     font-weight: 600;
-    color: var(--text);
-    line-height: 1.15;
 }
+
+.line-diagram__age {
+    fill: var(--text-faint);
+    font-size: 0.6875rem;
+}
+
 
 .verdict {
     padding: var(--space-2) var(--space-3);

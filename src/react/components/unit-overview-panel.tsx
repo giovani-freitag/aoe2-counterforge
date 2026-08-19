@@ -8,7 +8,7 @@ import { useUnitLine } from '../hooks/use-unit-line.ts';
 import { SegmentedControl } from './segmented-control.tsx';
 import { StatGrid } from './stat-grid.tsx';
 import { UnitCivilizationsCard } from './unit-civilizations-card.tsx';
-import { UnitLineTrack } from './unit-line-track.tsx';
+import { UnitLineDiagram } from './unit-line-diagram.tsx';
 
 export interface UnitOverviewPanelProps {
     unit: Unit;
@@ -21,7 +21,7 @@ type StatsMode = 'base' | 'upgraded';
 export function UnitOverviewPanel({ unit, upgradedStats }: UnitOverviewPanelProps) {
     const { t } = useTranslation();
     const text = useGameText();
-    const line = useUnitLine(unit);
+    const steps = useUnitLine(unit);
     const { preferences } = usePreferences();
     const [mode, setMode] = useState<StatsMode>('base');
 
@@ -97,12 +97,12 @@ export function UnitOverviewPanel({ unit, upgradedStats }: UnitOverviewPanelProp
                 ) : null}
             </section>
 
-            {line.length > 1 ? (
+            {steps.length > 1 ? (
                 <section className="card">
                     <div className="card__title">
                         <h2>{t('unit.line')}</h2>
                     </div>
-                    <UnitLineTrack line={line} current={unit} />
+                    <UnitLineDiagram steps={steps} current={unit} />
                 </section>
             ) : null}
 

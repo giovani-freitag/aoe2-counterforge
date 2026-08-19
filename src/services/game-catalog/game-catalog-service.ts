@@ -82,6 +82,42 @@ export class GameCatalogService {
     }
 
     /**
+     * A line laid out in upgrade steps rather than as a flat list.
+     *
+     * A line is not always a chain: the Cavalier is replaced by the Paladin or by the Savar, never
+     * by both, and a reader shown one long row would read that as a sequence.
+     *
+     * @param line - Line slug, as carried by every member of it.
+     * @returns One entry per step, each holding the alternatives available at that point.
+     */
+    public upgradeSteps(line: string): Unit[][] {
+        const members = this.units({ line });
+        const byKey = new Map(members.map((member) => [member.key, member]));
+        const depths = new Map<string, number>();
+
+        const depthOf = (unit: Unit): number => {
+            const known = depths.get(unit.key);
+            if (known !== undefined) return known;
+
+            const parent = unit.upgradesFrom === null ? undefined : byKey.get(unit.upgradesFrom);
+            // Marked before recursing so a line that somehow points at itself stops here.
+            depths.set(unit.key, 0);
+            const depth = parent ? depthOf(parent) + 1 : 0;
+            depths.set(unit.key, depth);
+
+            return depth;
+        };
+
+        const steps: Unit[][] = [];
+        for (const member of members) {
+            const depth = depthOf(member);
+            steps[depth] = [...(steps[depth] ?? []), member];
+        }
+
+        return steps.filter((step) => step.length > 0);
+    }
+
+    /**
      * Looks a technology up by slug.
      *
      * @param key - Technology slug such as "bloodlines".

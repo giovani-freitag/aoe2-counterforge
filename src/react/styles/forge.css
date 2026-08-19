@@ -512,6 +512,23 @@
     gap: var(--space-1);
 }
 
+/* Alternatives share a step: one of them happens, not both. */
+.forge__fork {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: 2px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--banner-ink) 7%, transparent);
+}
+
+.forge__or {
+    font-size: 0.5625rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--banner-muted);
+}
+
 .forge__step {
     display: inline-flex;
     align-items: center;

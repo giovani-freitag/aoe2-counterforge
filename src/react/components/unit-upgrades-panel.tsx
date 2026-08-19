@@ -61,7 +61,7 @@ export function UnitUpgradesPanel({ unit }: UnitUpgradesPanelProps) {
     const text = useGameText();
     const { catalog } = useServices();
     const view = useUnitUpgrades(unit);
-    const line = useUnitLine(unit);
+    const steps = useUnitLine(unit);
 
     const grouped = useMemo(() => {
         const byBuilding = new Map<string, AppliedUpgrade[]>();
@@ -75,7 +75,7 @@ export function UnitUpgradesPanel({ unit }: UnitUpgradesPanelProps) {
     }, [view]);
 
     const unitText = text.unit(unit.key);
-    const lineUpgrades = line.filter((member) => member.upgrade !== null && member.key !== unit.line);
+    const lineUpgrades = steps.flat().filter((member) => member.upgrade !== null && member.key !== unit.line);
 
     return (
         <div className="stack">
@@ -181,6 +181,22 @@ export function UnitUpgradesPanel({ unit }: UnitUpgradesPanelProps) {
                                 <Link to={`/civ/${entry.civ}`}>{text.civilization(entry.civ).name}</Link>
                             </div>
                             <ul className="list">
+                                {entry.bonus === null ? null : (
+                                    <li className="upgrade-item">
+                                        <Icon name="civilizations" className="upgrade-item__mark" />
+                                        <div className="upgrade-item__body">
+                                            <span className="list-item__title">{t('upgrades.civBonus')}</span>
+                                            <p className="card__hint">{t('upgrades.civBonusHint')}</p>
+                                            <div className="upgrade-item__effects">
+                                                {describeEffect(entry.bonus, t).map((effect) => (
+                                                    <span key={effect} className="effect-chip">
+                                                        {effect}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </li>
+                                )}
                                 {entry.upgrades.map((upgrade) => (
                                     <TechnologyItem
                                         key={upgrade.technology.key}

@@ -1,4 +1,5 @@
-import type { CSSProperties, ReactNode } from 'react';
+import { Fragment, type CSSProperties, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import type { Unit } from '../../domain/entities/unit.ts';
 import { iconUrl } from '../format.ts';
@@ -19,8 +20,9 @@ export interface UnitForgeProps {
 
 /** The head of a unit page: the portrait on the anvil, with the embers of the forge behind it. */
 export function UnitForge({ unit, name, subtitle, meta }: UnitForgeProps) {
+    const { t } = useTranslation();
     const text = useGameText();
-    const line = useUnitLine(unit);
+    const steps = useUnitLine(unit);
     const style = {
         '--slot': `url(${iconUrl('ui/slot.png')})`,
         '--shield': `url(${iconUrl(`ui/age-${String(unit.age)}.png`)})`,
@@ -40,23 +42,36 @@ export function UnitForge({ unit, name, subtitle, meta }: UnitForgeProps) {
                     <h1 className="forge__name">{name}</h1>
                     <p className="forge__sub">{subtitle}</p>
 
-                    {line.length > 1 ? (
+                    {steps.length > 1 ? (
                         <div className="forge__line">
-                            {line.map((member, index) => (
-                                <span className="forge__step-wrap" key={member.key}>
+                            {steps.map((step, index) => (
+                                <span className="forge__step-wrap" key={step[0].key}>
                                     {index > 0 ? <Icon name="next" className="forge__arrow" /> : null}
-                                    <Link
-                                        className="forge__step"
-                                        to={`/unit/${member.key}`}
-                                        data-here={member.key === unit.key || undefined}
-                                    >
-                                        <GameIcon
-                                            path={member.icon === null ? null : `Unit/${String(member.icon)}.png`}
-                                            alt=""
-                                            size="sm"
-                                        />
-                                        {text.unit(member.key).name}
-                                    </Link>
+                                    <span className="forge__fork">
+                                        {step.map((member, choice) => (
+                                            <Fragment key={member.key}>
+                                                {choice > 0 ? (
+                                                    <span className="forge__or">{t('unit.lineOr')}</span>
+                                                ) : null}
+                                                <Link
+                                                    className="forge__step"
+                                                    to={`/unit/${member.key}`}
+                                                    data-here={member.key === unit.key || undefined}
+                                                >
+                                                    <GameIcon
+                                                        path={
+                                                            member.icon === null
+                                                                ? null
+                                                                : `Unit/${String(member.icon)}.png`
+                                                        }
+                                                        alt=""
+                                                        size="sm"
+                                                    />
+                                                    {text.unit(member.key).name}
+                                                </Link>
+                                            </Fragment>
+                                        ))}
+                                    </span>
                                 </span>
                             ))}
                         </div>
