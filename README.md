@@ -11,6 +11,7 @@
 
 <p align="center">
   <a href="https://github.com/giovani-freitag/aoe2-counterforge/actions/workflows/ci.yml"><img src="https://github.com/giovani-freitag/aoe2-counterforge/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <img src="https://img.shields.io/badge/license-MIT-C79A45?style=flat-square&labelColor=16222D" alt="MIT licensed">
   &nbsp;·&nbsp;
   <img src="https://img.shields.io/badge/React-19-C79A45?style=flat-square&logo=react&logoColor=white&labelColor=16222D" alt="React 19">
   <img src="https://img.shields.io/badge/Vite-8-C79A45?style=flat-square&logo=vite&logoColor=white&labelColor=16222D" alt="Vite 8">
@@ -73,6 +74,6 @@ No game install, no API key, no network — the data is in the repository.
 
 ---
 
-Age of Empires II, its data and its artwork belong to Microsoft, Forgotten Empires, Ensemble Studios
+MIT licensed. Age of Empires II, its data and its artwork belong to Microsoft, Forgotten Empires, Ensemble Studios
 and SkyBox Labs. This is a fan project, unaffiliated and non-commercial. Interface icons by
 [Lucide](https://lucide.dev) (ISC); Cinzel under the SIL Open Font License 1.1.
