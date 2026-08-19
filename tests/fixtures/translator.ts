@@ -3,6 +3,9 @@ import english from '../../src/i18n/locales/en.json' with { type: 'json' };
 
 type Bundle = Record<string, unknown>;
 
+/** Values i18next is asked to interpolate are always printable. */
+type Values = Record<string, string | number>;
+
 /**
  * A translator backed by the shipped English strings.
  *
@@ -12,7 +15,7 @@ type Bundle = Record<string, unknown>;
  * @returns A function with the shape components expect from i18next.
  */
 export function translator(): TFunction {
-    const translate = (key: string, values: Record<string, unknown> = {}): string => {
+    const translate = (key: string, values: Values = {}): string => {
         const template = key.split('.').reduce<unknown>((node, part) => (node as Bundle | undefined)?.[part], english);
         if (typeof template !== 'string') return key;
 
