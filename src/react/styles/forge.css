@@ -458,9 +458,7 @@
     gap: var(--space-2);
 }
 
-.settings {
-    flex: none;
-}
+
 
 /* ---------- the evolution line, right under the name ---------- */
 

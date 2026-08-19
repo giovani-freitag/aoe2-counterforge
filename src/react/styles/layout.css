@@ -133,8 +133,20 @@
 }
 
 @media (min-width: 60rem) {
+    /* Brand, search and settings each on their own track, so the search sits in the middle of the
+       page instead of wherever the two sides happen to leave it. */
     .topbar {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
         padding-inline: var(--space-5);
+    }
+
+    .searchbutton {
+        justify-self: center;
+    }
+
+    .settings {
+        justify-self: end;
     }
 
     .shell__main {
