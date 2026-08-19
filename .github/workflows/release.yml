@@ -3,6 +3,8 @@ name: Release
 on:
     push:
         branches: [main]
+    # Publishing the current main without cutting a release.
+    workflow_dispatch:
 
 permissions:
     contents: read
@@ -29,7 +31,7 @@ jobs:
     # here rather than in a workflow listening for one.
     deploy:
         needs: release
-        if: needs.release.outputs.released == 'true'
+        if: needs.release.outputs.released == 'true' || github.event_name == 'workflow_dispatch'
         runs-on: ubuntu-latest
         permissions:
             contents: read
