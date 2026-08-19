@@ -1,9 +1,13 @@
 import type {
+    CarryUpgradeRecord,
     CivilizationRecord,
-    TechEffectRecord,
     CivilizationTextRecord,
     ClassAmountRecord,
     CostRecord,
+    EconomyRecord,
+    FarmUpgradeRecord,
+    GatherUpgradeRecord,
+    TechEffectRecord,
     TechnologyRecord,
     TechnologyTextRecord,
     UnitRecord,
@@ -42,6 +46,7 @@ export interface GeneratedDataset {
     units: UnitRecord[];
     technologies: TechnologyRecord[];
     civilizations: CivilizationRecord[];
+    economy: EconomyRecord;
     strings: Map<string, { units: Record<string, UnitTextRecord>; techs: Record<string, TechnologyTextRecord>; civs: Record<string, CivilizationTextRecord> }>;
 }
 
@@ -160,6 +165,41 @@ const PACKED = new Set(['attack', 'armour']);
 const FLOAT_DECIMALS = 3;
 const CASTLE_LIKE = new Set([82, 1251, 1665]);
 
+/**
+ * What each villager gathers, read off the short name the designers gave the unit.
+ *
+ * The game keeps one unit per job — VMLUM is the male lumberjack, VFFAR the female farmer — and
+ * an economy technology names those units directly, so this is what turns an effect into a kind
+ * of work.
+ */
+const VILLAGER_JOBS: Record<string, { resource: string; foodSource?: string }> = {
+    LUM: { resource: 'wood' },
+    GLD: { resource: 'gold' },
+    MIN: { resource: 'stone' },
+    FAR: { resource: 'food', foodSource: 'farm' },
+    SHE: { resource: 'food', foodSource: 'sheep' },
+    FOR: { resource: 'food', foodSource: 'berries' },
+    HUN: { resource: 'food', foodSource: 'hunt' },
+    FIS: { resource: 'food', foodSource: 'shore-fish' },
+};
+
+/** Effect command types the economy reads, which are not the ones a soldier cares about. */
+const RESOURCE_COMMAND = 1;
+
+/** Second field of a resource command: zero sets the value, one adds to it. */
+const ADD_MODE = 1;
+const ADD_COMMAND = 4;
+const MULTIPLY_COMMAND = 5;
+
+/** Attribute and resource slots the villager planner depends on. */
+const WORK_RATE = 13;
+const CARRY_CAPACITY = 14;
+const WALK_SPEED = 5;
+const FARM_FOOD_SLOT = 36;
+
+/** Class every villager belongs to, which is how a technology reaches all of them at once. */
+const CIVILIAN_CLASS = 4;
+
 /** The age advances, in the order the game numbers the ages. */
 const AGE_NAMES = ['Dark Age', 'Feudal Age', 'Castle Age', 'Imperial Age'];
 
@@ -226,6 +266,7 @@ export class DatasetBuilder {
             units: merged.units,
             technologies: techs.records,
             civilizations: civilizations.records,
+            economy: this.economyRecord(techs.keyById),
             strings: this.stringBundles(unitStrings, techs.strings, civilizations.strings),
         };
     }
@@ -433,6 +474,98 @@ export class DatasetBuilder {
         }
 
         return [...byClass].map(([armourClass, amount]) => ({ class: armourClass, amount }));
+    }
+
+    /**
+     * The villager planner's inputs, read from the same effect table as everything else.
+     *
+     * @param techKeyById - Slug of every technology that reached the guide, by its id in the file.
+     * @returns Gather, carrying and farm technologies, with the two figures they act on.
+     */
+    private economyRecord(techKeyById: Map<number, string>): EconomyRecord {
+        const gatherUpgrades: GatherUpgradeRecord[] = [];
+        const carryUpgrades: CarryUpgradeRecord[] = [];
+        const farmUpgrades: FarmUpgradeRecord[] = [];
+
+        for (const [id, key] of techKeyById) {
+            const commands = this.config.game.effects[this.config.game.technologies[id]?.effectId ?? -1]?.commands;
+            if (!commands) continue;
+
+            const carry: CarryUpgradeRecord = { tech: key };
+            const jobs = new Map<string, GatherUpgradeRecord>();
+            let extraFood = 0;
+
+            for (const command of commands) {
+                const job = this.jobOf(command.unit);
+
+                if (command.type === MULTIPLY_COMMAND && command.attribute === WORK_RATE && job && command.value !== 1) {
+                    const slot = `${job.resource}:${job.foodSource ?? ''}`;
+                    jobs.set(slot, { tech: key, ...job, multiplier: this.round(command.value) });
+                }
+
+                // A fishing ship also carries and also walks home; only a villager belongs here.
+                const villagers = command.unitClass === CIVILIAN_CLASS || job !== null;
+
+                if (villagers && command.attribute === CARRY_CAPACITY && command.type === MULTIPLY_COMMAND) {
+                    carry.carryPercent = this.round(command.value - 1);
+                    if (job) this.restrict(carry, job);
+                }
+
+                if (villagers && command.attribute === CARRY_CAPACITY && command.type === ADD_COMMAND) {
+                    if (command.value !== 0) carry.carryFlat = command.value;
+                    if (job && command.value !== 0) this.restrict(carry, job);
+                }
+
+                if (villagers && command.attribute === WALK_SPEED && command.type === MULTIPLY_COMMAND) {
+                    carry.speedMultiplier = this.round(command.value);
+                }
+
+                if (
+                    command.type === RESOURCE_COMMAND &&
+                    command.unit === FARM_FOOD_SLOT &&
+                    command.unitClass === ADD_MODE
+                ) {
+                    extraFood += command.value;
+                }
+            }
+
+            gatherUpgrades.push(...jobs.values());
+            if (carry.carryPercent !== undefined || carry.carryFlat !== undefined || carry.speedMultiplier) {
+                carryUpgrades.push(carry);
+            }
+            if (extraFood > 0) farmUpgrades.push({ tech: key, extraFood });
+        }
+
+        return {
+            villagerWalkSpeed: this.round(this.villager()?.speed ?? 0),
+            farmFood: this.config.game.civilizations[1]?.resources[FARM_FOOD_SLOT] ?? 0,
+            farmWoodCost: this.cost(this.byInternalName('FARM')?.costs ?? []).wood,
+            gatherUpgrades,
+            carryUpgrades,
+            farmUpgrades,
+        };
+    }
+
+    /** The kind of work a villager unit does, or null when the unit is not a villager. */
+    private jobOf(unitId: number): { resource: string; foodSource?: string } | null {
+        const name = this.referenceUnits().get(unitId)?.internalName ?? '';
+        if (!/^V[MF]/.test(name)) return null;
+
+        return VILLAGER_JOBS[name.slice(2, 5)] ?? null;
+    }
+
+    /** Narrows a carrying technology to the work it actually reaches. */
+    private restrict(carry: CarryUpgradeRecord, job: { resource: string; foodSource?: string }): void {
+        carry.resources = [...new Set([...(carry.resources ?? []), job.resource])];
+        if (job.foodSource) carry.foodSources = [...new Set([...(carry.foodSources ?? []), job.foodSource])];
+    }
+
+    private byInternalName(name: string): GenieUnit | undefined {
+        return [...this.referenceUnits().values()].find((unit) => unit.internalName === name);
+    }
+
+    private villager(): GenieUnit | undefined {
+        return this.byInternalName('VMFAR');
     }
 
     /**

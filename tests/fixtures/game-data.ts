@@ -14,6 +14,9 @@ export const STRING_IDS = {
 } as const;
 
 const HELP_OFFSET = 21000;
+
+/** Starting resources with the farm food slot filled, which is the only one the guide reads. */
+const FARM_FOOD_SLOT_RESOURCES = Array.from({ length: 40 }, (_, index) => (index === 36 ? 175 : 0));
 const CIV_HELP_OFFSET = 109879;
 
 /**
@@ -24,6 +27,7 @@ const CIV_HELP_OFFSET = 109879;
  */
 export function genieUnit(overrides: Partial<GenieUnit> & Pick<GenieUnit, 'id' | 'nameStringId'>): GenieUnit {
     return {
+        internalName: 'SAMPLE',
         type: 70,
         creationStringId: 0,
         helpStringId: 0,
@@ -130,11 +134,12 @@ export function sampleGameData(): GenieData {
             { name: 'Britons bonus', commands: [{ type: 5, unit: -1, unitClass: 6, attribute: 0, value: 1.2 }] },
         ],
         civilizations: [
-            { name: 'Gaia', techTreeId: 0, teamBonusId: -1, units: new Map() },
+            { name: 'Gaia', techTreeId: 0, teamBonusId: -1, resources: [], units: new Map() },
             {
                 name: 'British',
                 techTreeId: 1,
                 teamBonusId: 1,
+                resources: FARM_FOOD_SLOT_RESOURCES,
                 units: new Map([
                     [74, genieUnit({ id: 74, nameStringId: STRING_IDS.militiaUnit })],
                     [

@@ -1,11 +1,9 @@
+import { ECONOMY_RECORD } from '../../data/dataset.ts';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Unit } from '../../domain/entities/unit.ts';
 import type { Resource } from '../../domain/enums/resource.ts';
 import {
-    DEFAULT_CARRY_UPGRADES,
-    DEFAULT_FARM_UPGRADES,
-    DEFAULT_GATHER_UPGRADES,
     FOOD_SOURCES,
     type FoodSource,
 } from '../../services/economy/gather-rates.ts';
@@ -40,14 +38,14 @@ function techGroupsFor(
     onFarms: boolean,
     ageOf: (tech: string) => number,
 ): TechGroup[] {
-    const gathering = (['food', 'wood', 'gold', 'stone'] as const)
-        .filter((resource) => spent.has(resource) || (resource === 'wood' && onFarms))
-        .flatMap((resource) => DEFAULT_GATHER_UPGRADES[resource].map((upgrade) => upgrade.tech));
+    const gathering = ECONOMY_RECORD.gatherUpgrades
+        .filter((upgrade) => spent.has(upgrade.resource as Resource) || (upgrade.resource === 'wood' && onFarms))
+        .map((upgrade) => upgrade.tech);
 
     const all = [
         ...gathering,
-        ...DEFAULT_CARRY_UPGRADES.filter((upgrade) => !upgrade.resources).map((upgrade) => upgrade.tech),
-        ...(onFarms ? DEFAULT_FARM_UPGRADES.map((upgrade) => upgrade.tech) : []),
+        ...ECONOMY_RECORD.carryUpgrades.filter((upgrade) => !upgrade.resources).map((upgrade) => upgrade.tech),
+        ...(onFarms ? ECONOMY_RECORD.farmUpgrades.map((upgrade) => upgrade.tech) : []),
     ];
 
     const byAge = new Map<number, string[]>();

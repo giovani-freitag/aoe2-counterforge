@@ -1,20 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { InvalidArgumentError } from '../../../../src/domain/errors/domain-error.ts';
 import { EconomyService } from '../../../../src/services/economy/economy-service.ts';
-import {
-    DEFAULT_CARRY_UPGRADES,
-    DEFAULT_FARM_UPGRADES,
-    DEFAULT_GATHER_RATES,
-    DEFAULT_GATHER_UPGRADES,
-} from '../../../../src/services/economy/gather-rates.ts';
+import { DEFAULT_GATHER_RATES } from '../../../../src/services/economy/gather-rates.ts';
+import { economyConfig } from '../../../fixtures/economy.ts';
 import { makeUnit } from '../../../fixtures/unit-builder.ts';
 
-const economy = new EconomyService({
-    rates: DEFAULT_GATHER_RATES,
-    upgrades: DEFAULT_GATHER_UPGRADES,
-    carryUpgrades: DEFAULT_CARRY_UPGRADES,
-    farmUpgrades: DEFAULT_FARM_UPGRADES,
-});
+const economy = new EconomyService(economyConfig());
 
 describe('EconomyService gather rates', () => {
     it('returns the published base rate when nothing is researched', () => {

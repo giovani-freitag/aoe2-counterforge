@@ -2,23 +2,25 @@ import type { Unit } from '../../domain/entities/unit.ts';
 import { RESOURCES, type Resource } from '../../domain/enums/resource.ts';
 import { InvalidArgumentError } from '../../domain/errors/domain-error.ts';
 import {
-    BASE_FARM_FOOD,
-    FARM_WOOD_COST,
     VILLAGER_CARRY_CAPACITY,
-    VILLAGER_WALK_SPEED,
     type CarryUpgrade,
     type FarmUpgrade,
     type FoodSource,
     type GatherProfile,
     type GatherRateTable,
-    type GatherUpgradeTable,
+    type GatherUpgrade,
 } from './gather-rates.ts';
 
 export interface EconomyServiceConfig {
     rates: GatherRateTable;
-    upgrades: GatherUpgradeTable;
+    gatherUpgrades: readonly GatherUpgrade[];
     carryUpgrades: readonly CarryUpgrade[];
     farmUpgrades: readonly FarmUpgrade[];
+    /** Tiles a second a villager walks with nothing carried. */
+    walkSpeed: number;
+    /** Food a farm holds before it has to be rebuilt, before any technology. */
+    farmFood: number;
+    farmWoodCost: number;
 }
 
 export interface GatherRateQuery {
@@ -91,8 +93,10 @@ export class EconomyService {
         const profile = this.profileOf(query.resource, foodSource);
         const researched = new Set(query.techs ?? []);
 
-        const workMultiplier = this.config.upgrades[query.resource]
+        const workMultiplier = this.config.gatherUpgrades
             .filter((upgrade) => researched.has(upgrade.tech))
+            .filter((upgrade) => upgrade.resource === query.resource)
+            .filter((upgrade) => !upgrade.foodSource || upgrade.foodSource === foodSource)
             .reduce((factor, upgrade) => factor * upgrade.multiplier, 1);
 
         const carry = this.config.carryUpgrades.filter(
@@ -107,7 +111,7 @@ export class EconomyService {
             this.sum(carry, (upgrade) => upgrade.carryFlat ?? 0);
         const walkSpeed = carry.reduce(
             (speed, upgrade) => speed * (upgrade.speedMultiplier ?? 1),
-            VILLAGER_WALK_SPEED,
+            this.config.walkSpeed,
         );
 
         return this.tripRate(profile, { capacity, walkSpeed, workMultiplier });
@@ -198,7 +202,7 @@ export class EconomyService {
         modifiers: { capacity: number; walkSpeed: number; workMultiplier: number },
     ): number {
         const baseTrip = VILLAGER_CARRY_CAPACITY / profile.baseRate;
-        const baseWalk = (2 * profile.dropOffDistance) / VILLAGER_WALK_SPEED;
+        const baseWalk = (2 * profile.dropOffDistance) / this.config.walkSpeed;
         const baseGathering = baseTrip - baseWalk;
         if (baseGathering <= MIN_TRIP_SECONDS) return profile.baseRate * modifiers.workMultiplier;
 
@@ -220,8 +224,8 @@ export class EconomyService {
         const researched = new Set(input.techs);
         const foodPerFarm = this.config.farmUpgrades
             .filter((upgrade) => researched.has(upgrade.tech))
-            .reduce((food, upgrade) => food + upgrade.extraFood, BASE_FARM_FOOD);
-        const woodPerSecond = (input.foodPerSecond / foodPerFarm) * FARM_WOOD_COST;
+            .reduce((food, upgrade) => food + upgrade.extraFood, this.config.farmFood);
+        const woodPerSecond = (input.foodPerSecond / foodPerFarm) * this.config.farmWoodCost;
 
         return {
             foodPerFarm,

@@ -71,6 +71,43 @@ export interface TechnologyRecord {
     effects: TechEffectRecord[];
 }
 
+/** A technology that speeds up the gathering itself, for one kind of work. */
+export interface GatherUpgradeRecord {
+    tech: string;
+    /** Resource the work produces, and for food the source it comes from. */
+    resource: string;
+    foodSource?: string;
+    multiplier: number;
+}
+
+/** A technology that changes how much a villager carries, or how fast it walks back. */
+export interface CarryUpgradeRecord {
+    tech: string;
+    /** Fraction of the base capacity added. */
+    carryPercent?: number;
+    carryFlat?: number;
+    speedMultiplier?: number;
+    /** Kinds of work it reaches; absent means every villager. */
+    resources?: string[];
+    foodSources?: string[];
+}
+
+/** A technology that puts more food into a farm before it has to be rebuilt. */
+export interface FarmUpgradeRecord {
+    tech: string;
+    extraFood: number;
+}
+
+/** The numbers behind the villager planner, read from the game rather than written by hand. */
+export interface EconomyRecord {
+    villagerWalkSpeed: number;
+    farmFood: number;
+    farmWoodCost: number;
+    gatherUpgrades: GatherUpgradeRecord[];
+    carryUpgrades: CarryUpgradeRecord[];
+    farmUpgrades: FarmUpgradeRecord[];
+}
+
 export interface CivilizationRecord {
     key: string;
     icon: string;

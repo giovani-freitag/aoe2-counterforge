@@ -10,6 +10,11 @@ many villagers do you need, and on what?
 Consumption per second is the unit cost times the number of production buildings, divided by its
 train time. Villagers per resource is that consumption divided by the gather rate.
 
+Every technology figure here is read from the game's own effect table, the same one the counters
+use — including the ones a hand-written list forgets, such as Grand Trunk Road. What is still set
+by hand is the pair the file does not state: the effective gather rates below, measured with the
+walk included, and the villager's carry capacity of ten.
+
 ## The gather rate is a trip, not a constant
 
 The published Definitive Edition rates already include walking to the drop-off point, so the app
@@ -17,8 +22,10 @@ works backwards: knowing the carry capacity (10) and the villager's walking spee
 separates how much of a trip is gathering from how much is walking. That is what lets every upgrade
 land where it actually acts:
 
-- **Gathering** (Double-Bit Axe, Bow Saw, Two-Man Saw, Gold and Stone Mining) multiplies the work
-  rate, by exactly the percentage the game states.
+- **Gathering** (Double-Bit Axe, Bow Saw, Two-Man Saw, Gold and Stone Mining, Grand Trunk Road)
+  multiplies the work rate, by exactly the factor the game states, for exactly the job it names —
+  the game keeps one villager unit per job, and that is what says whether a technology is about
+  wood, gold, stone or a particular way of getting food.
 - **Carrying** (Wheelbarrow, Hand Cart) raises capacity and walking speed; the resulting gain works
   out to around 8% and 18%, with no invented numbers.
 - **Heavy Plow** adds +1 to the carry capacity of farmers only.

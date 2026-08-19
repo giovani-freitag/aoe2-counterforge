@@ -23,6 +23,8 @@ export interface ResourceAmount {
 }
 
 export interface GenieUnit {
+    /** Short name the designers use in the files, such as "VILLAGER_LUMBERJACK". */
+    internalName: string;
     id: number;
     type: number;
     nameStringId: number;
@@ -55,6 +57,8 @@ export interface GenieUnit {
 
 export interface GenieCivilization {
     name: string;
+    /** Starting value of every resource slot, including the ones that are really settings. */
+    resources: number[];
     techTreeId: number;
     teamBonusId: number;
     units: Map<number, GenieUnit>;
@@ -304,7 +308,8 @@ export class GenieDatReader {
         const resourceCount = this.reader.int16();
         const techTreeId = this.reader.int16();
         const teamBonusId = this.reader.int16();
-        this.reader.skip(resourceCount * 4 + 1);
+        const resources = this.reader.list(resourceCount, () => this.reader.float());
+        this.reader.skip(1);
 
         const unitCount = this.expect(this.reader.int16(), 20000, 'unit');
         const pointers = this.reader.list(unitCount, () => this.reader.int32());
@@ -317,7 +322,7 @@ export class GenieDatReader {
             units.set(unit.id, unit);
         }
 
-        return { name, techTreeId, teamBonusId, units };
+        return { name, techTreeId, teamBonusId, resources, units };
     }
 
     private unit(): GenieUnit {
@@ -341,12 +346,13 @@ export class GenieDatReader {
         const damageGraphics = this.reader.uint8();
         this.reader.skip(damageGraphics * 5);
         this.reader.skip(2 + 2 + 16 + 1 + 1);
-        this.reader.string();
+        const internalName = this.reader.string();
         this.reader.skip(2 + 2);
 
         const unit = this.emptyUnit({
             id,
             type,
+            internalName,
             nameStringId,
             creationStringId,
             helpStringId,
@@ -374,6 +380,7 @@ export class GenieDatReader {
         GenieUnit,
         | 'id'
         | 'type'
+        | 'internalName'
         | 'nameStringId'
         | 'creationStringId'
         | 'helpStringId'

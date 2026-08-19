@@ -1,6 +1,7 @@
 import type { ResourceWeights } from './domain/values/resource-cost.ts';
 import {
     CIVILIZATION_RECORDS,
+    ECONOMY_RECORD,
     FALLBACK_LOCALE,
     GAME_STRING_BUNDLES,
     TECHNOLOGY_RECORDS,
@@ -10,10 +11,9 @@ import { CombatService } from './services/combat/combat-service.ts';
 import { DamageCalculator } from './services/combat/damage-calculator.ts';
 import { EconomyService } from './services/economy/economy-service.ts';
 import {
-    DEFAULT_CARRY_UPGRADES,
-    DEFAULT_FARM_UPGRADES,
     DEFAULT_GATHER_RATES,
-    DEFAULT_GATHER_UPGRADES,
+    type CarryUpgrade,
+    type GatherUpgrade,
 } from './services/economy/gather-rates.ts';
 import { CatalogAssembler } from './services/game-catalog/catalog-assembler.ts';
 import { GameCatalogService } from './services/game-catalog/game-catalog-service.ts';
@@ -90,9 +90,12 @@ export function createServices(): AppServices {
 
     const economy = new EconomyService({
         rates: DEFAULT_GATHER_RATES,
-        upgrades: DEFAULT_GATHER_UPGRADES,
-        carryUpgrades: DEFAULT_CARRY_UPGRADES,
-        farmUpgrades: DEFAULT_FARM_UPGRADES,
+        gatherUpgrades: ECONOMY_RECORD.gatherUpgrades as GatherUpgrade[],
+        carryUpgrades: ECONOMY_RECORD.carryUpgrades as CarryUpgrade[],
+        farmUpgrades: ECONOMY_RECORD.farmUpgrades,
+        walkSpeed: ECONOMY_RECORD.villagerWalkSpeed,
+        farmFood: ECONOMY_RECORD.farmFood,
+        farmWoodCost: ECONOMY_RECORD.farmWoodCost,
     });
 
     const search = new SearchService({

@@ -21,6 +21,9 @@ export interface GatherRateTable {
 /** A technology that speeds up the act of gathering itself. */
 export interface GatherUpgrade {
     tech: string;
+    resource: Resource;
+    /** Only set when the work is one particular way of getting food. */
+    foodSource?: FoodSource;
     multiplier: number;
 }
 
@@ -41,12 +44,13 @@ export interface FarmUpgrade {
     extraFood: number;
 }
 
-export type GatherUpgradeTable = Record<Resource, readonly GatherUpgrade[]>;
-
+/**
+ * How much a villager carries before walking back.
+ *
+ * The one figure here the data file does not state plainly: it lives in a per-unit storage table
+ * the reader does not walk, and it has been ten since the game shipped.
+ */
 export const VILLAGER_CARRY_CAPACITY = 10;
-export const VILLAGER_WALK_SPEED = 0.8;
-export const FARM_WOOD_COST = 60;
-export const BASE_FARM_FOOD = 175;
 
 /**
  * Effective villager gather rates in resources per second, walking to the drop-off included.
@@ -68,49 +72,9 @@ export const DEFAULT_GATHER_RATES: GatherRateTable = {
     stone: { baseRate: 0.36, dropOffDistance: 3 },
 };
 
-/** Technologies the game describes as a straight percentage on the gathering work itself. */
-export const DEFAULT_GATHER_UPGRADES: GatherUpgradeTable = {
-    food: [],
-    wood: [
-        { tech: 'double-bit-axe', multiplier: 1.2 },
-        { tech: 'bow-saw', multiplier: 1.2 },
-        { tech: 'two-man-saw', multiplier: 1.1 },
-    ],
-    gold: [
-        { tech: 'gold-mining', multiplier: 1.15 },
-        { tech: 'gold-shaft-mining', multiplier: 1.15 },
-    ],
-    stone: [
-        { tech: 'stone-mining', multiplier: 1.15 },
-        { tech: 'stone-shaft-mining', multiplier: 1.15 },
-    ],
-};
-
-/** Technologies that shorten the trip rather than the gathering. */
-export const DEFAULT_CARRY_UPGRADES: readonly CarryUpgrade[] = [
-    { tech: 'wheelbarrow', carryPercent: 0.25, speedMultiplier: 1.1 },
-    { tech: 'hand-cart', carryPercent: 0.5, speedMultiplier: 1.1 },
-    { tech: 'heavy-plow', carryFlat: 1, resources: ['food'], foodSources: ['farm'] },
-];
-
-/** Technologies that raise how much food a single farm holds before it has to be rebuilt. */
-export const DEFAULT_FARM_UPGRADES: readonly FarmUpgrade[] = [
-    { tech: 'horse-collar', extraFood: 75 },
-    { tech: 'heavy-plow', extraFood: 125 },
-    { tech: 'crop-rotation', extraFood: 175 },
-];
-
-/**
- * Every economy technology the planner models, in the order the game unlocks them.
- *
- * @returns Technology slugs, each appearing once even when it has more than one effect.
- */
-export function economyTechKeys(): string[] {
-    const keys = [
-        ...Object.values(DEFAULT_GATHER_UPGRADES).flatMap((upgrades) => upgrades.map((upgrade) => upgrade.tech)),
-        ...DEFAULT_CARRY_UPGRADES.map((upgrade) => upgrade.tech),
-        ...DEFAULT_FARM_UPGRADES.map((upgrade) => upgrade.tech),
-    ];
-
-    return [...new Set(keys)];
+/** The technology tables the planner needs, as the extraction writes them. */
+export interface EconomyTables {
+    gatherUpgrades: readonly GatherUpgrade[];
+    carryUpgrades: readonly CarryUpgrade[];
+    farmUpgrades: readonly FarmUpgrade[];
 }

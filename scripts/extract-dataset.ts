@@ -53,6 +53,7 @@ mkdirSync(OUT, { recursive: true });
 write('units.json', dataset.units);
 write('technologies.json', dataset.technologies);
 write('civilizations.json', dataset.civilizations);
+write('economy.json', dataset.economy);
 for (const [locale, bundle] of dataset.strings) write(`strings.${locale}.json`, bundle);
 write('meta.json', {
     unitCount: dataset.units.length,
