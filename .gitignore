@@ -1,0 +1,11 @@
+node_modules
+dist
+coverage
+.cache
+*.local
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+
+# The extraction scripts read the game folder from here.
+.env

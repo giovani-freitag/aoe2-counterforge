@@ -1,0 +1,192 @@
+.shell {
+    min-height: 100dvh;
+    display: grid;
+    /* An auto track would size itself to the widest child and push the page past the viewport. */
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+}
+
+.shell__main {
+    width: 100%;
+    min-width: 0;
+    max-width: min(var(--content-width), 100%);
+    margin-inline: auto;
+    padding: var(--space-4) var(--space-4) calc(var(--tabbar-height) + var(--space-6));
+}
+
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: var(--space-3);
+    height: var(--header-height);
+    padding-inline: var(--space-4);
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border);
+}
+
+.topbar__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-width: 0;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.topbar__mark {
+    width: auto;
+    height: 1.85rem;
+    flex: none;
+}
+
+/* On a phone the crest carries the brand on its own; the name would crowd out the search. */
+.topbar__name {
+    display: none;
+}
+
+.topbar__spacer {
+    flex: 1;
+}
+
+/* The civilization picker cannot shrink below its longest option, so on a phone it lives on
+   the page instead of in the header. */
+.topbar__civ {
+    display: none;
+}
+
+.searchbutton {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    min-width: 0;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--text-muted);
+    transition: border-color 0.15s ease;
+}
+
+.searchbutton:hover {
+    border-color: var(--border-strong);
+}
+
+.searchbutton__label {
+    display: none;
+    font-size: 0.875rem;
+}
+
+.searchbutton__kbd {
+    display: none;
+}
+
+.tabbar {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 30;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    height: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+    background: var(--bg-elevated);
+    border-top: 1px solid var(--border);
+}
+
+.tabbar__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    font-size: 0.6875rem;
+    color: var(--text-faint);
+}
+
+.tabbar__item[aria-current='page'] {
+    color: var(--gold);
+}
+
+.tabbar__icon {
+    font-size: 1.125rem;
+    line-height: 1;
+}
+
+@media (min-width: 45rem) {
+    .topbar__name {
+        display: inline;
+    }
+
+    .topbar__civ {
+        display: block;
+    }
+
+    .topbar__civ .select {
+        max-width: 12rem;
+    }
+}
+
+@media (min-width: 60rem) {
+    .topbar {
+        padding-inline: var(--space-5);
+    }
+
+    .shell__main {
+        padding: var(--space-6) var(--space-5) calc(var(--tabbar-height) + var(--space-6));
+    }
+
+    .searchbutton {
+        min-width: 18rem;
+    }
+
+    .searchbutton__label {
+        display: block;
+        flex: 1;
+        text-align: left;
+    }
+
+    .searchbutton__kbd {
+        display: inline-flex;
+        gap: 2px;
+    }
+
+    /* Wide screens get the same bar, docked in the middle instead of stretched. */
+    .tabbar {
+        inset: auto 0 var(--space-4);
+        width: min(34rem, calc(100% - var(--space-6)));
+        margin-inline: auto;
+        height: var(--tabbar-height);
+        padding-bottom: 0;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+    }
+
+    .tabbar__item {
+        font-size: 0.75rem;
+    }
+}
+
+.stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+.stack--tight {
+    gap: var(--space-3);
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}

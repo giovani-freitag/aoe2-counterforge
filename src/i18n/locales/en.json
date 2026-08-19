@@ -1,0 +1,379 @@
+{
+    "app": {
+        "title": "AoE2 Counterforge",
+        "tagline": "Counters, costs and economy for every unit",
+        "skipToContent": "Skip to content"
+    },
+    "nav": {
+        "home": "Home",
+        "units": "Units",
+        "civilizations": "Civilizations",
+        "about": "About",
+        "compare": "Compare",
+        "backTo": "Back to {{section}}"
+    },
+    "search": {
+        "open": "Search a unit or civilization",
+        "placeholder": "Search a unit, civilization or technology...",
+        "hint": "Tip: type \"britons archer\" to scope the results to a civilization",
+        "empty": "Nothing found for \"{{query}}\"",
+        "clearCiv": "Remove civilization filter",
+        "groups": {
+            "unit": "Units",
+            "civilization": "Civilizations",
+            "technology": "Technologies"
+        },
+        "keys": {
+            "navigate": "navigate",
+            "select": "open",
+            "close": "close"
+        }
+    },
+    "home": {
+        "title": "Age of Empires II units",
+        "browseByCategory": "Browse by type",
+        "popular": "Most looked up",
+        "pickCiv": "Playing a specific civilization?",
+        "pickCivHelp": "Pick one to only see what you can actually train and research.",
+        "allCivs": "All civilizations"
+    },
+    "unit": {
+        "trainedAt": "Trained at",
+        "trainTime": "Train time",
+        "age": "Age",
+        "uniqueTo": "Unique to {{civ}}",
+        "notAvailable": "{{civ}} cannot train this unit.",
+        "tabs": {
+            "overview": "Overview",
+            "counters": "Counters",
+            "upgrades": "Upgrades",
+            "economy": "Economy"
+        },
+        "officialSummary": "Official in-game summary",
+        "strongVs": "Strong against",
+        "weakVs": "Weak against",
+        "stats": "Stats",
+        "statsBase": "Base",
+        "statsUpgraded": "Fully upgraded",
+        "statsWithCiv": "Everything {{civ}} can research, plus the bonuses the civilization is simply given.",
+        "bonusDamage": "Bonus damage",
+        "armourClasses": "Armour classes",
+        "line": "Upgrade line",
+        "lineCurrent": "current",
+        "noBonusDamage": "No bonus damage.",
+        "availableIn_other": "{{count}} civilizations",
+        "availableIn_one": "{{count}} civilization",
+        "trainedBy": "Trained by"
+    },
+    "stats": {
+        "hp": "HP",
+        "attack": "Attack",
+        "meleeArmour": "Melee armour",
+        "pierceArmour": "Pierce armour",
+        "range": "Range",
+        "minRange": "Minimum range",
+        "reloadTime": "Reload",
+        "accuracy": "Accuracy",
+        "speed": "Speed",
+        "lineOfSight": "Line of sight",
+        "blastWidth": "Blast radius",
+        "dps": "Damage per second"
+    },
+    "resources": {
+        "food": "Food",
+        "wood": "Wood",
+        "gold": "Gold",
+        "stone": "Stone"
+    },
+    "ages": {
+        "1": "Dark Age",
+        "2": "Feudal Age",
+        "3": "Castle Age",
+        "4": "Imperial Age"
+    },
+    "categories": {
+        "infantry": "Infantry",
+        "archer": "Archers",
+        "cavalry": "Cavalry",
+        "cavalry-archer": "Cavalry archers",
+        "camel": "Camels",
+        "elephant": "Elephants",
+        "siege": "Siege",
+        "monk": "Monks",
+        "naval": "Naval",
+        "civilian": "Civilian"
+    },
+    "buildings": {
+        "barracks": "Barracks",
+        "archery-range": "Archery Range",
+        "stable": "Stable",
+        "siege-workshop": "Siege Workshop",
+        "castle": "Castle",
+        "monastery": "Monastery",
+        "dock": "Dock",
+        "town-center": "Town Center",
+        "market": "Market",
+        "university": "University",
+        "blacksmith": "Blacksmith",
+        "mill": "Mill",
+        "lumber-camp": "Lumber Camp",
+        "mining-camp": "Mining Camp",
+        "krepost": "Krepost",
+        "donjon": "Donjon",
+        "folwark": "Folwark",
+        "fortified-church": "Fortified Church",
+        "mule-cart": "Mule Cart",
+        "caravanserai": "Caravanserai",
+        "feitoria": "Feitoria",
+        "settlement": "Settlement",
+        "pasture": "Pasture"
+    },
+    "counters": {
+        "title": "Trade simulation",
+        "explain": "Ranked with the game's own damage formula: damage per hit, HP, rate of fire, range and what each unit costs.",
+        "strong": "Strong against",
+        "weak": "Weak against",
+        "empty": "No relevant matchup in this range.",
+        "model": "Engagement",
+        "models": {
+            "stand": "Stand and fight",
+            "skirmish": "With range"
+        },
+        "modelHelp": {
+            "stand": "Both units stand still and trade hits. Range and speed are ignored.",
+            "skirmish": "Accounts for who shoots from afar and who can run while shooting."
+        },
+        "pool": "Opponents",
+        "pools": {
+            "common": "Common",
+            "all": "Include unique units",
+            "every": "Every version"
+        },
+        "upgradeLevel": "Upgrades",
+        "upgradeLevels": {
+            "base": "No upgrades",
+            "full": "Fully upgraded"
+        },
+        "efficiency": "Trade efficiency",
+        "verdicts": {
+            "dominant": "Dominates",
+            "favourable": "Favoured",
+            "even": "Even",
+            "unfavourable": "Unfavoured",
+            "countered": "Countered"
+        },
+        "notes": {
+            "out-ranges": "Outranges it",
+            "out-ranged": "Gets outranged",
+            "faster": "Faster",
+            "slower": "Slower",
+            "blast": "Splash damage",
+            "bonus-damage": "Deals bonus damage",
+            "takes-bonus-damage": "Takes bonus damage",
+            "min-range": "Has a minimum range"
+        },
+        "duel": {
+            "title": "Fight breakdown",
+            "damagePerHit": "Damage per hit",
+            "hitsToKill": "Hits to kill",
+            "timeToKill": "Time to kill",
+            "freeHits": "Free hits",
+            "breakdown": "How the damage adds up",
+            "minimumDamage": "The game always applies at least 1 damage per hit."
+        },
+        "noAttack": "{{unit}} has no attack: it converts enemy units instead of fighting them.",
+        "seconds": "{{value}} s",
+        "allTitle": "Every matchup",
+        "allHint": "Every upgrade step of every line, whatever the two shortlists above are set to.",
+        "matchupCount_one": "{{count}} matchup",
+        "matchupCount_other": "{{count}} matchups",
+        "filterPlaceholder": "Filter opponent",
+        "sort": "Order",
+        "sorts": {
+            "best": "Best first",
+            "worst": "Worst first"
+        },
+        "filterHint": "e.g. pikeman",
+        "demolition": "{{unit}} is left out of the simulation: it spends itself in one blow or only works against buildings, so there is no sustained damage to compare.",
+        "openUnit": "Open {{unit}}"
+    },
+    "upgrades": {
+        "lineTitle": "Line upgrades",
+        "genericTitle": "Technologies that change this unit",
+        "uniqueTitle": "Unique technologies that change this unit",
+        "officialHint": "What the game says",
+        "researchTime": "{{value}} s research",
+        "qualitative": "Effect not modelled as a number",
+        "empty": "No generic technology changes this unit.",
+        "effect": {
+            "hp": "{{value}} HP",
+            "range": "{{value}} range",
+            "accuracy": "{{value}}% accuracy",
+            "lineOfSight": "{{value}} line of sight",
+            "speed": "{{value}}% speed",
+            "attackSpeed": "{{value}}% rate of fire",
+            "trainSpeed": "{{value}}% faster to train",
+            "attack": "{{value}} attack{{against}}",
+            "armour": "{{value}} armour{{against}}",
+            "against": " vs {{class}}"
+        },
+        "uniqueHint": "Only the castle technologies that actually reach it, from the game's own effect table.",
+        "noUnique": "No unique technology reaches this unit."
+    },
+    "economy": {
+        "title": "Villagers needed to produce non-stop",
+        "explain": "Derived from the unit cost, its train time and Definitive Edition gather rates.",
+        "buildings": "Production buildings",
+        "foodSource": "Food source",
+        "foodSources": {
+            "farm": "Farm",
+            "sheep": "Sheep",
+            "berries": "Berries",
+            "hunt": "Hunt",
+            "shore-fish": "Shore fish"
+        },
+        "trainingSpeed": "Training speed",
+        "withConscription": "With Conscription (+33%)",
+        "totalVillagers": "Villagers in total",
+        "perMinute": "{{value}}/min",
+        "unitsPerMinute": "{{value}} units per minute",
+        "bottleneck": "Bottleneck: {{resource}}",
+        "gatherRate": "{{value}}/s per villager",
+        "demand": "Drain",
+        "free": "This unit costs no resources.",
+        "note": "Base rates already include walking to the drop-off. Carrying upgrades and the plough carry bonus go through the trip model: they raise capacity and speed, so they pay less than a straight gathering bonus.",
+        "villagers_other": "{{count}} villagers",
+        "villagers_one": "{{count}} villager",
+        "sustain_other": "{{villagers}} villagers keep {{buildings}} buildings running",
+        "sustain_one": "{{villagers}} villagers keep {{buildings}} building running",
+        "countFarmUpkeep": "Count farm rebuild wood",
+        "researchAll": "Research all",
+        "researchNone": "Clear",
+        "ofWhichUpkeep": "Of which {{value}} to replace farms",
+        "farmSummary": "{{farms}} farms holding {{food}} food each, burning {{wood}} wood per minute.",
+        "techGroups": {
+            "gathering": "Gathering speed",
+            "carrying": "Carrying",
+            "farming": "Farms"
+        },
+        "onlyUpkeep": "Only to replace farms",
+        "exactTotal": "{{value}} exact"
+    },
+    "civ": {
+        "bonuses": "Bonuses",
+        "uniqueUnits": "Unique units",
+        "uniqueTechs": "Unique technologies",
+        "roster": "Available units",
+        "teamBonus": "Team bonus",
+        "select": "Use this civilization",
+        "selected": "Active civilization",
+        "clear": "Show all civilizations",
+        "count_other": "{{count}} units",
+        "count_one": "{{count}} unit"
+    },
+    "about": {
+        "title": "About this guide",
+        "whatIsIt": "What it is",
+        "whatIsItBody": "A quick guide to Age of Empires II units: what they cost, who they beat, which upgrades change their numbers and how many villagers it takes to build them without stopping.",
+        "howCounters": "How counters are calculated",
+        "howCountersBody": "Every matchup runs the game's damage formula: for each shared armour class, the attacker's attack minus the defender's armour, summed, with a floor of 1 damage. Hits to kill, time to kill and damage per second follow from there. Trade efficiency compares how much value each side destroys per second.",
+        "limitations": "Limitations",
+        "limitationsBody": "The simulation is one unit against one unit. It does not model mass battles, focus fire, splash damage over groups, conversions or perfect micro. Read it next to the official in-game summary.",
+        "dataSource": "Data",
+        "dataSourceBody": "Stats, texts and icons are extracted from the game data itself and versioned alongside the app, which runs entirely offline.",
+        "credits": "Credits",
+        "creditsBody": "Age of Empires II and all its icons belong to Microsoft, Forgotten Empires, Ensemble Studios and SkyBox Labs. This is a fan project with no official affiliation.",
+        "language": "Language"
+    },
+    "common": {
+        "back": "Back",
+        "close": "Close",
+        "seconds": "{{value}} s",
+        "tiles": "{{value}} tiles",
+        "perSecond": "{{value}}/s",
+        "loading": "Loading...",
+        "notFound": "We could not find that page.",
+        "goHome": "Back to home",
+        "all": "All"
+    },
+    "armourClasses": {
+        "infantry": "Infantry",
+        "archer": "Archers",
+        "skirmisher": "Skirmishers",
+        "spearman": "Spearmen",
+        "eagle-warrior": "Eagle Warriors",
+        "cavalry": "Cavalry",
+        "cavalry-archer": "Cavalry archers",
+        "camel": "Camels",
+        "mameluke": "Mamelukes",
+        "war-elephant": "War elephants",
+        "armored-elephant": "Siege elephants",
+        "monk": "Monks",
+        "siege-weapon": "Siege weapons",
+        "ram": "Rams",
+        "gunpowder": "Gunpowder",
+        "unique-unit": "Unique units",
+        "ship": "Ships",
+        "ship-secondary": "Ships",
+        "fire-ship": "Fire ships",
+        "standard-building": "Buildings",
+        "all-buildings": "All buildings",
+        "stone-defense": "Stone defences",
+        "castle": "Castles",
+        "wall-gate": "Walls and gates",
+        "tree": "Trees",
+        "base-melee": "Melee",
+        "base-pierce": "Pierce"
+    },
+    "compare": {
+        "title": "Compare units",
+        "help": "Put up to {{max}} units side by side and see who beats whom.",
+        "add": "Add a unit",
+        "pickPlaceholder": "Type a unit name...",
+        "remove": "Remove {{unit}}",
+        "empty": "Add at least one unit to compare.",
+        "attribute": "Attribute",
+        "villagers": "Villagers per building",
+        "best": "Best value",
+        "headToHead": "Head to head",
+        "headToHeadHelp": "Trade efficiency of the row unit against the column unit. Above 1 means the row wins the trade.",
+        "rowVersusColumn": "Row vs column",
+        "addToCompare": "Compare"
+    },
+    "units": {
+        "filterPlaceholder": "Filter by name",
+        "sortBy": "Sort by",
+        "onePerLine": "One per line",
+        "uniqueOnly": "Unique only",
+        "withUpgrades": "With upgrades",
+        "sorts": {
+            "name": "Name (A-Z)",
+            "age": "Age",
+            "train-time": "Quickest to train",
+            "cost": "Cheapest",
+            "hp": "Most HP",
+            "attack": "Highest attack",
+            "dps": "Highest damage per second",
+            "speed": "Fastest",
+            "range": "Longest range",
+            "value": "Best value for the cost"
+        },
+        "filterHint": "e.g. knight",
+        "category": "Type",
+        "empty": "No unit matches these filters."
+    },
+    "settings": {
+        "language": "Language",
+        "theme": "Theme",
+        "title": "Preferences"
+    },
+    "languages": {
+        "pt-BR": "Portuguese",
+        "en": "English"
+    },
+    "themes": {
+        "system": "System",
+        "light": "Light",
+        "dark": "Dark"
+    }
+}

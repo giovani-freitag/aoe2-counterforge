@@ -1,0 +1,162 @@
+:root {
+    color-scheme: dark light;
+
+    /* Blued steel, the alloy the guide is forged from. */
+    --bg: #0b0e12;
+    --bg-elevated: #0e1319;
+    --surface: #141a21;
+    --surface-2: #1a222b;
+    --surface-3: #212c37;
+    --border: #26313c;
+    --border-strong: #3a4a59;
+
+    --text: #eef2f6;
+    --text-muted: #a9b6c2;
+    --text-faint: #7f8d9a;
+
+    --gold: #e6bb6b;
+
+    --gold-ink: #14100a;
+    --gold-soft: #f4d79c;
+    --gold-dim: rgb(230 187 107 / 14%);
+
+    --good: #7fc98a;
+    --good-dim: rgb(127 201 138 / 15%);
+    --bad: #ef8375;
+    --bad-dim: rgb(239 131 117 / 15%);
+    --even: #8fb2d8;
+    --even-dim: rgb(143 178 216 / 15%);
+
+    --food: #f07d63;
+    --wood: #8bbf6a;
+    --gold-res: #e5c04a;
+    --stone: #9aa7b5;
+
+    /* The forge: every effect reads its light from here. */
+    --spark: #ff9247;
+    --heat: rgb(255 146 71 / 20%);
+    --halo: rgb(255 138 56 / 34%);
+    --glass: #fff6e0;
+    --sheen: rgb(198 226 255 / 14%);
+    --rivet: rgb(178 199 219 / 55%);
+    --emboss: inset 0 1px 0 rgb(226 240 255 / 7%);
+    --fire: #ff8a3c;
+    --fire-blend: screen;
+    --fire-alpha: 0.5;
+
+    --radius-sm: 2px;
+    --radius: 3px;
+    --radius-lg: 4px;
+
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.5rem;
+    --space-6: 2rem;
+
+    --font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    --font-display: 'Cinzel', 'Times New Roman', Georgia, serif;
+    --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
+
+    --shadow: 0 8px 24px rgb(0 0 0 / 45%);
+    --shadow-lg: 0 24px 60px rgb(0 0 0 / 60%);
+
+    --header-height: 3.5rem;
+    --tabbar-height: 3.75rem;
+    --content-width: 68rem;
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme='dark']) {
+        --bg: #e7e3da;
+        --bg-elevated: #efece4;
+        --surface: #f8f6f1;
+        --surface-2: #f1ede4;
+        --surface-3: #e6e0d3;
+        --border: #cfc7b8;
+        --border-strong: #b3a894;
+
+        --text: #1c1a16;
+        --text-muted: #5b5344;
+        --text-faint: #7a705d;
+
+        --gold: #6a4a07;
+
+        --gold-ink: #fbf3e4;
+        --gold-soft: #4f3705;
+        --gold-dim: rgb(106 74 7 / 12%);
+
+        --good: #2a5f2e;
+        --good-dim: rgb(42 95 46 / 12%);
+        --bad: #93291a;
+        --bad-dim: rgb(147 41 26 / 10%);
+        --even: #3c5f8f;
+        --even-dim: rgb(60 95 143 / 12%);
+
+        --food: #c1462a;
+        --wood: #4a7a2c;
+        --gold-res: #9a7a10;
+        --stone: #6b6152;
+
+        --spark: #983116;
+        --heat: rgb(152 49 22 / 12%);
+        --halo: rgb(198 74 24 / 26%);
+        --glass: #c98a1c;
+        --sheen: rgb(255 255 255 / 62%);
+        --rivet: rgb(106 74 7 / 42%);
+        --emboss: inset 0 1px 0 rgb(255 255 255 / 75%);
+        --fire: #ef7a1c;
+        --fire-blend: multiply;
+        --fire-alpha: 0.62;
+
+        --shadow: 0 8px 24px rgb(60 45 20 / 12%);
+        --shadow-lg: 0 24px 60px rgb(60 45 20 / 18%);
+    }
+}
+
+:root[data-theme='light'] {
+        --bg: #e7e3da;
+        --bg-elevated: #efece4;
+        --surface: #f8f6f1;
+        --surface-2: #f1ede4;
+        --surface-3: #e6e0d3;
+        --border: #cfc7b8;
+        --border-strong: #b3a894;
+
+        --text: #1c1a16;
+        --text-muted: #5b5344;
+        --text-faint: #7a705d;
+
+        --gold: #6a4a07;
+
+        --gold-ink: #fbf3e4;
+        --gold-soft: #4f3705;
+        --gold-dim: rgb(106 74 7 / 12%);
+
+        --good: #2a5f2e;
+        --good-dim: rgb(42 95 46 / 12%);
+        --bad: #93291a;
+        --bad-dim: rgb(147 41 26 / 10%);
+        --even: #3c5f8f;
+        --even-dim: rgb(60 95 143 / 12%);
+
+        --food: #c1462a;
+        --wood: #4a7a2c;
+        --gold-res: #9a7a10;
+        --stone: #6b6152;
+
+        --spark: #983116;
+        --heat: rgb(152 49 22 / 12%);
+        --halo: rgb(198 74 24 / 26%);
+        --glass: #c98a1c;
+        --sheen: rgb(255 255 255 / 62%);
+        --rivet: rgb(106 74 7 / 42%);
+        --emboss: inset 0 1px 0 rgb(255 255 255 / 75%);
+        --fire: #ef7a1c;
+        --fire-blend: multiply;
+        --fire-alpha: 0.62;
+
+        --shadow: 0 8px 24px rgb(60 45 20 / 12%);
+        --shadow-lg: 0 24px 60px rgb(60 45 20 / 18%);
+}
