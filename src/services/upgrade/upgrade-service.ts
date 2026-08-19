@@ -54,7 +54,20 @@ export interface UpgradeOutcome {
  * buildings and villagers rather than to how a soldier fights, so a technology that only touches
  * them counts as reaching the unit without carrying a number.
  */
-const MODELLED = new Set(['hp', 'attack', 'armour', 'range', 'accuracy', 'lineOfSight', 'speed', 'reloadTime']);
+const MODELLED = new Set([
+    'hp',
+    'attack',
+    'armour',
+    'range',
+    'accuracy',
+    'lineOfSight',
+    'speed',
+    'reloadTime',
+    'blastWidth',
+    'trainTime',
+    'projectiles',
+    'regeneration',
+]);
 
 /** Attack and armour multipliers are written as whole percentages, unlike every other factor. */
 const PERCENT = 100;
@@ -142,6 +155,24 @@ export class UpgradeService {
     }
 
     /**
+     * How much faster a building turns units out once a technology is researched.
+     *
+     * Conscription is written as work rate on the barracks, the stable and the range rather than
+     * on the soldier, which is why it never shows up in a unit's own effects.
+     *
+     * @param key - Technology slug.
+     * @returns The factor to divide a train time by, or one when the technology does not touch it.
+     */
+    public productionSpeed(key: string): number {
+        const factors = this.catalog
+            .technology(key)
+            .effects.filter((effect) => effect.attribute === 'workRate' && effect.mode === 'multiply')
+            .map((effect) => effect.value);
+
+        return factors.length > 0 ? Math.max(...factors) : 1;
+    }
+
+    /**
      * Recomputes a unit's stat line with a set of technologies researched.
      *
      * @param selection - The unit plus the technology slugs to apply.
@@ -153,11 +184,12 @@ export class UpgradeService {
             .filter((upgrade): upgrade is AppliedUpgrade => upgrade !== null);
 
         const deltas = [...applied.map((upgrade) => upgrade.delta), this.bonusDelta(selection)];
+        const faster = deltas.reduce((factor, delta) => factor * (delta.trainTimeMultiplier ?? 1), 1);
 
         return {
             applied,
             stats: selection.unit.stats.patched(this.mergePatch(deltas)),
-            trainTime: selection.unit.trainTime,
+            trainTime: selection.unit.trainTime * faster,
         };
     }
 
@@ -278,6 +310,9 @@ export class UpgradeService {
             }
 
             if (effect.mode === 'multiply') {
+                if (effect.attribute === 'trainTime') {
+                    delta.trainTimeMultiplier = (delta.trainTimeMultiplier ?? 1) * effect.value;
+                }
                 if (effect.attribute === 'hp') delta.hpMultiplier = (delta.hpMultiplier ?? 1) * effect.value;
                 if (effect.attribute === 'speed') delta.speedMultiplier = (delta.speedMultiplier ?? 1) * effect.value;
                 if (effect.attribute === 'reloadTime') {
@@ -307,6 +342,9 @@ export class UpgradeService {
             if (effect.attribute === 'lineOfSight') delta.lineOfSight = (delta.lineOfSight ?? 0) + effect.value;
             if (effect.attribute === 'speed') delta.speed = (delta.speed ?? 0) + effect.value;
             if (effect.attribute === 'reloadTime') delta.reloadTime = (delta.reloadTime ?? 0) + effect.value;
+            if (effect.attribute === 'blastWidth') delta.blastWidth = (delta.blastWidth ?? 0) + effect.value;
+            if (effect.attribute === 'projectiles') delta.projectiles = (delta.projectiles ?? 0) + effect.value;
+            if (effect.attribute === 'regeneration') delta.regeneration = (delta.regeneration ?? 0) + effect.value;
         }
 
         const list = (table: Map<string, number>): ClassAmount[] =>

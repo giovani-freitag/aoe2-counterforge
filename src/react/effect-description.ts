@@ -45,6 +45,9 @@ export function describeEffect(change: StatDelta, t: TFunction): string[] {
     if (change.reloadTimeMultiplier && change.reloadTimeMultiplier !== 1) {
         labels.push(t('upgrades.effect.attackSpeed', { value: percentDelta(1 / change.reloadTimeMultiplier) }));
     }
+    if (change.projectiles) labels.push(t('upgrades.effect.projectiles', { value: delta(change.projectiles) }));
+    if (change.blastWidth) labels.push(t('upgrades.effect.blast', { value: delta(change.blastWidth) }));
+    if (change.regeneration) labels.push(t('upgrades.effect.regeneration', { value: short(change.regeneration) }));
     if (change.trainTimeMultiplier && change.trainTimeMultiplier !== 1) {
         labels.push(t('upgrades.effect.trainSpeed', { value: short((1 / change.trainTimeMultiplier - 1) * 100) }));
     }
@@ -99,6 +102,9 @@ function divided(change: StatDelta, ages: number): StatDelta {
         range: share(change.range),
         lineOfSight: share(change.lineOfSight),
         speed: share(change.speed),
+        projectiles: share(change.projectiles),
+        blastWidth: share(change.blastWidth),
+        regeneration: share(change.regeneration),
         reloadTime: share(change.reloadTime),
         attack: shares(change.attack),
         armour: shares(change.armour),

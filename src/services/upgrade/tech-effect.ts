@@ -23,6 +23,10 @@ export interface StatDelta {
     reloadTime?: number;
     reloadTimeMultiplier?: number;
     trainTimeMultiplier?: number;
+    blastWidth?: number;
+    projectiles?: number;
+    /** Hit points the unit gets back on its own, as the game counts them. */
+    regeneration?: number;
     attack?: readonly ClassAmount[];
     attackMultipliers?: readonly ClassAmount[];
     armour?: readonly ClassAmount[];

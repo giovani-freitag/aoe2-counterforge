@@ -71,7 +71,7 @@ export function UnitEconomyPanel({ unit }: UnitEconomyPanelProps) {
     const [includeFarmUpkeep, setIncludeFarmUpkeep] = useState(true);
 
     const trainTime = useMemo(
-        () => upgrades.apply({ unit, techs: conscription ? ['conscription'] : [] }).trainTime,
+        () => unit.trainTime / (conscription ? upgrades.productionSpeed('conscription') : 1),
         [upgrades, unit, conscription],
     );
     const plan = useProductionPlan(unit, { buildings, foodSource, gatherTechs, trainTime, includeFarmUpkeep });

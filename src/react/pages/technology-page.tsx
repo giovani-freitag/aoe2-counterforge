@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router';
+import type { Unit } from '../../domain/entities/unit.ts';
 import { EntityNotFoundError } from '../../domain/errors/domain-error.ts';
 import { GameIcon } from '../components/game-icon.tsx';
 import { ResourceCostRow } from '../components/resource-cost-row.tsx';
-import { UnitListItem } from '../components/unit-list-item.tsx';
 import { describeEffect } from '../effect-description.ts';
 import { iconUrl, short } from '../format.ts';
 import { useGameText } from '../hooks/use-game-text.ts';
@@ -30,6 +30,24 @@ export function TechnologyPage() {
     }, [catalog, key]);
 
     const changed = useMemo(() => (technology ? upgrades.unitsChangedBy(technology) : []), [upgrades, technology]);
+
+    // Bloodlines reaches eighty-three units with the same twenty hit points; that is one fact, not
+    // eighty-three rows, so the units are gathered under the change they share.
+    const groups = useMemo(() => {
+        const byEffect = new Map<string, { effects: string[]; units: Unit[] }>();
+
+        for (const entry of changed) {
+            const effects = entry.qualitative ? [] : describeEffect(entry.delta, t);
+            const key = effects.join('|');
+            const group = byEffect.get(key) ?? { effects, units: [] };
+            group.units.push(entry.unit);
+            byEffect.set(key, group);
+        }
+
+        return [...byEffect.values()].sort((left, right) => right.units.length - left.units.length);
+    }, [changed, t]);
+
+    const faster = technology ? upgrades.productionSpeed(technology.key) : 1;
 
     const civilizations = useMemo(
         () =>
@@ -73,42 +91,50 @@ export function TechnologyPage() {
                 />
             </header>
 
-            <section className="card">
-                <div className="card__title">
-                    <h2>{t('tech.changes')}</h2>
-                    <span className="card__hint">{t('tech.changesCount', { count: changed.length })}</span>
-                </div>
+            {changed.length === 0 && faster === 1 ? null : (
+                <section className="card">
+                    <div className="card__title">
+                        <h2>{t('tech.changes')}</h2>
+                        {changed.length === 0 ? null : (
+                            <span className="card__hint">{t('tech.changesCount', { count: changed.length })}</span>
+                        )}
+                    </div>
 
-                {changed.length === 0 ? (
-                    <p className="empty">{t('tech.changesNothing')}</p>
-                ) : (
-                    <ul className="list">
-                        {changed.map((entry) => (
-                            <li key={entry.unit.key}>
-                                <UnitListItem
-                                    unit={entry.unit}
-                                    subtitle={t(`categories.${entry.unit.category}`)}
-                                    trailing={
-                                        <span className="upgrade-item__effects">
-                                            {entry.qualitative ? (
-                                                <span className="effect-chip effect-chip--muted">
-                                                    {t('upgrades.qualitative')}
-                                                </span>
-                                            ) : (
-                                                describeEffect(entry.delta, t).map((effect) => (
-                                                    <span key={effect} className="effect-chip">
-                                                        {effect}
-                                                    </span>
-                                                ))
-                                            )}
+                    {faster === 1 ? null : (
+                        <p className="card__hint">
+                            {t('tech.trainsFaster', { value: short((faster - 1) * 100) })}
+                        </p>
+                    )}
+
+                    {groups.map((group) => (
+                        <div key={group.effects.join('|')} style={{ marginTop: 'var(--space-4)' }}>
+                            <div className="upgrade-item__effects">
+                                {group.effects.length === 0 ? (
+                                    <span className="effect-chip effect-chip--muted">{t('upgrades.qualitative')}</span>
+                                ) : (
+                                    group.effects.map((effect) => (
+                                        <span key={effect} className="effect-chip">
+                                            {effect}
                                         </span>
-                                    }
-                                />
-                            </li>
-                        ))}
-                    </ul>
-                )}
-            </section>
+                                    ))
+                                )}
+                            </div>
+                            <div className="row" style={{ marginTop: 'var(--space-2)' }}>
+                                {group.units.map((unit) => (
+                                    <Link key={unit.key} className="chip" to={`/unit/${unit.key}`}>
+                                        <GameIcon
+                                            path={unit.icon === null ? null : `Unit/${unit.icon}.png`}
+                                            alt=""
+                                            size="sm"
+                                        />
+                                        {text.unit(unit.key).name}
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </section>
+            )}
 
             <section className="card">
                 <div className="card__title">

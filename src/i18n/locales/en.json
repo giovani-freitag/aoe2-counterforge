@@ -223,7 +223,10 @@
             "hpPercent": "{{value}}% HP",
             "attackPercent": "{{value}}% attack{{against}}",
             "armourPercent": "{{value}}% armour{{against}}",
-            "perAge": "{{effect}} per age"
+            "perAge": "{{effect}} per age",
+            "projectiles": "{{value}} projectile",
+            "blast": "{{value}} blast radius",
+            "regeneration": "regenerates {{value}} HP per minute"
         },
         "uniqueHint": "Bonuses a civilization is given, and the castle technologies that reach this unit.",
         "noUnique": "No civilization changes this unit on its own.",
@@ -398,6 +401,7 @@
         "researchedBy": "Researched by",
         "civCount_one": "{{count}} civilization",
         "civCount_other": "{{count}} civilizations",
-        "uniqueTo": "Unique to the {{civ}}"
+        "uniqueTo": "Unique to the {{civ}}",
+        "trainsFaster": "Units train {{value}}% faster where it is researched."
     }
 }

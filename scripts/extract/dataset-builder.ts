@@ -148,6 +148,10 @@ const ATTRIBUTES: Record<number, string> = {
     12: 'range',
     13: 'workRate',
     14: 'carryCapacity',
+    22: 'blastWidth',
+    101: 'trainTime',
+    102: 'projectiles',
+    109: 'regeneration',
 };
 
 /** Commands that change a number; the rest enable units, swap graphics or rename things. */

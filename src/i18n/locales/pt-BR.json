@@ -223,7 +223,10 @@
             "hpPercent": "{{value}}% de PV",
             "attackPercent": "{{value}}% de ataque{{against}}",
             "armourPercent": "{{value}}% de armadura{{against}}",
-            "perAge": "{{effect}} por era"
+            "perAge": "{{effect}} por era",
+            "projectiles": "{{value}} projétil",
+            "blast": "{{value}} de raio de explosão",
+            "regeneration": "regenera {{value}} PV por minuto"
         },
         "uniqueHint": "Bônus que a civilização já ganha, e as tecnologias de castelo que alcançam a unidade.",
         "noUnique": "Nenhuma civilização muda esta unidade por conta própria.",
@@ -398,6 +401,7 @@
         "researchedBy": "Quem pesquisa",
         "civCount_one": "{{count}} civilização",
         "civCount_other": "{{count}} civilizações",
-        "uniqueTo": "Exclusiva dos {{civ}}"
+        "uniqueTo": "Exclusiva dos {{civ}}",
+        "trainsFaster": "As unidades treinam {{value}}% mais rápido onde ela é pesquisada."
     }
 }
