@@ -596,6 +596,7 @@
 
 .line-diagram {
     display: block;
+    margin-inline: auto;
     font-family: inherit;
 }
 

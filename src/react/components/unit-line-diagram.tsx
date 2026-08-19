@@ -12,6 +12,13 @@ export interface UnitLineDiagramProps {
 
 const NODE_HEIGHT = 52;
 const ROW_GAP = 14;
+
+/** Stacked, a node is a card: the portrait on top of the name, so two fit across a phone. */
+const PORTRAIT_WIDTH = 132;
+const PORTRAIT_LINE = 13;
+const PORTRAIT_BASE_HEIGHT = 84;
+const PORTRAIT_ICON = 34;
+const PORTRAIT_CHARACTER_WIDTH = 6.4;
 const COLUMN_GAP = 44;
 
 /** Below this width the steps run down the page instead of across it. */
@@ -27,6 +34,27 @@ const LABEL_LEFT = ICON_SIZE + 22;
 const CHARACTER_WIDTH = 7.4;
 const MIN_NODE_WIDTH = 150;
 const MAX_NODE_WIDTH = 280;
+
+/**
+ * Breaks a name over at most two lines, so a narrow card does not have to shrink to hold it.
+ *
+ * @param name - Unit name as the reader sees it.
+ * @param limit - Characters a line can hold.
+ * @returns One or two lines, the last one clipped if the name is longer than both.
+ */
+function wrap(name: string, limit: number): string[] {
+    if (name.length <= limit) return [name];
+
+    const lines: string[] = [''];
+    for (const word of name.split(' ')) {
+        const line = lines[lines.length - 1];
+        if (line === '') lines[lines.length - 1] = word;
+        else if (`${line} ${word}`.length <= limit) lines[lines.length - 1] = `${line} ${word}`;
+        else lines.push(word);
+    }
+
+    return lines.length <= 2 ? lines : [lines[0], `${lines.slice(1).join(' ').slice(0, limit - 1)}…`];
+}
 
 interface PlacedNode {
     unit: Unit;
@@ -48,29 +76,37 @@ export function UnitLineDiagram({ steps, current }: UnitLineDiagramProps) {
 
     const names = new Map(steps.flat().map((unit) => [unit.key, text.unit(unit.key).name]));
     const longest = Math.max(...[...names.values()].map((name) => name.length));
-    const nodeWidth = Math.min(MAX_NODE_WIDTH, Math.max(MIN_NODE_WIDTH, LABEL_LEFT + longest * CHARACTER_WIDTH + 18));
+    const longestWord = Math.max(...[...names.values()].flatMap((name) => name.split(' ').map((word) => word.length)));
+
+    const nodeWidth = stacked
+        ? Math.max(PORTRAIT_WIDTH, longestWord * PORTRAIT_CHARACTER_WIDTH + 16)
+        : Math.min(MAX_NODE_WIDTH, Math.max(MIN_NODE_WIDTH, LABEL_LEFT + longest * CHARACTER_WIDTH + 18));
+    const lineLimit = Math.floor((nodeWidth - 12) / PORTRAIT_CHARACTER_WIDTH);
+    const lines = Math.max(...[...names.values()].map((name) => wrap(name, lineLimit).length));
+    const nodeHeight = stacked ? PORTRAIT_BASE_HEIGHT + (lines - 1) * PORTRAIT_LINE : NODE_HEIGHT;
 
     const widest = Math.max(...steps.map((step) => step.length));
     const across = stacked ? widest : steps.length;
     const down = stacked ? steps.length : widest;
 
-    const width = PADDING * 2 + across * nodeWidth + (across - 1) * COLUMN_GAP;
-    const height = PADDING * 2 + down * NODE_HEIGHT + (down - 1) * (stacked ? STACKED_GAP : ROW_GAP);
+    const gapAcross = stacked ? ROW_GAP : COLUMN_GAP;
+    const width = PADDING * 2 + across * nodeWidth + (across - 1) * gapAcross;
+    const height = PADDING * 2 + down * nodeHeight + (down - 1) * (stacked ? STACKED_GAP : ROW_GAP);
 
     const placed = new Map<string, PlacedNode>();
     steps.forEach((step, index) => {
-        const spread = step.length * nodeWidth + (step.length - 1) * COLUMN_GAP;
-        const stack = step.length * NODE_HEIGHT + (step.length - 1) * ROW_GAP;
+        const spread = step.length * nodeWidth + (step.length - 1) * gapAcross;
+        const stack = step.length * nodeHeight + (step.length - 1) * ROW_GAP;
         step.forEach((unit, choice) => {
             placed.set(unit.key, {
                 unit,
                 name: names.get(unit.key) ?? unit.key,
                 x: stacked
-                    ? (width - spread) / 2 + choice * (nodeWidth + COLUMN_GAP)
+                    ? (width - spread) / 2 + choice * (nodeWidth + gapAcross)
                     : PADDING + index * (nodeWidth + COLUMN_GAP),
                 y: stacked
-                    ? PADDING + index * (NODE_HEIGHT + STACKED_GAP)
-                    : (height - stack) / 2 + choice * (NODE_HEIGHT + ROW_GAP),
+                    ? PADDING + index * (nodeHeight + STACKED_GAP)
+                    : (height - stack) / 2 + choice * (nodeHeight + ROW_GAP),
             });
         });
     });
@@ -80,11 +116,11 @@ export function UnitLineDiagram({ steps, current }: UnitLineDiagramProps) {
         if (!parent) return [];
 
         const start = stacked
-            ? { x: parent.x + nodeWidth / 2, y: parent.y + NODE_HEIGHT }
-            : { x: parent.x + nodeWidth, y: parent.y + NODE_HEIGHT / 2 };
+            ? { x: parent.x + nodeWidth / 2, y: parent.y + nodeHeight }
+            : { x: parent.x + nodeWidth, y: parent.y + nodeHeight / 2 };
         const end = stacked
             ? { x: node.x + nodeWidth / 2, y: node.y - 7 }
-            : { x: node.x - 7, y: node.y + NODE_HEIGHT / 2 };
+            : { x: node.x - 7, y: node.y + nodeHeight / 2 };
         const bend = stacked ? STACKED_GAP * 0.6 : COLUMN_GAP * 0.6;
         const control = stacked
             ? `${String(start.x)} ${String(start.y + bend)}, ${String(end.x)} ${String(end.y - bend)}`
@@ -104,6 +140,7 @@ export function UnitLineDiagram({ steps, current }: UnitLineDiagramProps) {
                 className="line-diagram"
                 width={stacked ? '100%' : width}
                 height={stacked ? undefined : height}
+                style={stacked ? { maxWidth: width } : undefined}
                 viewBox={`0 0 ${String(width)} ${String(height)}`}
                 preserveAspectRatio="xMidYMin meet"
                 role="img"
@@ -141,22 +178,46 @@ export function UnitLineDiagram({ steps, current }: UnitLineDiagramProps) {
                             className="line-diagram__node"
                             data-current={node.unit.key === current.key || undefined}
                         >
-                            <rect x={node.x} y={node.y} width={nodeWidth} height={NODE_HEIGHT} rx="4" />
+                            <rect x={node.x} y={node.y} width={nodeWidth} height={nodeHeight} rx="4" />
                             {node.unit.icon === null ? null : (
                                 <image
                                     href={iconUrl(`Unit/${String(node.unit.icon)}.png`)}
-                                    x={node.x + 10}
-                                    y={node.y + (NODE_HEIGHT - ICON_SIZE) / 2}
-                                    width={ICON_SIZE}
-                                    height={ICON_SIZE}
+                                    x={stacked ? node.x + (nodeWidth - PORTRAIT_ICON) / 2 : node.x + 10}
+                                    y={stacked ? node.y + 9 : node.y + (nodeHeight - ICON_SIZE) / 2}
+                                    width={stacked ? PORTRAIT_ICON : ICON_SIZE}
+                                    height={stacked ? PORTRAIT_ICON : ICON_SIZE}
                                     clipPath="url(#line-diagram-icon)"
                                     preserveAspectRatio="xMidYMid slice"
                                 />
                             )}
-                            <text className="line-diagram__name" x={node.x + LABEL_LEFT} y={node.y + 23}>
-                                {node.name}
-                            </text>
-                            <text className="line-diagram__age" x={node.x + LABEL_LEFT} y={node.y + 39}>
+                            {stacked ? (
+                                <text
+                                    className="line-diagram__name"
+                                    x={node.x + nodeWidth / 2}
+                                    y={node.y + PORTRAIT_ICON + 22}
+                                    textAnchor="middle"
+                                >
+                                    {wrap(node.name, lineLimit).map((line, index) => (
+                                        <tspan
+                                            key={line}
+                                            x={node.x + nodeWidth / 2}
+                                            dy={index === 0 ? 0 : PORTRAIT_LINE}
+                                        >
+                                            {line}
+                                        </tspan>
+                                    ))}
+                                </text>
+                            ) : (
+                                <text className="line-diagram__name" x={node.x + LABEL_LEFT} y={node.y + 23}>
+                                    {node.name}
+                                </text>
+                            )}
+                            <text
+                                className="line-diagram__age"
+                                x={stacked ? node.x + nodeWidth / 2 : node.x + LABEL_LEFT}
+                                y={stacked ? node.y + nodeHeight - 10 : node.y + 39}
+                                textAnchor={stacked ? 'middle' : undefined}
+                            >
                                 {node.unit.key === current.key
                                     ? t('unit.lineCurrent')
                                     : t(`ages.${String(node.unit.age)}`)}
