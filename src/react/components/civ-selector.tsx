@@ -1,8 +1,11 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { iconUrl } from '../format.ts';
 import { useGameText } from '../hooks/use-game-text.ts';
 import { usePreferences } from '../hooks/use-preferences.ts';
 import { useServices } from '../hooks/use-services.ts';
+import { Icon } from './icon.tsx';
+import { Picker } from './picker.tsx';
 
 export interface CivSelectorProps {
     id?: string;
@@ -16,32 +19,37 @@ export function CivSelector({ id = 'civ-selector' }: CivSelectorProps) {
     const { preferences, update } = usePreferences();
 
     const options = useMemo(
-        () =>
-            catalog
+        () => [
+            { value: '', label: t('home.allCivs'), visual: <Icon name="civilizations" /> },
+            ...catalog
                 .civilizations()
-                .map((civilization) => ({ key: civilization.key, name: text.civilization(civilization.key).name }))
-                .sort((left, right) => left.name.localeCompare(right.name)),
-        [catalog, text],
+                .map((civilization) => ({
+                    value: civilization.key,
+                    label: text.civilization(civilization.key).name,
+                    visual: (
+                        <img
+                            className="picker__emblem"
+                            src={iconUrl(`Civs/${civilization.icon}.png`)}
+                            alt=""
+                            loading="lazy"
+                        />
+                    ),
+                }))
+                .sort((left, right) => left.label.localeCompare(right.label)),
+        ],
+        [catalog, text, t],
     );
 
     return (
-        <>
-            <label className="visually-hidden" htmlFor={id}>
-                {t('civ.select')}
-            </label>
-            <select
-                id={id}
-                className="select"
-                value={preferences.civ ?? ''}
-                onChange={(event) => { update({ civ: event.target.value || null }); }}
-            >
-                <option value="">{t('home.allCivs')}</option>
-                {options.map((option) => (
-                    <option key={option.key} value={option.key}>
-                        {option.name}
-                    </option>
-                ))}
-            </select>
-        </>
+        <Picker
+            id={id}
+            block
+            label={t('civ.select')}
+            value={preferences.civ ?? ''}
+            options={options}
+            onChange={(value) => {
+                update({ civ: value === '' ? null : value });
+            }}
+        />
     );
 }

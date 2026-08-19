@@ -6,6 +6,7 @@ import { UNIT_CATEGORIES, isUnitCategory, type UnitCategory } from '../../domain
 import type { Unit } from '../../domain/entities/unit.ts';
 import { UNIT_SORT_KEYS, type UnitSortKey } from '../../services/unit-ranking/unit-ranking-service.ts';
 import { UnitListItem } from '../components/unit-list-item.tsx';
+import { Picker } from '../components/picker.tsx';
 import { VirtualList } from '../components/virtual-list.tsx';
 import { buildingNames } from '../building-names.ts';
 import { precise, short } from '../format.ts';
@@ -120,56 +121,60 @@ export function UnitsPage() {
                         <label className="field__label" htmlFor="unit-sort">
                             {t('units.sortBy')}
                         </label>
-                        <select
+                        <Picker
                             id="unit-sort"
-                            className="select"
+                            block
+                            label={t('units.sortBy')}
                             value={sort}
-                            onChange={(event) => { setFilter('sort', event.target.value); }}
-                        >
-                            {SORT_OPTIONS.map((option) => (
-                                <option key={option} value={option}>
-                                    {t(`units.sorts.${option}`)}
-                                </option>
-                            ))}
-                        </select>
+                            options={SORT_OPTIONS.map((option) => ({
+                                value: option,
+                                label: t(`units.sorts.${option}`),
+                            }))}
+                            onChange={(value) => {
+                                setFilter('sort', value);
+                            }}
+                        />
                     </div>
 
                     <div className="field">
                         <label className="field__label" htmlFor="unit-category">
                             {t('units.category')}
                         </label>
-                        <select
+                        <Picker
                             id="unit-category"
-                            className="select"
+                            block
+                            label={t('units.category')}
                             value={category ?? ''}
-                            onChange={(event) => { setFilter('category', event.target.value || null); }}
-                        >
-                            <option value="">{t('common.all')}</option>
-                            {UNIT_CATEGORIES.filter((entry) => entry !== 'civilian').map((entry) => (
-                                <option key={entry} value={entry}>
-                                    {t(`categories.${entry}`)}
-                                </option>
-                            ))}
-                        </select>
+                            options={[
+                                { value: '', label: t('common.all') },
+                                ...UNIT_CATEGORIES.filter((entry) => entry !== 'civilian').map((entry) => ({
+                                    value: entry,
+                                    label: t(`categories.${entry}`),
+                                })),
+                            ]}
+                            onChange={(value) => {
+                                setFilter('category', value || null);
+                            }}
+                        />
                     </div>
 
                     <div className="field">
                         <label className="field__label" htmlFor="unit-age">
                             {t('unit.age')}
                         </label>
-                        <select
+                        <Picker
                             id="unit-age"
-                            className="select"
-                            value={age ?? ''}
-                            onChange={(event) => { setFilter('age', event.target.value || null); }}
-                        >
-                            <option value="">{t('common.all')}</option>
-                            {AGE_IDS.map((entry) => (
-                                <option key={entry} value={entry}>
-                                    {t(`ages.${entry}`)}
-                                </option>
-                            ))}
-                        </select>
+                            block
+                            label={t('unit.age')}
+                            value={age === null ? '' : String(age)}
+                            options={[
+                                { value: '', label: t('common.all') },
+                                ...AGE_IDS.map((entry) => ({ value: String(entry), label: t(`ages.${entry}`) })),
+                            ]}
+                            onChange={(value) => {
+                                setFilter('age', value || null);
+                            }}
+                        />
                     </div>
                 </div>
 

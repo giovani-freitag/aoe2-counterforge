@@ -346,10 +346,10 @@
     align-items: center;
     gap: var(--space-2);
     max-width: 11rem;
-    height: var(--control-height);
-    padding: 0 var(--space-2);
+    min-height: var(--control-height);
+    padding: 0 var(--space-3);
     font: inherit;
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     color: var(--text);
     background: var(--surface);
     border: 1px solid var(--border);
@@ -370,8 +370,19 @@
 .picker__caret {
     width: 0.85em;
     height: 0.85em;
+    margin-left: auto;
     color: var(--text-faint);
-    transform: rotate(90deg);
+}
+
+/* A picker standing in for a select fills its field, like the input beside it. */
+.picker--block,
+.picker--block .picker__button {
+    width: 100%;
+    max-width: none;
+}
+
+.picker--block .picker__popup {
+    min-width: 100%;
 }
 
 .picker__popup {
@@ -397,8 +408,8 @@
 
 .picker__search {
     width: 100%;
-    height: var(--control-height);
-    padding: 0 var(--space-3);
+    min-height: var(--control-height);
+    padding: var(--space-2) var(--space-3);
     background: var(--surface);
     border: 0;
     border-bottom: 1px solid var(--border);
@@ -420,14 +431,19 @@
     list-style: none;
 }
 
+.picker__list li + li {
+    margin-top: 2px;
+}
+
 .picker__option {
     display: flex;
     align-items: center;
     gap: var(--space-2);
     width: 100%;
-    padding: var(--space-1) var(--space-2);
+    min-height: 2.25rem;
+    padding: var(--space-2) var(--space-3);
     font: inherit;
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     text-align: left;
     color: var(--text-muted);
     background: none;

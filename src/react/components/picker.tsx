@@ -18,6 +18,10 @@ export interface PickerProps {
     onChange: (value: string) => void;
     /** Hides the label text in the button, leaving only the visual. */
     compact?: boolean;
+    /** Fills the width of a form field, the way a plain select does. */
+    block?: boolean;
+    /** Ties the button to a label written next to it. */
+    id?: string;
     align?: 'start' | 'end';
 }
 
@@ -25,7 +29,7 @@ export interface PickerProps {
 const SEARCH_FROM = 10;
 
 /** A single-choice list that can carry a flag, an emblem or an icon beside each entry. */
-export function Picker({ label, value, options, onChange, compact, align = 'end' }: PickerProps) {
+export function Picker({ label, value, options, onChange, compact, block, id, align = 'end' }: PickerProps) {
     const { t } = useTranslation();
     const [term, setTerm] = useState('');
     const container = useRef<HTMLDivElement>(null);
@@ -58,8 +62,9 @@ export function Picker({ label, value, options, onChange, compact, align = 'end'
     }, [list.isOpen]);
 
     return (
-        <div className="picker" ref={container} onKeyDown={list.onKeyDown}>
+        <div className={block ? 'picker picker--block' : 'picker'} ref={container} onKeyDown={list.onKeyDown}>
             <button
+                id={id}
                 type="button"
                 className="picker__button"
                 aria-haspopup="listbox"
@@ -72,11 +77,11 @@ export function Picker({ label, value, options, onChange, compact, align = 'end'
             >
                 {current.visual}
                 {compact ? null : <span className="picker__value">{current.label}</span>}
-                <Icon name="next" className="picker__caret" />
+                <Icon name="down" className="picker__caret" />
             </button>
 
             {list.isOpen ? (
-                <div className="picker__popup" data-align={align}>
+                <div className="picker__popup" data-align={block ? 'start' : align}>
                     {searchable ? (
                         <input
                             ref={search}

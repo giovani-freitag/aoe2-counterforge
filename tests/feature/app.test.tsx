@@ -109,7 +109,8 @@ describe('App', () => {
         window.location.hash = '#/units?category=infantry&lines=1';
         render(<App />);
 
-        await user.selectOptions(await screen.findByLabelText('Ordenar por'), 'train-time');
+        await user.click(await screen.findByLabelText('Ordenar por'));
+        await user.click(screen.getByRole('option', { name: 'Mais rápido de treinar' }));
 
         await waitFor(() => {
             expect(window.location.hash).toContain('sort=train-time');

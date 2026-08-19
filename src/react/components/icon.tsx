@@ -2,6 +2,7 @@ import type { SVGProps } from 'react';
 import {
     Castle,
     Crown,
+    ChevronDown,
     ChevronLeft,
     ChevronRight,
     Coins,
@@ -78,6 +79,7 @@ const GLYPHS = {
     dark: Moon,
     back: ChevronLeft,
     best: Crown,
+    down: ChevronDown,
     source: GitHubMark,
 } as const;
 

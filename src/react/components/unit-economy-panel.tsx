@@ -16,6 +16,7 @@ import { useServices } from '../hooks/use-services.ts';
 import { Stepper } from './stepper.tsx';
 import { ResourceIcon } from './resource-icon.tsx';
 import { GameIcon } from './game-icon.tsx';
+import { Picker } from './picker.tsx';
 
 export interface UnitEconomyPanelProps {
     unit: Unit;
@@ -124,18 +125,19 @@ export function UnitEconomyPanel({ unit }: UnitEconomyPanelProps) {
                             <label className="field__label" htmlFor="food-source">
                                 {t('economy.foodSource')}
                             </label>
-                            <select
+                            <Picker
                                 id="food-source"
-                                className="select"
+                                block
+                                label={t('economy.foodSource')}
                                 value={foodSource}
-                                onChange={(event) => { setFoodSource(event.target.value as FoodSource); }}
-                            >
-                                {FOOD_SOURCES.map((source) => (
-                                    <option key={source} value={source}>
-                                        {t(`economy.foodSources.${source}`)}
-                                    </option>
-                                ))}
-                            </select>
+                                options={FOOD_SOURCES.map((source) => ({
+                                    value: source,
+                                    label: t(`economy.foodSources.${source}`),
+                                }))}
+                                onChange={(value) => {
+                                    setFoodSource(value as FoodSource);
+                                }}
+                            />
                         </div>
                     ) : null}
                 </div>

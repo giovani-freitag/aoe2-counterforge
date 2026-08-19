@@ -4,6 +4,7 @@ import { UNIT_CATEGORIES, isUnitCategory, type UnitCategory } from '../../domain
 import type { Matchup } from '../../services/matchup/matchup-service.ts';
 import { useNameFilter } from '../hooks/use-name-filter.ts';
 import { MatchupRow } from './matchup-row.tsx';
+import { Picker } from './picker.tsx';
 import { VirtualList } from './virtual-list.tsx';
 
 export interface MatchupExplorerProps {
@@ -62,39 +63,38 @@ export function MatchupExplorer({ matchups, subjectName }: MatchupExplorerProps)
                     <label className="field__label" htmlFor="matchup-category">
                         {t('units.category')}
                     </label>
-                    <select
+                    <Picker
                         id="matchup-category"
-                        className="select"
+                        block
+                        label={t('units.category')}
                         value={category ?? ''}
-                        onChange={(event) =>
-                            { setCategory(isUnitCategory(event.target.value) ? event.target.value : null); }
-                        }
-                    >
-                        <option value="">{t('common.all')}</option>
-                        {categories.map((entry) => (
-                            <option key={entry} value={entry}>
-                                {t(`categories.${entry}`)}
-                            </option>
-                        ))}
-                    </select>
+                        options={[
+                            { value: '', label: t('common.all') },
+                            ...categories.map((entry) => ({ value: entry, label: t(`categories.${entry}`) })),
+                        ]}
+                        onChange={(value) => {
+                            setCategory(isUnitCategory(value) ? value : null);
+                        }}
+                    />
                 </div>
 
                 <div className="field">
                     <label className="field__label" htmlFor="matchup-sort">
                         {t('counters.sort')}
                     </label>
-                    <select
+                    <Picker
                         id="matchup-sort"
-                        className="select"
+                        block
+                        label={t('counters.sort')}
                         value={sort}
-                        onChange={(event) => { setSort(event.target.value as SortKey); }}
-                    >
-                        {(['best', 'worst'] as const).map((option) => (
-                            <option key={option} value={option}>
-                                {t(`counters.sorts.${option}`)}
-                            </option>
-                        ))}
-                    </select>
+                        options={(['best', 'worst'] as const).map((option) => ({
+                            value: option,
+                            label: t(`counters.sorts.${option}`),
+                        }))}
+                        onChange={(value) => {
+                            setSort(value as SortKey);
+                        }}
+                    />
                 </div>
             </div>
 
