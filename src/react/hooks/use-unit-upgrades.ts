@@ -2,13 +2,16 @@ import { useMemo } from 'react';
 import type { Unit } from '../../domain/entities/unit.ts';
 import type { UnitStats } from '../../domain/values/unit-stats.ts';
 import type { AppliedUpgrade } from '../../services/upgrade/upgrade-service.ts';
+import type { StatDelta } from '../../services/upgrade/tech-effect.ts';
 import { usePreferences } from './use-preferences.ts';
 import { useServices } from './use-services.ts';
 
-/** The unique technologies of one civilization that reach the unit. */
+/** What one civilization, and only that civilization, does to the unit. */
 export interface CivilizationUpgrades {
     civ: string;
     upgrades: AppliedUpgrade[];
+    /** The bonus it is given at the start of the match, when it has one that reaches the unit. */
+    bonus: StatDelta | null;
 }
 
 export interface UnitUpgradeView {
@@ -38,19 +41,24 @@ export function useUnitUpgrades(unit: Unit | null): UnitUpgradeView | null {
         const outcome = upgrades.fullyUpgraded(unit, preferences.civ);
         const reaching = upgrades.affecting(unit, preferences.civ);
 
-        const byCiv = new Map<string, AppliedUpgrade[]>();
+        const byCiv = new Map<string, CivilizationUpgrades>();
+        const entryFor = (civ: string) => {
+            const known = byCiv.get(civ) ?? { civ, upgrades: [], bonus: null };
+            byCiv.set(civ, known);
+
+            return known;
+        };
+
+        for (const { civ, delta } of upgrades.civilizationBonuses(unit)) entryFor(civ).bonus = delta;
         for (const upgrade of reaching) {
             if (!upgrade.technology.isUnique) continue;
 
-            const civ = upgrade.technology.civs[0];
-            byCiv.set(civ, [...(byCiv.get(civ) ?? []), upgrade]);
+            entryFor(upgrade.technology.civs[0]).upgrades.push(upgrade);
         }
 
         return {
             generic: reaching.filter((upgrade) => !upgrade.technology.isUnique),
-            byCivilization: [...byCiv]
-                .map(([civ, list]) => ({ civ, upgrades: list }))
-                .sort((left, right) => left.civ.localeCompare(right.civ)),
+            byCivilization: [...byCiv.values()].sort((left, right) => left.civ.localeCompare(right.civ)),
             upgradedStats: outcome.stats,
             upgradedTrainTime: outcome.trainTime,
         };

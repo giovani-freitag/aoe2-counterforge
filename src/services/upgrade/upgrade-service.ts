@@ -18,6 +18,12 @@ export interface AppliedUpgrade {
     qualitative: boolean;
 }
 
+export interface CivilizationBonus {
+    civ: string;
+    /** What the civilization's own bonuses do to the unit, with nothing researched. */
+    delta: StatDelta;
+}
+
 export interface UpgradeSelection {
     unit: Unit;
     techs: readonly string[];
@@ -109,12 +115,32 @@ export class UpgradeService {
         return this.apply({ unit, techs, civ });
     }
 
+    /**
+     * Every civilization whose own bonuses change this unit, whether or not one is chosen.
+     *
+     * These are not technologies and never appear in a tech tree: the game hands them over at the
+     * start of the match, which is why they are worth naming next to the ones you research.
+     *
+     * @param unit - Unit to inspect.
+     * @returns One entry per civilization that changes the unit, ordered by slug.
+     */
+    public civilizationBonuses(unit: Unit): CivilizationBonus[] {
+        return this.catalog
+            .civilizations()
+            .map((civilization) => ({ civ: civilization.key, delta: this.bonusFor(unit, civilization.key) }))
+            .filter((entry) => Object.keys(entry.delta).length > 0)
+            .sort((left, right) => left.civ.localeCompare(right.civ));
+    }
+
     /** What the chosen civilization hands the unit before anyone researches anything. */
     private bonusDelta(selection: UpgradeSelection): StatDelta {
         const civ = selection.civ ?? null;
-        if (civ === null) return {};
 
-        return this.toDelta(this.catalog.civilization(civ).bonuses.filter((effect) => effect.reaches(selection.unit)));
+        return civ === null ? {} : this.bonusFor(selection.unit, civ);
+    }
+
+    private bonusFor(unit: Unit, civ: string): StatDelta {
+        return this.toDelta(this.catalog.civilization(civ).bonuses.filter((effect) => effect.reaches(unit)));
     }
 
     /** The change one technology makes to one unit, or null when it never reaches it. */
@@ -129,9 +155,11 @@ export class UpgradeService {
 
     private toDelta(effects: readonly TechEffect[]): StatDelta {
         const delta: StatDelta = {};
-        const classed: Record<'attack' | 'armour', { added: ClassAmount[]; scaled: ClassAmount[] }> = {
-            attack: { added: [], scaled: [] },
-            armour: { added: [], scaled: [] },
+        // The game states a class at a time, and often twice for the same one; a reader wants the
+        // total, so the classes are accumulated here rather than listed as they arrive.
+        const classed: Record<'attack' | 'armour', { added: Map<string, number>; scaled: Map<string, number> }> = {
+            attack: { added: new Map(), scaled: new Map() },
+            armour: { added: new Map(), scaled: new Map() },
         };
 
         for (const effect of effects) {
@@ -141,11 +169,10 @@ export class UpgradeService {
                 if (effect.damageClass === undefined || effect.mode === 'set') continue;
 
                 const scale = effect.mode === 'multiply';
-                const amount = {
-                    armourClass: effect.damageClass,
-                    amount: scale ? effect.value / PERCENT : effect.value,
-                } as ClassAmount;
-                classed[effect.attribute][scale ? 'scaled' : 'added'].push(amount);
+                const table = classed[effect.attribute][scale ? 'scaled' : 'added'];
+                const current = table.get(effect.damageClass);
+                const value = scale ? effect.value / PERCENT : effect.value;
+                table.set(effect.damageClass, scale ? (current ?? 1) * value : (current ?? 0) + value);
 
                 continue;
             }
@@ -182,10 +209,13 @@ export class UpgradeService {
             if (effect.attribute === 'reloadTime') delta.reloadTime = (delta.reloadTime ?? 0) + effect.value;
         }
 
-        if (classed.attack.added.length > 0) delta.attack = classed.attack.added;
-        if (classed.attack.scaled.length > 0) delta.attackMultipliers = classed.attack.scaled;
-        if (classed.armour.added.length > 0) delta.armour = classed.armour.added;
-        if (classed.armour.scaled.length > 0) delta.armourMultipliers = classed.armour.scaled;
+        const list = (table: Map<string, number>): ClassAmount[] =>
+            [...table].map(([armourClass, amount]) => ({ armourClass, amount }) as ClassAmount);
+
+        if (classed.attack.added.size > 0) delta.attack = list(classed.attack.added);
+        if (classed.attack.scaled.size > 0) delta.attackMultipliers = list(classed.attack.scaled);
+        if (classed.armour.added.size > 0) delta.armour = list(classed.armour.added);
+        if (classed.armour.scaled.size > 0) delta.armourMultipliers = list(classed.armour.scaled);
 
         return delta;
     }

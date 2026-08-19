@@ -61,6 +61,7 @@
         "armourClasses": "Armour classes",
         "line": "Upgrade line",
         "lineCurrent": "current",
+        "lineOr": "or",
         "noBonusDamage": "No bonus damage.",
         "availableIn_other": "{{count}} civilizations",
         "availableIn_one": "{{count}} civilization",
@@ -201,7 +202,7 @@
     "upgrades": {
         "lineTitle": "Line upgrades",
         "genericTitle": "Technologies that change this unit",
-        "uniqueTitle": "Unique technologies that change this unit",
+        "uniqueTitle": "What one civilization changes",
         "officialHint": "What the game says",
         "researchTime": "{{value}} s research",
         "qualitative": "Effect not modelled as a number",
@@ -216,10 +217,17 @@
             "trainSpeed": "{{value}}% faster to train",
             "attack": "{{value}} attack{{against}}",
             "armour": "{{value}} armour{{against}}",
-            "against": " vs {{class}}"
+            "against": " vs {{class}}",
+            "speedFlat": "{{value}} speed",
+            "reload": "{{value}} s reload",
+            "hpPercent": "{{value}}% HP",
+            "attackPercent": "{{value}}% attack{{against}}",
+            "armourPercent": "{{value}}% armour{{against}}"
         },
-        "uniqueHint": "Only the castle technologies that actually reach it, from the game's own effect table.",
-        "noUnique": "No unique technology reaches this unit."
+        "uniqueHint": "Bonuses a civilization is given, and the castle technologies that reach this unit.",
+        "noUnique": "No civilization changes this unit on its own.",
+        "civBonus": "Civilization bonus",
+        "civBonusHint": "Given at the start of the match, with nothing to research."
     },
     "economy": {
         "title": "Villagers needed to produce non-stop",

@@ -1,6 +1,10 @@
 import type { TFunction } from 'i18next';
+import type { ClassAmount } from '../domain/values/class-amount.ts';
 import type { StatDelta } from '../services/upgrade/tech-effect.ts';
 import { delta, percentDelta, short } from './format.ts';
+
+/** Above this many classes, a shared factor is stated once instead of class by class. */
+const BROAD_ENOUGH = 3;
 
 /**
  * Turns a technology's stat delta into short human-readable chips.
@@ -17,9 +21,17 @@ export function describeEffect(change: StatDelta, t: TFunction): string[] {
             : t('upgrades.effect.against', { class: t(`armourClasses.${armourClass}`) });
 
     if (change.hp) labels.push(t('upgrades.effect.hp', { value: delta(change.hp) }));
+    if (change.hpMultiplier && change.hpMultiplier !== 1) {
+        labels.push(t('upgrades.effect.hpPercent', { value: percentDelta(change.hpMultiplier) }));
+    }
     if (change.range) labels.push(t('upgrades.effect.range', { value: delta(change.range) }));
     if (change.lineOfSight) labels.push(t('upgrades.effect.lineOfSight', { value: delta(change.lineOfSight) }));
+    if (change.lineOfSightFloor) {
+        labels.push(t('upgrades.effect.lineOfSight', { value: short(change.lineOfSightFloor) }));
+    }
     if (change.accuracy) labels.push(t('upgrades.effect.accuracy', { value: 100 }));
+    if (change.speed) labels.push(t('upgrades.effect.speedFlat', { value: delta(change.speed) }));
+    if (change.reloadTime) labels.push(t('upgrades.effect.reload', { value: delta(change.reloadTime) }));
     if (change.speedMultiplier && change.speedMultiplier !== 1) {
         labels.push(t('upgrades.effect.speed', { value: percentDelta(change.speedMultiplier) }));
     }
@@ -28,6 +40,23 @@ export function describeEffect(change: StatDelta, t: TFunction): string[] {
     }
     if (change.trainTimeMultiplier && change.trainTimeMultiplier !== 1) {
         labels.push(t('upgrades.effect.trainSpeed', { value: short((1 / change.trainTimeMultiplier - 1) * 100) }));
+    }
+
+    for (const [key, entries] of [
+        ['attackPercent', change.attackMultipliers ?? []],
+        ['armourPercent', change.armourMultipliers ?? []],
+    ] as const) {
+        for (const [factor, classes] of byFactor(entries)) {
+            const broad = classes.length >= BROAD_ENOUGH;
+            for (const armourClass of broad ? [null] : classes) {
+                labels.push(
+                    t(`upgrades.effect.${key}`, {
+                        value: percentDelta(factor),
+                        against: armourClass === null ? '' : against(armourClass),
+                    }),
+                );
+            }
+        }
     }
 
     for (const entry of change.attack ?? []) {
@@ -49,4 +78,15 @@ export function describeEffect(change: StatDelta, t: TFunction): string[] {
     }
 
     return labels;
+}
+
+/** Groups the classes that share a factor, so a blanket multiplier reads as one statement. */
+function byFactor(entries: readonly ClassAmount[]): Map<number, string[]> {
+    const groups = new Map<number, string[]>();
+    for (const entry of entries) {
+        if (entry.amount === 1) continue;
+        groups.set(entry.amount, [...(groups.get(entry.amount) ?? []), entry.armourClass]);
+    }
+
+    return groups;
 }

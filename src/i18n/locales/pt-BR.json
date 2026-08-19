@@ -61,6 +61,7 @@
         "armourClasses": "Classes de armadura",
         "line": "Linha de evolução",
         "lineCurrent": "atual",
+        "lineOr": "ou",
         "noBonusDamage": "Sem dano bônus.",
         "availableIn_other": "{{count}} civilizações",
         "availableIn_one": "{{count}} civilização",
@@ -201,7 +202,7 @@
     "upgrades": {
         "lineTitle": "Evoluções da linha",
         "genericTitle": "Melhorias que afetam a unidade",
-        "uniqueTitle": "Tecnologias exclusivas que mudam esta unidade",
+        "uniqueTitle": "O que cada civilização muda",
         "officialHint": "O que o jogo diz",
         "researchTime": "{{value}} s de pesquisa",
         "qualitative": "Efeito sem número no simulador",
@@ -216,10 +217,17 @@
             "trainSpeed": "{{value}}% mais rápido de treinar",
             "attack": "{{value}} de ataque{{against}}",
             "armour": "{{value}} de armadura{{against}}",
-            "against": " contra {{class}}"
+            "against": " contra {{class}}",
+            "speedFlat": "{{value}} de velocidade",
+            "reload": "{{value}} s de recarga",
+            "hpPercent": "{{value}}% de PV",
+            "attackPercent": "{{value}}% de ataque{{against}}",
+            "armourPercent": "{{value}}% de armadura{{against}}"
         },
-        "uniqueHint": "Só as tecnologias de castelo que realmente afetam a unidade, pela tabela de efeitos do jogo.",
-        "noUnique": "Nenhuma tecnologia exclusiva alcança esta unidade."
+        "uniqueHint": "Bônus que a civilização já ganha, e as tecnologias de castelo que alcançam a unidade.",
+        "noUnique": "Nenhuma civilização muda esta unidade por conta própria.",
+        "civBonus": "Bônus da civilização",
+        "civBonusHint": "Vem no início da partida, sem nada para pesquisar."
     },
     "economy": {
         "title": "Quantos aldeões para produzir sem parar",
