@@ -10,7 +10,31 @@ function buildCatalog() {
         units: [
             unitRecord({ key: 'militia', age: 1, line: 'militia', civs: ['britons', 'franks'] }),
             unitRecord({ key: 'man-at-arms', age: 2, line: 'militia', upgradesFrom: 'militia', civs: ['britons'] }),
-            unitRecord({ key: 'knight', age: 3, category: 'cavalry', civs: ['franks'] }),
+            unitRecord({ key: 'knight', age: 3, category: 'cavalry', line: 'knight', civs: ['franks'] }),
+            unitRecord({
+                key: 'cavalier',
+                age: 4,
+                category: 'cavalry',
+                line: 'knight',
+                upgradesFrom: 'knight',
+                civs: ['franks'],
+            }),
+            unitRecord({
+                key: 'paladin',
+                age: 4,
+                category: 'cavalry',
+                line: 'knight',
+                upgradesFrom: 'cavalier',
+                civs: ['franks'],
+            }),
+            unitRecord({
+                key: 'savar',
+                age: 4,
+                category: 'cavalry',
+                line: 'knight',
+                upgradesFrom: 'cavalier',
+                civs: ['franks'],
+            }),
             unitRecord({ key: 'villager', age: 1, category: 'civilian', civs: ['britons', 'franks'] }),
         ],
         technologies: [
@@ -20,6 +44,30 @@ function buildCatalog() {
         civilizations: [civilizationRecord('britons'), civilizationRecord('franks')],
     });
 }
+
+describe('GameCatalogService upgrade steps', () => {
+    it('puts the alternatives of a line in the same step', () => {
+        const catalog = buildCatalog();
+
+        const steps = catalog.upgradeSteps('knight').map((step) => step.map((unit) => unit.key));
+
+        expect(steps).toEqual([['knight'], ['cavalier'], ['paladin', 'savar']]);
+    });
+
+    it('walks a plain chain one unit at a time', () => {
+        const catalog = buildCatalog();
+
+        const steps = catalog.upgradeSteps('militia').map((step) => step.map((unit) => unit.key));
+
+        expect(steps).toEqual([['militia'], ['man-at-arms']]);
+    });
+
+    it('gives a line nobody upgrades a single step', () => {
+        const catalog = buildCatalog();
+
+        expect(catalog.upgradeSteps('villager')).toHaveLength(1);
+    });
+});
 
 describe('GameCatalogService', () => {
     it('finds a unit by its slug', () => {
@@ -39,7 +87,14 @@ describe('GameCatalogService', () => {
 
         const units = catalog.units({ civ: 'franks' });
 
-        expect(units.map((unit) => unit.key)).toEqual(['militia', 'villager', 'knight']);
+        expect(units.map((unit) => unit.key)).toEqual([
+            'militia',
+            'villager',
+            'knight',
+            'cavalier',
+            'paladin',
+            'savar',
+        ]);
     });
 
     it('drops civilian units when only combat units are asked for', () => {

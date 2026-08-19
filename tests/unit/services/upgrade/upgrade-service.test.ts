@@ -2,11 +2,17 @@ import { describe, expect, it } from 'vitest';
 import { CatalogAssembler } from '../../../../src/services/game-catalog/catalog-assembler.ts';
 import { GameCatalogService } from '../../../../src/services/game-catalog/game-catalog-service.ts';
 import { UpgradeService } from '../../../../src/services/upgrade/upgrade-service.ts';
+import type { TechEffectRecord } from '../../../../src/data/records.ts';
 import { civilizationRecord, technologyRecord, unitRecord } from '../../../fixtures/records.ts';
 
 /** Classes as the game files them: six is infantry, twelve is cavalry. */
 const INFANTRY = 6;
 const CAVALRY = 12;
+
+/** One age's worth of a bonus the game grants to infantry once per age. */
+function attackPerAge(age: number, value: number): TechEffectRecord {
+    return { mode: 'add', unit: null, unitClass: INFANTRY, attribute: 'attack', value, damageClass: 'base-melee', age };
+}
 
 function buildService() {
     const catalog = new GameCatalogService({
@@ -56,6 +62,32 @@ function buildService() {
                 bonusEffects: [{ mode: 'multiply', unit: null, unitClass: CAVALRY, attribute: 'hp', value: 1.2 }],
             }),
             civilizationRecord('britons'),
+            // A factor on attack and armour is written as a whole percentage, class by class.
+            civilizationRecord('gurjaras', {
+                bonusEffects: [
+                    {
+                        mode: 'multiply',
+                        unit: null,
+                        unitClass: CAVALRY,
+                        attribute: 'attack',
+                        value: 125,
+                        damageClass: 'base-melee',
+                    },
+                ],
+            }),
+            civilizationRecord('khitans', {
+                bonusEffects: [
+                    attackPerAge(2, 1),
+                    attackPerAge(3, 1),
+                    { ...attackPerAge(4, 2), unitClass: CAVALRY },
+                ].map((effect) => ({ ...effect, unitClass: CAVALRY })),
+            }),
+            civilizationRecord('huns', {
+                bonusEffects: [{ mode: 'set', unit: 2, unitClass: null, attribute: 'hp', value: -1 }],
+            }),
+            civilizationRecord('burmese', {
+                bonusEffects: [attackPerAge(2, 1), attackPerAge(3, 1), attackPerAge(4, 1)],
+            }),
         ],
     });
 
@@ -126,6 +158,54 @@ describe('UpgradeService', () => {
         const outcome = upgrades.fullyUpgraded(catalog.unit('knight'), 'franks');
 
         expect(outcome.stats.hp).toBe(140);
+    });
+
+    it('reads an attack factor as the percentage the game packs into it', () => {
+        const { catalog, upgrades } = buildService();
+
+        const outcome = upgrades.apply({ unit: catalog.unit('knight'), techs: [], civ: 'gurjaras' });
+
+        expect(outcome.stats.attack.displayValue).toBe(12.5);
+    });
+
+    it('adds up what the game states one damage class at a time', () => {
+        const { catalog, upgrades } = buildService();
+
+        const outcome = upgrades.apply({ unit: catalog.unit('knight'), techs: [], civ: 'khitans' });
+
+        expect(outcome.stats.attack.displayValue).toBe(14);
+    });
+
+    it('ignores an effect the game writes as setting a value below zero', () => {
+        const { catalog, upgrades } = buildService();
+
+        const outcome = upgrades.apply({ unit: catalog.unit('knight'), techs: [], civ: 'huns' });
+
+        expect(outcome.stats.hp).toBe(100);
+    });
+
+    it('counts the ages of a bonus the game hands out once per age', () => {
+        const { catalog, upgrades } = buildService();
+
+        const [entry] = upgrades.civilizationBonuses(catalog.unit('champion')).filter(({ civ }) => civ === 'burmese');
+
+        expect([entry.delta.perAge, entry.delta.attack]).toEqual([3, [{ armourClass: 'base-melee', amount: 3 }]]);
+    });
+
+    it('leaves a bonus alone when the ages grant different amounts', () => {
+        const { catalog, upgrades } = buildService();
+
+        const [entry] = upgrades.civilizationBonuses(catalog.unit('knight')).filter(({ civ }) => civ === 'khitans');
+
+        expect(entry.delta.perAge).toBeUndefined();
+    });
+
+    it('lists only the civilizations whose own bonuses reach the unit', () => {
+        const { catalog, upgrades } = buildService();
+
+        const civs = upgrades.civilizationBonuses(catalog.unit('champion')).map(({ civ }) => civ);
+
+        expect(civs).toEqual(['burmese']);
     });
 
     it('scales the unit by the bonuses the civilization is simply given', () => {

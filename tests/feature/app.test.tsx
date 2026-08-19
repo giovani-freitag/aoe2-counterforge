@@ -117,6 +117,16 @@ describe('App', () => {
         });
     });
 
+    it('narrows a long picker list as you type', async () => {
+        const user = userEvent.setup();
+        render(<App />);
+
+        await user.click(screen.getAllByRole('button', { name: /Todas as civilizações/ })[0]);
+        await user.type(screen.getByRole('searchbox', { name: 'Usar esta civilização' }), 'bret');
+
+        expect(screen.getAllByRole('option').map((option) => option.textContent)).toEqual(['Bretões']);
+    });
+
     it('filters the roster by name', async () => {
         const user = userEvent.setup();
         window.location.hash = '#/units';
