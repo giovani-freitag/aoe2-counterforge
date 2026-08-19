@@ -304,7 +304,9 @@
         "loading": "Loading...",
         "notFound": "We could not find that page.",
         "goHome": "Back to home",
-        "all": "All"
+        "all": "All",
+        "filter": "Filter…",
+        "noMatch": "Nothing matches"
     },
     "armourClasses": {
         "infantry": "Infantry",

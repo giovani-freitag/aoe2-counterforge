@@ -14,6 +14,12 @@
     --text-muted: #a9b6c2;
     --text-faint: #7f8d9a;
 
+    /* Every form control lines up on this height, whatever it is made of. */
+
+    --control-height: 2.5rem;
+
+    
+
     --gold: #e6bb6b;
 
     --gold-ink: #14100a;

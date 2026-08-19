@@ -304,7 +304,9 @@
         "loading": "Carregando...",
         "notFound": "Não encontramos essa página.",
         "goHome": "Voltar ao início",
-        "all": "Todas"
+        "all": "Todas",
+        "filter": "Filtrar…",
+        "noMatch": "Nada corresponde"
     },
     "armourClasses": {
         "infantry": "Infantaria",

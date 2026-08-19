@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import type { Unit } from '../../domain/entities/unit.ts';
 import { iconUrl } from '../format.ts';
 import { useGameText } from '../hooks/use-game-text.ts';
+import { useMediaQuery } from '../hooks/use-media-query.ts';
 
 export interface UnitLineDiagramProps {
     /** One entry per upgrade step, each holding the alternatives at that point. */
@@ -12,7 +13,13 @@ export interface UnitLineDiagramProps {
 const NODE_HEIGHT = 52;
 const ROW_GAP = 14;
 const COLUMN_GAP = 44;
+
+/** Below this width the steps run down the page instead of across it. */
+const STACKED = '(max-width: 40rem)';
 const PADDING = 6;
+
+/** Room between stacked steps, wide enough for the arrow to be read as one. */
+const STACKED_GAP = 34;
 const ICON_SIZE = 32;
 const LABEL_LEFT = ICON_SIZE + 22;
 
@@ -37,24 +44,33 @@ interface PlacedNode {
 export function UnitLineDiagram({ steps, current }: UnitLineDiagramProps) {
     const { t } = useTranslation();
     const text = useGameText();
+    const stacked = useMediaQuery(STACKED);
 
     const names = new Map(steps.flat().map((unit) => [unit.key, text.unit(unit.key).name]));
     const longest = Math.max(...[...names.values()].map((name) => name.length));
     const nodeWidth = Math.min(MAX_NODE_WIDTH, Math.max(MIN_NODE_WIDTH, LABEL_LEFT + longest * CHARACTER_WIDTH + 18));
 
-    const rows = Math.max(...steps.map((step) => step.length));
-    const height = PADDING * 2 + rows * NODE_HEIGHT + (rows - 1) * ROW_GAP;
-    const width = PADDING * 2 + steps.length * nodeWidth + (steps.length - 1) * COLUMN_GAP;
+    const widest = Math.max(...steps.map((step) => step.length));
+    const across = stacked ? widest : steps.length;
+    const down = stacked ? steps.length : widest;
+
+    const width = PADDING * 2 + across * nodeWidth + (across - 1) * COLUMN_GAP;
+    const height = PADDING * 2 + down * NODE_HEIGHT + (down - 1) * (stacked ? STACKED_GAP : ROW_GAP);
 
     const placed = new Map<string, PlacedNode>();
-    steps.forEach((step, column) => {
-        const columnHeight = step.length * NODE_HEIGHT + (step.length - 1) * ROW_GAP;
-        step.forEach((unit, row) => {
+    steps.forEach((step, index) => {
+        const spread = step.length * nodeWidth + (step.length - 1) * COLUMN_GAP;
+        const stack = step.length * NODE_HEIGHT + (step.length - 1) * ROW_GAP;
+        step.forEach((unit, choice) => {
             placed.set(unit.key, {
                 unit,
                 name: names.get(unit.key) ?? unit.key,
-                x: PADDING + column * (nodeWidth + COLUMN_GAP),
-                y: (height - columnHeight) / 2 + row * (NODE_HEIGHT + ROW_GAP),
+                x: stacked
+                    ? (width - spread) / 2 + choice * (nodeWidth + COLUMN_GAP)
+                    : PADDING + index * (nodeWidth + COLUMN_GAP),
+                y: stacked
+                    ? PADDING + index * (NODE_HEIGHT + STACKED_GAP)
+                    : (height - stack) / 2 + choice * (NODE_HEIGHT + ROW_GAP),
             });
         });
     });
@@ -63,26 +79,33 @@ export function UnitLineDiagram({ steps, current }: UnitLineDiagramProps) {
         const parent = node.unit.upgradesFrom === null ? undefined : placed.get(node.unit.upgradesFrom);
         if (!parent) return [];
 
-        const startX = parent.x + nodeWidth;
-        const startY = parent.y + NODE_HEIGHT / 2;
-        const endY = node.y + NODE_HEIGHT / 2;
-        const bend = COLUMN_GAP * 0.6;
+        const start = stacked
+            ? { x: parent.x + nodeWidth / 2, y: parent.y + NODE_HEIGHT }
+            : { x: parent.x + nodeWidth, y: parent.y + NODE_HEIGHT / 2 };
+        const end = stacked
+            ? { x: node.x + nodeWidth / 2, y: node.y - 7 }
+            : { x: node.x - 7, y: node.y + NODE_HEIGHT / 2 };
+        const bend = stacked ? STACKED_GAP * 0.6 : COLUMN_GAP * 0.6;
+        const control = stacked
+            ? `${String(start.x)} ${String(start.y + bend)}, ${String(end.x)} ${String(end.y - bend)}`
+            : `${String(start.x + bend)} ${String(start.y)}, ${String(end.x - bend)} ${String(end.y)}`;
 
         return [
             {
                 key: `${parent.unit.key}-${node.unit.key}`,
-                path: `M ${String(startX)} ${String(startY)} C ${String(startX + bend)} ${String(startY)}, ${String(node.x - bend)} ${String(endY)}, ${String(node.x - 7)} ${String(endY)}`,
+                path: `M ${String(start.x)} ${String(start.y)} C ${control}, ${String(end.x)} ${String(end.y)}`,
             },
         ];
     });
 
     return (
-        <div className="scroll-x">
+        <div className={stacked ? undefined : 'scroll-x'}>
             <svg
                 className="line-diagram"
-                width={width}
-                height={height}
+                width={stacked ? '100%' : width}
+                height={stacked ? undefined : height}
                 viewBox={`0 0 ${String(width)} ${String(height)}`}
+                preserveAspectRatio="xMidYMin meet"
                 role="img"
                 aria-label={t('unit.line')}
             >
