@@ -26,6 +26,14 @@ export interface CivilizationBonus {
     team: StatDelta;
 }
 
+export interface ChangedUnit {
+    unit: Unit;
+    /** What the technology does to this unit in particular. */
+    delta: StatDelta;
+    /** Set when it reaches the unit but changes nothing this guide puts a number on. */
+    qualitative: boolean;
+}
+
 export interface UpgradeSelection {
     unit: Unit;
     techs: readonly string[];
@@ -117,6 +125,20 @@ export class UpgradeService {
                     left.technology.building.localeCompare(right.technology.building) ||
                     left.technology.key.localeCompare(right.technology.key),
             );
+    }
+
+    /**
+     * Every unit one technology reaches, which is the upgrades tab read backwards.
+     *
+     * @param technology - Technology to inspect.
+     * @returns One entry per unit it changes, ordered the way the roster is.
+     */
+    public unitsChangedBy(technology: Technology): ChangedUnit[] {
+        return this.catalog
+            .units({ combatOnly: true })
+            .map((unit) => ({ unit, applied: this.upgradeFor(unit, technology) }))
+            .filter((entry): entry is { unit: Unit; applied: AppliedUpgrade } => entry.applied !== null)
+            .map(({ unit, applied }) => ({ unit, delta: applied.delta, qualitative: applied.qualitative }));
     }
 
     /**

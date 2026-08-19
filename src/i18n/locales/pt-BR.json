@@ -389,5 +389,15 @@
         "system": "Do sistema",
         "light": "Claro",
         "dark": "Escuro"
+    },
+    "tech": {
+        "changes": "O que ela muda",
+        "changesCount_one": "{{count}} unidade",
+        "changesCount_other": "{{count}} unidades",
+        "changesNothing": "Não alcança nenhuma unidade que este guia meça.",
+        "researchedBy": "Quem pesquisa",
+        "civCount_one": "{{count}} civilização",
+        "civCount_other": "{{count}} civilizações",
+        "uniqueTo": "Exclusiva dos {{civ}}"
     }
 }

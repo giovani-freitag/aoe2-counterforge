@@ -1,18 +1,17 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router';
+import { Link, useParams } from 'react-router';
 import { EntityNotFoundError } from '../../domain/errors/domain-error.ts';
 import { GameIcon } from '../components/game-icon.tsx';
 import { ResourceCostRow } from '../components/resource-cost-row.tsx';
 import { UnitListItem } from '../components/unit-list-item.tsx';
 import { describeEffect } from '../effect-description.ts';
-import { short } from '../format.ts';
+import { iconUrl, short } from '../format.ts';
 import { useGameText } from '../hooks/use-game-text.ts';
 import { useServices } from '../hooks/use-services.ts';
 import { NotFoundPage } from './not-found-page.tsx';
-import { BackLink } from '../components/back-link.tsx';
 
-/** Technology profile: cost, effect and every unit it changes. */
+/** Technology profile: what it costs, every unit it changes, and who gets to research it. */
 export function TechnologyPage() {
     const { t } = useTranslation();
     const { key } = useParams<{ key: string }>();
@@ -30,23 +29,15 @@ export function TechnologyPage() {
         }
     }, [catalog, key]);
 
-    const affected = useMemo(() => {
-        if (!technology) return [];
+    const changed = useMemo(() => (technology ? upgrades.unitsChangedBy(technology) : []), [upgrades, technology]);
 
-        return catalog
-            .units({ combatOnly: true })
-            .filter((unit) => upgrades.affecting(unit).some((entry) => entry.technology.key === technology.key));
-    }, [catalog, upgrades, technology]);
-
-    const effects = useMemo(() => {
-        if (!technology) return [];
-
-        const match = affected
-            .flatMap((unit) => upgrades.affecting(unit))
-            .find((entry) => entry.technology.key === technology.key);
-
-        return match && !match.qualitative ? describeEffect(match.delta, t) : [];
-    }, [affected, upgrades, technology, t]);
+    const civilizations = useMemo(
+        () =>
+            (technology?.civs ?? [])
+                .map((civ) => ({ key: civ, name: text.civilization(civ).name }))
+                .sort((left, right) => left.name.localeCompare(right.name)),
+        [technology, text],
+    );
 
     if (!technology) return <NotFoundPage />;
 
@@ -54,7 +45,6 @@ export function TechnologyPage() {
 
     return (
         <div className="stack">
-            <BackLink to="/units" label={t('nav.units')} />
             <header className="card">
                 <div className="unit-hero">
                     <GameIcon
@@ -68,7 +58,11 @@ export function TechnologyPage() {
                         <div className="unit-hero__meta">
                             <span className="badge">{t(`ages.${technology.age}`)}</span>
                             <span className="badge">{t(`buildings.${technology.building}`, technology.building)}</span>
-                            <span className="badge">{t('unit.availableIn', { count: technology.civs.length })}</span>
+                            <span className="badge">
+                                {technology.isUnique
+                                    ? t('tech.uniqueTo', { civ: civilizations[0]?.name ?? '' })
+                                    : t('tech.civCount', { count: technology.civs.length })}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -77,31 +71,64 @@ export function TechnologyPage() {
                     cost={technology.cost}
                     trailing={t('upgrades.researchTime', { value: short(technology.researchTime) })}
                 />
-                {effects.length > 0 ? (
-                    <div className="upgrade-item__effects" style={{ marginTop: 'var(--space-3)' }}>
-                        {effects.map((effect) => (
-                            <span key={effect} className="effect-chip">
-                                {effect}
-                            </span>
-                        ))}
-                    </div>
-                ) : null}
             </header>
 
-            {affected.length > 0 ? (
-                <section className="card">
-                    <div className="card__title">
-                        <h2>{t('upgrades.genericTitle')}</h2>
-                    </div>
+            <section className="card">
+                <div className="card__title">
+                    <h2>{t('tech.changes')}</h2>
+                    <span className="card__hint">{t('tech.changesCount', { count: changed.length })}</span>
+                </div>
+
+                {changed.length === 0 ? (
+                    <p className="empty">{t('tech.changesNothing')}</p>
+                ) : (
                     <ul className="list">
-                        {affected.map((unit) => (
-                            <li key={unit.key}>
-                                <UnitListItem unit={unit} subtitle={t(`categories.${unit.category}`)} />
+                        {changed.map((entry) => (
+                            <li key={entry.unit.key}>
+                                <UnitListItem
+                                    unit={entry.unit}
+                                    subtitle={t(`categories.${entry.unit.category}`)}
+                                    trailing={
+                                        <span className="upgrade-item__effects">
+                                            {entry.qualitative ? (
+                                                <span className="effect-chip effect-chip--muted">
+                                                    {t('upgrades.qualitative')}
+                                                </span>
+                                            ) : (
+                                                describeEffect(entry.delta, t).map((effect) => (
+                                                    <span key={effect} className="effect-chip">
+                                                        {effect}
+                                                    </span>
+                                                ))
+                                            )}
+                                        </span>
+                                    }
+                                />
                             </li>
                         ))}
                     </ul>
-                </section>
-            ) : null}
+                )}
+            </section>
+
+            <section className="card">
+                <div className="card__title">
+                    <h2>{t('tech.researchedBy')}</h2>
+                    <span className="card__hint">{t('tech.civCount', { count: civilizations.length })}</span>
+                </div>
+                <div className="row">
+                    {civilizations.map((civ) => (
+                        <Link key={civ.key} className="chip" to={`/civ/${civ.key}`}>
+                            <img
+                                className="picker__emblem"
+                                src={iconUrl(`Civs/${catalog.civilization(civ.key).icon}.png`)}
+                                alt=""
+                                loading="lazy"
+                            />
+                            {civ.name}
+                        </Link>
+                    ))}
+                </div>
+            </section>
         </div>
     );
 }

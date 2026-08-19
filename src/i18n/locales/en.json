@@ -389,5 +389,15 @@
         "system": "System",
         "light": "Light",
         "dark": "Dark"
+    },
+    "tech": {
+        "changes": "What it changes",
+        "changesCount_one": "{{count}} unit",
+        "changesCount_other": "{{count}} units",
+        "changesNothing": "It reaches no unit this guide puts a number on.",
+        "researchedBy": "Researched by",
+        "civCount_one": "{{count}} civilization",
+        "civCount_other": "{{count}} civilizations",
+        "uniqueTo": "Unique to the {{civ}}"
     }
 }
