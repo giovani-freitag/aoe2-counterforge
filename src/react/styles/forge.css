@@ -312,6 +312,35 @@
     position: relative;
 }
 
+.settings__source {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-md);
+    color: var(--text-faint);
+    font-size: 0.7rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+    transition: color 0.15s ease;
+}
+
+.settings__source:hover {
+    color: var(--gold);
+}
+
+.settings__source .glyph {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* On a narrow phone the search needs that room more than the version number does. */
+@media (max-width: 26rem) {
+    .settings__version {
+        display: none;
+    }
+}
+
 .picker__button {
     display: flex;
     align-items: center;

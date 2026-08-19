@@ -2,7 +2,8 @@
     "app": {
         "title": "AoE2 Counterforge",
         "tagline": "Counters, costs and economy for every unit",
-        "skipToContent": "Skip to content"
+        "skipToContent": "Skip to content",
+        "source": "Source on GitHub"
     },
     "nav": {
         "home": "Home",

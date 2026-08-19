@@ -82,6 +82,18 @@ export function SettingsBar() {
                     theme.set(value as 'system' | 'light' | 'dark');
                 }}
             />
+
+            <a
+                className="settings__source"
+                href={__APP_REPOSITORY__}
+                target="_blank"
+                rel="noreferrer"
+                title={t('app.source')}
+            >
+                <Icon name="source" />
+                <span className="settings__version">{__APP_VERSION__}</span>
+                <span className="visually-hidden">{t('app.source')}</span>
+            </a>
         </div>
     );
 }

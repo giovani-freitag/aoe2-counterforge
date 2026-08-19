@@ -1,7 +1,13 @@
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vitest/config';
+import manifest from './package.json' with { type: 'json' };
 
 export default defineConfig({
+    // The same stamps the build applies, so a component can read them under test too.
+    define: {
+        __APP_VERSION__: JSON.stringify(manifest.version),
+        __APP_REPOSITORY__: JSON.stringify(manifest.repository.url),
+    },
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url)),

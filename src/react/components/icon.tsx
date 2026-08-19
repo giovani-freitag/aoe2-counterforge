@@ -1,5 +1,6 @@
 import {
     Castle,
+    Code2,
     Crown,
     ChevronLeft,
     ChevronRight,
@@ -63,6 +64,7 @@ const GLYPHS = {
     dark: Moon,
     back: ChevronLeft,
     best: Crown,
+    source: Code2,
 } as const;
 
 export type IconName = keyof typeof GLYPHS;
