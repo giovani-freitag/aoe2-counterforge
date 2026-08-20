@@ -516,9 +516,14 @@
         padding: var(--space-1);
     }
 
+    /* Stretched with nothing in it, the search reads as a broken field; a circle reads as a
+       button, and it lines up with the pickers beside it. */
     .searchbutton {
-        flex: 1;
+        flex: none;
+        width: var(--control-height);
         min-width: 0;
+        padding: 0;
+        justify-content: center;
     }
 }
 
