@@ -69,7 +69,7 @@ export function UnitsPage() {
             .units({
                 civ: preferences.civ,
                 combatOnly: true,
-                offTree,
+                inTechTreeOnly: !offTree,
                 categories: category ? [category] : undefined,
                 ages: age ? [age] : undefined,
             })

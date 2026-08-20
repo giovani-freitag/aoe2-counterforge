@@ -15,8 +15,8 @@ export interface GameCatalogServiceConfig {
 }
 
 export interface UnitQuery {
-    /** Set to reach the units the game can produce that no tech tree lists. */
-    offTree?: boolean;
+    /** Set to keep the listing to what a tech tree names, which is what a menu can promise. */
+    inTechTreeOnly?: boolean;
     civ?: string | null;
     categories?: readonly UnitCategory[];
     ages?: readonly AgeId[];
@@ -80,7 +80,7 @@ export class GameCatalogService {
             .filter((unit) => !query.line || unit.line === query.line)
             .filter((unit) => !query.tags || query.tags.every((tag) => unit.hasTag(tag)))
             .filter((unit) => !query.combatOnly || unit.category !== 'civilian')
-            .filter((unit) => query.offTree === true || unit.inTechTree)
+            .filter((unit) => query.inTechTreeOnly !== true || unit.inTechTree)
             .sort((left, right) => left.age - right.age || left.key.localeCompare(right.key));
     }
 
