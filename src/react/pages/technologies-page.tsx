@@ -2,9 +2,10 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { AGE_IDS } from '../../domain/enums/age.ts';
+import { Directory } from '../components/directory.tsx';
 import { GameIcon } from '../components/game-icon.tsx';
-import { Picker } from '../components/picker.tsx';
-import { VirtualList } from '../components/virtual-list.tsx';
+import { PickerField } from '../components/picker-field.tsx';
+import { SearchField } from '../components/search-field.tsx';
 import { useGameText } from '../hooks/use-game-text.ts';
 import { useNameFilter } from '../hooks/use-name-filter.ts';
 import { usePreferences } from '../hooks/use-preferences.ts';
@@ -49,85 +50,58 @@ export function TechnologiesPage() {
     );
 
     return (
-        <div className="stack">
-            <header className="stack stack--tight">
-                <h1>{t('nav.technologies')}</h1>
-                <p className="card__hint">{t('techs.count', { count: visible.length })}</p>
-            </header>
-
-            <section className="card">
-                <div className="form-grid">
-                    <div className="field">
-                        <label className="field__label" htmlFor="tech-filter">
-                            {t('techs.filter')}
-                        </label>
-                        <input
-                            id="tech-filter"
-                            type="search"
-                            className="input"
-                            value={term}
-                            placeholder={t('techs.filterHint')}
-                            onChange={(event) => {
-                                setTerm(event.target.value);
-                            }}
-                        />
-                    </div>
-
-                    <div className="field">
-                        <label className="field__label" htmlFor="tech-age">
-                            {t('unit.age')}
-                        </label>
-                        <Picker
-                            id="tech-age"
-                            block
-                            label={t('unit.age')}
-                            value={age}
-                            options={[
-                                { value: '', label: t('common.all') },
-                                ...AGE_IDS.map((entry) => ({ value: String(entry), label: t(`ages.${entry}`) })),
-                            ]}
-                            onChange={setAge}
-                        />
-                    </div>
-
-                    <div className="field">
-                        <label className="field__label" htmlFor="tech-building">
-                            {t('techs.building')}
-                        </label>
-                        <Picker
-                            id="tech-building"
-                            block
-                            label={t('techs.building')}
-                            value={building}
-                            options={[
-                                { value: '', label: t('common.all') },
-                                ...buildings.map((entry) => ({ value: entry.key, label: entry.label })),
-                            ]}
-                            onChange={setBuilding}
-                        />
-                    </div>
-                </div>
-            </section>
-
-            {visible.length === 0 ? (
-                <p className="empty">{t('techs.empty')}</p>
-            ) : (
-                <VirtualList items={visible} estimate={72} keyOf={(technology) => technology.key}>
-                    {(technology) => (
-                        <Link className="list-item" to={`/tech/${technology.key}`}>
-                            <GameIcon path={technology.icon === null ? null : `Tech/${technology.icon}.png`} alt="" />
-                            <span className="list-item__body">
-                                <span className="list-item__title">{text.technology(technology.key).name}</span>
-                                <span className="list-item__subtitle">
-                                    {t(`ages.${technology.age}`)} ·{' '}
-                                    {t(`buildings.${technology.building}`, technology.building)}
-                                </span>
-                            </span>
-                            {technology.isUnique ? <span className="badge">{t('techs.unique')}</span> : null}
-                        </Link>
-                    )}
-                </VirtualList>
+        <Directory
+            title={t('nav.technologies')}
+            summary={t('techs.count', { count: visible.length })}
+            items={visible}
+            keyOf={(technology) => technology.key}
+            estimate={72}
+            empty={t('techs.empty')}
+            filters={
+                <>
+                    <SearchField
+                        id="tech-filter"
+                        label={t('techs.filter')}
+                        placeholder={t('techs.filterHint')}
+                        value={term}
+                        onChange={setTerm}
+                    />
+                    <PickerField
+                        id="tech-age"
+                        label={t('unit.age')}
+                        value={age}
+                        options={[
+                            { value: '', label: t('common.all') },
+                            ...AGE_IDS.map((entry) => ({ value: String(entry), label: t(`ages.${entry}`) })),
+                        ]}
+                        onChange={setAge}
+                    />
+                    <PickerField
+                        id="tech-building"
+                        label={t('techs.building')}
+                        value={building}
+                        options={[
+                            { value: '', label: t('common.all') },
+                            ...buildings.map((entry) => ({ value: entry.key, label: entry.label })),
+                        ]}
+                        onChange={setBuilding}
+                    />
+                </>
+            }
+        >
+            {(technology) => (
+                <Link className="list-item" to={`/tech/${technology.key}`}>
+                    <GameIcon path={technology.icon === null ? null : `Tech/${technology.icon}.png`} alt="" />
+                    <span className="list-item__body">
+                        <span className="list-item__title">{text.technology(technology.key).name}</span>
+                        <span className="list-item__subtitle">
+                            {t(`ages.${technology.age}`)} ·{' '}
+                            {t(`buildings.${technology.building}`, technology.building)}
+                        </span>
+                    </span>
+                    {technology.isUnique ? <span className="badge">{t('techs.unique')}</span> : null}
+                </Link>
             )}
-        </div>
+        </Directory>
     );
 }

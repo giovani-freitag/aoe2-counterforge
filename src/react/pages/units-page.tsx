@@ -6,8 +6,9 @@ import { UNIT_CATEGORIES, isUnitCategory, type UnitCategory } from '../../domain
 import type { Unit } from '../../domain/entities/unit.ts';
 import { UNIT_SORT_KEYS, type UnitSortKey } from '../../services/unit-ranking/unit-ranking-service.ts';
 import { UnitListItem } from '../components/unit-list-item.tsx';
-import { Picker } from '../components/picker.tsx';
-import { VirtualList } from '../components/virtual-list.tsx';
+import { Directory } from '../components/directory.tsx';
+import { PickerField } from '../components/picker-field.tsx';
+import { SearchField } from '../components/search-field.tsx';
 import { buildingNames } from '../building-names.ts';
 import { precise, short } from '../format.ts';
 import { useGameText } from '../hooks/use-game-text.ts';
@@ -94,138 +95,97 @@ export function UnitsPage() {
         return short(value);
     };
 
+    const toggle = (key: string, label: string, checked: boolean) => (
+        <label className="toggle">
+            <input
+                type="checkbox"
+                checked={checked}
+                onChange={(event) => {
+                    setFilter(key, event.target.checked ? '1' : null);
+                }}
+            />
+            {label}
+        </label>
+    );
+
     return (
-        <div className="stack">
-            <header>
-                <h1>{t('nav.units')}</h1>
-                <p className="card__hint">{t('civ.count', { count: rows.length })}</p>
-            </header>
-
-            <section className="card">
-                <div className="form-grid">
-                    <div className="field">
-                        <label className="field__label" htmlFor="unit-filter">
-                            {t('units.filterPlaceholder')}
-                        </label>
-                        <input
-                            id="unit-filter"
-                            type="search"
-                            className="input"
-                            value={term}
-                            placeholder={t('units.filterHint')}
-                            onChange={(event) => { setFilter('q', event.target.value || null); }}
-                        />
-                    </div>
-
-                    <div className="field">
-                        <label className="field__label" htmlFor="unit-sort">
-                            {t('units.sortBy')}
-                        </label>
-                        <Picker
-                            id="unit-sort"
-                            block
-                            label={t('units.sortBy')}
-                            value={sort}
-                            options={SORT_OPTIONS.map((option) => ({
-                                value: option,
-                                label: t(`units.sorts.${option}`),
-                            }))}
-                            onChange={(value) => {
-                                setFilter('sort', value);
-                            }}
-                        />
-                    </div>
-
-                    <div className="field">
-                        <label className="field__label" htmlFor="unit-category">
-                            {t('units.category')}
-                        </label>
-                        <Picker
-                            id="unit-category"
-                            block
-                            label={t('units.category')}
-                            value={category ?? ''}
-                            options={[
-                                { value: '', label: t('common.all') },
-                                ...UNIT_CATEGORIES.filter((entry) => entry !== 'civilian').map((entry) => ({
-                                    value: entry,
-                                    label: t(`categories.${entry}`),
-                                })),
-                            ]}
-                            onChange={(value) => {
-                                setFilter('category', value || null);
-                            }}
-                        />
-                    </div>
-
-                    <div className="field">
-                        <label className="field__label" htmlFor="unit-age">
-                            {t('unit.age')}
-                        </label>
-                        <Picker
-                            id="unit-age"
-                            block
-                            label={t('unit.age')}
-                            value={age === null ? '' : String(age)}
-                            options={[
-                                { value: '', label: t('common.all') },
-                                ...AGE_IDS.map((entry) => ({ value: String(entry), label: t(`ages.${entry}`) })),
-                            ]}
-                            onChange={(value) => {
-                                setFilter('age', value || null);
-                            }}
-                        />
-                    </div>
-                </div>
-
-                <hr className="divider" />
-
-                <div className="toggle-list">
-                    <label className="toggle">
-                        <input
-                            type="checkbox"
-                            checked={linesOnly}
-                            onChange={(event) => { setFilter('lines', event.target.checked ? '1' : null); }}
-                        />
-                        {t('units.onePerLine')}
-                    </label>
-                    <label className="toggle">
-                        <input
-                            type="checkbox"
-                            checked={uniqueOnly}
-                            onChange={(event) => { setFilter('unique', event.target.checked ? '1' : null); }}
-                        />
-                        {t('units.uniqueOnly')}
-                    </label>
-                    <label className="toggle">
-                        <input
-                            type="checkbox"
-                            checked={upgraded}
-                            onChange={(event) => { setFilter('upgraded', event.target.checked ? '1' : null); }}
-                        />
-                        {t('units.withUpgrades')}
-                    </label>
-                </div>
-            </section>
-
-            {rows.length === 0 ? (
-                <p className="empty">{t('units.empty')}</p>
-            ) : (
-                <VirtualList items={rows} estimate={64} keyOf={(row) => row.unit.key}>
-                    {(row) => (
-                        <UnitListItem
-                            unit={row.unit}
-                            subtitle={`${t(`ages.${row.unit.age}`)} · ${buildingNames(row.unit.buildings, t)}`}
-                            trailing={
-                                <span className="badge">
-                                    {metricLabel(row.metric) ??
-                                        t('common.seconds', { value: short(row.unit.trainTime) })}
-                                </span>
-                            }
-                        />
-                    )}
-                </VirtualList>
+        <Directory
+            title={t('nav.units')}
+            summary={t('civ.count', { count: rows.length })}
+            items={rows}
+            keyOf={(row) => row.unit.key}
+            empty={t('units.empty')}
+            filters={
+                <>
+                    <SearchField
+                        id="unit-filter"
+                        label={t('units.filterPlaceholder')}
+                        placeholder={t('units.filterHint')}
+                        value={term}
+                        onChange={(value) => {
+                            setFilter('q', value || null);
+                        }}
+                    />
+                    <PickerField
+                        id="unit-sort"
+                        label={t('units.sortBy')}
+                        value={sort}
+                        options={SORT_OPTIONS.map((option) => ({
+                            value: option,
+                            label: t(`units.sorts.${option}`),
+                        }))}
+                        onChange={(value) => {
+                            setFilter('sort', value);
+                        }}
+                    />
+                    <PickerField
+                        id="unit-category"
+                        label={t('units.category')}
+                        value={category ?? ''}
+                        options={[
+                            { value: '', label: t('common.all') },
+                            ...UNIT_CATEGORIES.filter((entry) => entry !== 'civilian').map((entry) => ({
+                                value: entry,
+                                label: t(`categories.${entry}`),
+                            })),
+                        ]}
+                        onChange={(value) => {
+                            setFilter('category', value || null);
+                        }}
+                    />
+                    <PickerField
+                        id="unit-age"
+                        label={t('unit.age')}
+                        value={age === null ? '' : String(age)}
+                        options={[
+                            { value: '', label: t('common.all') },
+                            ...AGE_IDS.map((entry) => ({ value: String(entry), label: t(`ages.${entry}`) })),
+                        ]}
+                        onChange={(value) => {
+                            setFilter('age', value || null);
+                        }}
+                    />
+                </>
+            }
+            switches={
+                <>
+                    {toggle('lines', t('units.onePerLine'), linesOnly)}
+                    {toggle('unique', t('units.uniqueOnly'), uniqueOnly)}
+                    {toggle('upgraded', t('units.withUpgrades'), upgraded)}
+                </>
+            }
+        >
+            {(row) => (
+                <UnitListItem
+                    unit={row.unit}
+                    subtitle={`${t(`ages.${row.unit.age}`)} · ${buildingNames(row.unit.buildings, t)}`}
+                    trailing={
+                        <span className="badge">
+                            {metricLabel(row.metric) ?? t('common.seconds', { value: short(row.unit.trainTime) })}
+                        </span>
+                    }
+                />
             )}
-        </div>
+        </Directory>
     );
 }

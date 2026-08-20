@@ -413,5 +413,12 @@
         "building": "Researched at",
         "unique": "Unique",
         "empty": "No technology matches."
+    },
+    "civs": {
+        "count_one": "{{count}} civilization",
+        "count_other": "{{count}} civilizations",
+        "filter": "Filter by name",
+        "filterHint": "e.g. britons",
+        "empty": "No civilization matches."
     }
 }

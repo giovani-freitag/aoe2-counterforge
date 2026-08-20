@@ -413,5 +413,12 @@
         "building": "Pesquisada em",
         "unique": "Exclusiva",
         "empty": "Nenhuma tecnologia corresponde."
+    },
+    "civs": {
+        "count_one": "{{count}} civilização",
+        "count_other": "{{count}} civilizações",
+        "filter": "Filtrar por nome",
+        "filterHint": "ex.: bretões",
+        "empty": "Nenhuma civilização corresponde."
     }
 }
