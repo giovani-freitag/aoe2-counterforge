@@ -47,7 +47,7 @@ you have, and whether you plan to stand and fight or shoot on the move.
 <table>
 <tr>
 <td width="50%" valign="top">
-<img src="docs/screenshots/counters-light.png" alt="Counters tab with the trade simulation and the strongest matchups">
+<img src="docs/screenshots/counters-light.png" alt="Counters tab: strong, weak and every matchup behind one switch">
 <p align="center"><sub>Counters, in either theme</sub></p>
 </td>
 <td width="50%" valign="top">
