@@ -45,6 +45,13 @@ A search that finds nothing at the current breadth offers the widest one rather 
 There is no ceiling on efficiency. Across all thirty-seven thousand pairs the median is an even
 trade, nine in ten land under 5x, and the most lopsided fight in the game reaches 75x.
 
+## Whose side a row is on
+
+A row names the opponent, so everything on its left describes that opponent: more or less range, a
+minimum range, splash damage, faster or slower, and which way the bonus damage runs. The right side
+belongs to the unit whose page you are on — the trade ratio and the verdict — and the column
+headings say so, because the two halves of a row are about two different units.
+
 ## What the model does not do
 
 It is one unit against one unit. It does not model mass battles, focus fire, area damage over a

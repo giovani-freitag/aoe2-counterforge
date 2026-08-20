@@ -11,7 +11,6 @@ import { Icon } from './icon.tsx';
 export interface MatchupRowProps {
     matchup: Matchup;
     subjectName: string;
-    showVerdict?: boolean;
     /**
      * Reads the trade from the opponent's side.
      *
@@ -80,7 +79,7 @@ function DuelColumn({ title, side }: { title: string; side: DuelSide }) {
 }
 
 /** One opponent row that unfolds in place to show the full arithmetic behind its verdict. */
-export function MatchupRow({ matchup, subjectName, showVerdict = false, fromOpponent = false }: MatchupRowProps) {
+export function MatchupRow({ matchup, subjectName, fromOpponent = false }: MatchupRowProps) {
     const { t } = useTranslation();
     const text = useGameText();
     const [isOpen, setIsOpen] = useState(false);
@@ -89,7 +88,7 @@ export function MatchupRow({ matchup, subjectName, showVerdict = false, fromOppo
     const verdict = fromOpponent ? MIRRORED[matchup.verdict] : matchup.verdict;
     const score = fromOpponent ? 1 / matchup.efficiency : matchup.efficiency;
     const colour = VERDICT_COLOUR[verdict];
-    const notes = showVerdict ? matchup.notes.slice(0, 2) : matchup.notes.slice(0, 3);
+    const notes = matchup.notes.slice(0, 3);
 
     return (
         <div className="matchup" data-open={isOpen}>
@@ -103,11 +102,6 @@ export function MatchupRow({ matchup, subjectName, showVerdict = false, fromOppo
                 <span className="list-item__body">
                     <span className="list-item__title">{opponentName}</span>
                     <span className="matchup__notes">
-                        {showVerdict ? (
-                            <span className="note-chip" style={{ color: colour }}>
-                                {t(`counters.verdicts.${verdict}`)}
-                            </span>
-                        ) : null}
                         {notes.map((note) => (
                             <span key={note} className="note-chip">
                                 {t(`counters.notes.${note}`)}
@@ -118,6 +112,9 @@ export function MatchupRow({ matchup, subjectName, showVerdict = false, fromOppo
                 <span className="matchup__score">
                     <span className="matchup__value" style={{ color: colour }}>
                         {efficiency(score)}
+                    </span>
+                    <span className="matchup__verdict" style={{ color: colour }}>
+                        {t(`counters.verdicts.${verdict}`)}
                     </span>
                     <span className="matchup__bar">
                         <span

@@ -233,6 +233,19 @@
     margin-bottom: var(--space-3);
 }
 
+/* Names the two halves of a row, because each one is about a different unit. */
+.board__columns {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+}
+
 .board__chips {
     display: flex;
     flex-wrap: wrap;
@@ -464,6 +477,12 @@
     font-variant-numeric: tabular-nums;
     font-weight: 700;
     font-size: 0.9375rem;
+}
+
+.matchup__verdict {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    opacity: 0.85;
 }
 
 .matchup__bar {

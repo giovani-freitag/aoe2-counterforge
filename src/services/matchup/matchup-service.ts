@@ -9,14 +9,22 @@ import type { UpgradeService } from '../upgrade/upgrade-service.ts';
 
 export type MatchupVerdict = 'dominant' | 'favourable' | 'even' | 'unfavourable' | 'countered';
 
+/**
+ * A fact about the opponent, phrased from the subject's side of the fight.
+ *
+ * Every note describes the unit the row is named after, because a chip sitting under a name is
+ * read as a statement about that name. The trade ratio is the other half of the row and belongs to
+ * the subject; keeping the two halves pointed at different units only works while each says whose
+ * side it is on.
+ */
 export type MatchupNote =
-    | 'out-ranges'
-    | 'out-ranged'
+    | 'outranges'
+    | 'outranged'
     | 'faster'
     | 'slower'
     | 'blast'
-    | 'bonus-damage'
-    | 'takes-bonus-damage'
+    | 'deals-bonus'
+    | 'takes-bonus'
     | 'min-range';
 
 export interface MatchupThresholds {
@@ -276,21 +284,21 @@ export class MatchupService {
     }
 
     /**
-     * What a reader should know about the number, most surprising first.
+     * What the opponent brings to the fight, most surprising first.
      *
      * A row shows two or three of these, so the order is the point: bonus damage and reach change
      * how the ratio should be read, while being faster is the least surprising thing on the list.
      */
     private notesFor(subject: UnitStats, opponent: UnitStats, duel: DuelResult): MatchupNote[] {
         const notes: MatchupNote[] = [];
-        if (this.hasBonus(duel.attacker.breakdown.components)) notes.push('bonus-damage');
-        if (this.hasBonus(duel.defender.breakdown.components)) notes.push('takes-bonus-damage');
-        if (subject.range >= opponent.range + 2) notes.push('out-ranges');
-        if (opponent.range >= subject.range + 2) notes.push('out-ranged');
-        if (subject.blastWidth > 0) notes.push('blast');
-        if (subject.minRange > 0) notes.push('min-range');
-        if (subject.speed > opponent.speed) notes.push('faster');
-        if (subject.speed < opponent.speed) notes.push('slower');
+        if (this.hasBonus(duel.defender.breakdown.components)) notes.push('deals-bonus');
+        if (this.hasBonus(duel.attacker.breakdown.components)) notes.push('takes-bonus');
+        if (opponent.range >= subject.range + 2) notes.push('outranges');
+        if (subject.range >= opponent.range + 2) notes.push('outranged');
+        if (opponent.blastWidth > 0) notes.push('blast');
+        if (opponent.minRange > 0) notes.push('min-range');
+        if (opponent.speed > subject.speed) notes.push('faster');
+        if (opponent.speed < subject.speed) notes.push('slower');
 
         return notes;
     }

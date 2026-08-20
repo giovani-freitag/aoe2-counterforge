@@ -162,14 +162,14 @@
             "countered": "É counterada"
         },
         "notes": {
-            "out-ranges": "Ataca de mais longe",
-            "out-ranged": "Apanha de longe",
-            "faster": "Mais rápida",
-            "slower": "Mais lenta",
+            "outranges": "Mais alcance",
+            "outranged": "Menos alcance",
+            "faster": "Mais rápido",
+            "slower": "Mais lento",
             "blast": "Dano em área",
-            "bonus-damage": "Tem dano bônus",
-            "takes-bonus-damage": "Sofre dano bônus",
-            "min-range": "Tem alcance mínimo"
+            "deals-bonus": "Causa dano bônus",
+            "takes-bonus": "Recebe dano bônus",
+            "min-range": "Alcance mínimo"
         },
         "duel": {
             "title": "Detalhe do confronto",
@@ -192,7 +192,13 @@
             "weak": "Fracos",
             "all": "Todos"
         },
-        "widen": "Buscar em todas as versões"
+        "widen": "Buscar em todas as versões",
+        "columns": {
+            "opponent": "Adversário",
+            "trade": "Troca de {{unit}}",
+            "answer": "Resposta",
+            "tradeAgainst": "Troca contra {{unit}}"
+        }
     },
     "upgrades": {
         "lineTitle": "Evoluções da linha",

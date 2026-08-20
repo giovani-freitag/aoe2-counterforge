@@ -98,7 +98,7 @@ describe('MatchupService', () => {
 
         const matchup = matchups.against({ unit: catalog.unit('pikeman') }, catalog.unit('knight'));
 
-        expect(matchup.notes).toContain('bonus-damage');
+        expect(matchup.notes).toContain('takes-bonus');
     });
 
     it('leaves units without an attack out of the opponent pool', () => {

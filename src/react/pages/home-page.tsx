@@ -91,17 +91,22 @@ export function HomePage() {
                     {answers.length === 0 ? (
                         <p className="empty">{t('counters.empty')}</p>
                     ) : (
-                        <div className="list">
-                            {answers.map((matchup) => (
-                                <MatchupRow
-                                    key={matchup.opponent.key}
-                                    matchup={matchup}
-                                    subjectName={enemyName}
-                                    fromOpponent
-                                    showVerdict
-                                />
-                            ))}
-                        </div>
+                        <>
+                            <div className="board__columns">
+                                <span>{t('counters.columns.answer')}</span>
+                                <span>{t('counters.columns.tradeAgainst', { unit: enemyName })}</span>
+                            </div>
+                            <div className="list">
+                                {answers.map((matchup) => (
+                                    <MatchupRow
+                                        key={matchup.opponent.key}
+                                        matchup={matchup}
+                                        subjectName={enemyName}
+                                        fromOpponent
+                                    />
+                                ))}
+                            </div>
+                        </>
                     )}
                 </section>
             )}

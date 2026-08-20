@@ -162,6 +162,13 @@ export function MatchupBoard({ matchups, subjectName }: MatchupBoardProps) {
 
             <hr className="divider" />
 
+            {visible.length === 0 ? null : (
+                <div className="board__columns">
+                    <span>{t('counters.columns.opponent')}</span>
+                    <span>{t('counters.columns.trade', { unit: subjectName })}</span>
+                </div>
+            )}
+
             {visible.length === 0 ? (
                 <div className="stack stack--tight">
                     <p className="empty">{t('counters.empty')}</p>
@@ -173,9 +180,7 @@ export function MatchupBoard({ matchups, subjectName }: MatchupBoardProps) {
                 </div>
             ) : (
                 <VirtualList items={visible} estimate={72} keyOf={(matchup) => matchup.opponent.key}>
-                    {(matchup) => (
-                        <MatchupRow matchup={matchup} subjectName={subjectName} showVerdict={side === 'all'} />
-                    )}
+                    {(matchup) => <MatchupRow matchup={matchup} subjectName={subjectName} />}
                 </VirtualList>
             )}
         </section>

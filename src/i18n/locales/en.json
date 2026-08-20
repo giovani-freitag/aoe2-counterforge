@@ -162,14 +162,14 @@
             "countered": "Countered"
         },
         "notes": {
-            "out-ranges": "Outranges it",
-            "out-ranged": "Gets outranged",
+            "outranges": "More range",
+            "outranged": "Less range",
             "faster": "Faster",
             "slower": "Slower",
             "blast": "Splash damage",
-            "bonus-damage": "Deals bonus damage",
-            "takes-bonus-damage": "Takes bonus damage",
-            "min-range": "Has a minimum range"
+            "deals-bonus": "Deals bonus damage",
+            "takes-bonus": "Takes bonus damage",
+            "min-range": "Minimum range"
         },
         "duel": {
             "title": "Fight breakdown",
@@ -192,7 +192,13 @@
             "weak": "Weak",
             "all": "All"
         },
-        "widen": "Search every upgrade step instead"
+        "widen": "Search every upgrade step instead",
+        "columns": {
+            "opponent": "Opponent",
+            "trade": "{{unit}}'s trade",
+            "answer": "Answer",
+            "tradeAgainst": "Trade vs {{unit}}"
+        }
     },
     "upgrades": {
         "lineTitle": "Line upgrades",
