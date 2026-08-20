@@ -1,31 +1,52 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { LAND_CATEGORIES } from '../../domain/enums/unit-category.ts';
-import { UnitListItem } from '../components/unit-list-item.tsx';
-import { useCommandPalette } from '../hooks/use-command-palette.ts';
+import { Icon } from '../components/icon.tsx';
+import { MatchupRow } from '../components/matchup-row.tsx';
+import { PickerField } from '../components/picker-field.tsx';
+import { iconUrl } from '../format.ts';
+import { useGameText } from '../hooks/use-game-text.ts';
+import { useMatchups } from '../hooks/use-matchups.ts';
 import { usePreferences } from '../hooks/use-preferences.ts';
 import { useServices } from '../hooks/use-services.ts';
-import { Icon } from '../components/icon.tsx';
 
-/** Units players look up most often, used as the landing shortcuts. */
-const HIGHLIGHTS = [
-    'knight',
-    'crossbowman',
-    'pikeman',
-    'champion',
-    'elite-skirmisher',
-    'mangonel',
-    'monk',
-    'light-cavalry',
-];
+/** The unit the landing page answers before anyone types anything. */
+const OPENING_QUESTION = 'knight';
 
-/** Landing screen: search, civilization scope, category tiles and popular units. */
+/** Landing screen: the question the guide exists to answer, with the roster behind it. */
 export function HomePage() {
     const { t } = useTranslation();
     const { catalog } = useServices();
-    const { open } = useCommandPalette();
+    const text = useGameText();
     const { preferences } = usePreferences();
+    const [enemyKey, setEnemyKey] = useState(OPENING_QUESTION);
+
+    const options = useMemo(
+        () =>
+            catalog
+                .units({ combatOnly: true })
+                .filter((unit) => unit.stats.canAttack())
+                .map((unit) => ({
+                    value: unit.key,
+                    label: text.unit(unit.key).name,
+                    visual: (
+                        <img
+                            className="picker__emblem"
+                            src={iconUrl(`Unit/${String(unit.icon)}.png`)}
+                            alt=""
+                            loading="lazy"
+                        />
+                    ),
+                }))
+                .sort((left, right) => left.label.localeCompare(right.label)),
+        [catalog, text],
+    );
+
+    const enemy = useMemo(() => catalog.units().find((unit) => unit.key === enemyKey) ?? null, [catalog, enemyKey]);
+    const report = useMatchups(enemy);
+    const answers = report?.weakAgainst ?? [];
+    const enemyName = enemy ? text.unit(enemy.key).name : '';
 
     const counts = useMemo(() => {
         const map = new Map<string, number>();
@@ -36,23 +57,54 @@ export function HomePage() {
         return map;
     }, [catalog, preferences.civ]);
 
-    const highlights = useMemo(() => {
-        const byKey = new Map(catalog.units().map((unit) => [unit.key, unit] as const));
-
-        return HIGHLIGHTS.map((key) => byKey.get(key)).filter((unit) => unit !== undefined);
-    }, [catalog]);
-
     return (
         <div className="stack">
             <header className="stack stack--tight">
-                <h1>{t('home.title')}</h1>
-                <p className="prose">{t('app.tagline')}</p>
+                <h1>{t('home.facing')}</h1>
+                <p className="card__hint">{t('home.facingHint')}</p>
             </header>
 
-            <button type="button" className="searchbutton" style={{ width: '100%' }} onClick={open}>
-                <Icon name="search" />
-                <span style={{ flex: 1, textAlign: 'left' }}>{t('search.placeholder')}</span>
-            </button>
+            <section className="card">
+                <div className="form-grid">
+                    <PickerField
+                        id="home-enemy"
+                        label={t('home.enemy')}
+                        value={enemyKey}
+                        options={options}
+                        onChange={setEnemyKey}
+                    />
+                </div>
+            </section>
+
+            {enemy === null ? null : (
+                <section className="card">
+                    <div className="card__title">
+                        <h2>
+                            <Icon name="strongAgainst" />
+                            {t('home.answerWith', { unit: enemyName })}
+                        </h2>
+                        <Link className="card__hint" to={`/unit/${enemy.key}?tab=counters`}>
+                            {t('home.seeAll')}
+                        </Link>
+                    </div>
+
+                    {answers.length === 0 ? (
+                        <p className="empty">{t('counters.empty')}</p>
+                    ) : (
+                        <div className="list">
+                            {answers.map((matchup) => (
+                                <MatchupRow
+                                    key={matchup.opponent.key}
+                                    matchup={matchup}
+                                    subjectName={enemyName}
+                                    fromOpponent
+                                    showVerdict
+                                />
+                            ))}
+                        </div>
+                    )}
+                </section>
+            )}
 
             <section>
                 <div className="card__title">
@@ -68,19 +120,6 @@ export function HomePage() {
                         </Link>
                     ))}
                 </div>
-            </section>
-
-            <section>
-                <div className="card__title">
-                    <h2>{t('home.popular')}</h2>
-                </div>
-                <ul className="list">
-                    {highlights.map((unit) => (
-                        <li key={unit.key}>
-                            <UnitListItem unit={unit} subtitle={t(`categories.${unit.category}`)} />
-                        </li>
-                    ))}
-                </ul>
             </section>
 
             <section className="card colophon">

@@ -6,7 +6,9 @@ import { UNIT_CATEGORIES, isUnitCategory, type UnitCategory } from '../../domain
 import type { Unit } from '../../domain/entities/unit.ts';
 import { UNIT_SORT_KEYS, type UnitSortKey } from '../../services/unit-ranking/unit-ranking-service.ts';
 import { UnitListItem } from '../components/unit-list-item.tsx';
+import { Link } from 'react-router';
 import { Directory } from '../components/directory.tsx';
+import { Icon } from '../components/icon.tsx';
 import { PickerField } from '../components/picker-field.tsx';
 import { SearchField } from '../components/search-field.tsx';
 import { buildingNames } from '../building-names.ts';
@@ -112,6 +114,12 @@ export function UnitsPage() {
         <Directory
             title={t('nav.units')}
             summary={t('civ.count', { count: rows.length })}
+            action={
+                <Link className="chip" to="/compare">
+                    <Icon name="compare" />
+                    {t('nav.compare')}
+                </Link>
+            }
             items={rows}
             keyOf={(row) => row.unit.key}
             empty={t('units.empty')}

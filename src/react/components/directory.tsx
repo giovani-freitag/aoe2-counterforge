@@ -5,6 +5,8 @@ export interface DirectoryProps<T> {
     title: string;
     /** One line under the title, usually how many rows the filters left. */
     summary: string;
+    /** A way out of the list, such as the tool that works on what it holds. */
+    action?: ReactNode;
     /** Controls that narrow the list, laid out across the filter card. */
     filters: ReactNode;
     /** Switches under the filters, for the pages that have any. */
@@ -29,6 +31,7 @@ const DEFAULT_ROW_HEIGHT = 64;
 export function Directory<T>({
     title,
     summary,
+    action,
     filters,
     switches,
     items,
@@ -39,9 +42,12 @@ export function Directory<T>({
 }: DirectoryProps<T>) {
     return (
         <div className="stack">
-            <header className="stack stack--tight">
-                <h1>{title}</h1>
-                <p className="card__hint">{summary}</p>
+            <header className="directory__head">
+                <div className="stack stack--tight">
+                    <h1>{title}</h1>
+                    <p className="card__hint">{summary}</p>
+                </div>
+                {action}
             </header>
 
             <section className="card">

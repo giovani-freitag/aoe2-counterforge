@@ -32,12 +32,15 @@
         }
     },
     "home": {
-        "title": "Unidades de Age of Empires II",
         "browseByCategory": "Navegar por tipo",
-        "popular": "Mais consultadas",
         "pickCiv": "Jogando com alguma civilização?",
         "pickCivHelp": "Escolha uma civilização para ver só o que você pode treinar e pesquisar.",
-        "allCivs": "Todas as civilizações"
+        "allCivs": "Todas as civilizações",
+        "facing": "O que você está enfrentando?",
+        "facingHint": "Escolha o que vem na sua direção e o guia responde com o que vence.",
+        "enemy": "Unidade inimiga",
+        "answerWith": "Responda um {{unit}} com",
+        "seeAll": "Todos os confrontos →"
     },
     "unit": {
         "trainedAt": "Treinado em",

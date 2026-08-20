@@ -32,12 +32,15 @@
         }
     },
     "home": {
-        "title": "Age of Empires II units",
         "browseByCategory": "Browse by type",
-        "popular": "Most looked up",
         "pickCiv": "Playing a specific civilization?",
         "pickCivHelp": "Pick one to only see what you can actually train and research.",
-        "allCivs": "All civilizations"
+        "allCivs": "All civilizations",
+        "facing": "What are you facing?",
+        "facingHint": "Pick what is coming at you and the guide answers with what beats it.",
+        "enemy": "Enemy unit",
+        "answerWith": "Answer a {{unit}} with",
+        "seeAll": "Every matchup →"
     },
     "unit": {
         "trainedAt": "Trained at",

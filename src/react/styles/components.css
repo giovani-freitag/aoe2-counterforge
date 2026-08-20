@@ -594,6 +594,14 @@
     mask-image: linear-gradient(to right, #000 calc(100% - 1.5rem), transparent);
 }
 
+.directory__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
 .line-diagram {
     display: block;
     margin-inline: auto;

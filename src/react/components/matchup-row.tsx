@@ -12,6 +12,13 @@ export interface MatchupRowProps {
     matchup: Matchup;
     subjectName: string;
     showVerdict?: boolean;
+    /**
+     * Reads the trade from the opponent's side.
+     *
+     * A list of answers to a unit is the same set of matchups seen from the other end: the number
+     * a reader wants there is how well the answer does, not how badly the subject does.
+     */
+    fromOpponent?: boolean;
 }
 
 const VERDICT_COLOUR = {
@@ -20,6 +27,15 @@ const VERDICT_COLOUR = {
     even: 'var(--even)',
     unfavourable: 'var(--bad)',
     countered: 'var(--bad)',
+} as const;
+
+/** The same verdict said by the other side of the fight. */
+const MIRRORED = {
+    dominant: 'countered',
+    favourable: 'unfavourable',
+    even: 'even',
+    unfavourable: 'favourable',
+    countered: 'dominant',
 } as const;
 
 /** Maps a ratio that spans two orders of magnitude onto a readable bar. */
@@ -64,13 +80,15 @@ function DuelColumn({ title, side }: { title: string; side: DuelSide }) {
 }
 
 /** One opponent row that unfolds in place to show the full arithmetic behind its verdict. */
-export function MatchupRow({ matchup, subjectName, showVerdict = false }: MatchupRowProps) {
+export function MatchupRow({ matchup, subjectName, showVerdict = false, fromOpponent = false }: MatchupRowProps) {
     const { t } = useTranslation();
     const text = useGameText();
     const [isOpen, setIsOpen] = useState(false);
 
     const opponentName = text.unit(matchup.opponent.key).name;
-    const colour = VERDICT_COLOUR[matchup.verdict];
+    const verdict = fromOpponent ? MIRRORED[matchup.verdict] : matchup.verdict;
+    const score = fromOpponent ? 1 / matchup.efficiency : matchup.efficiency;
+    const colour = VERDICT_COLOUR[verdict];
     const notes = showVerdict ? matchup.notes.slice(0, 2) : matchup.notes.slice(0, 3);
 
     return (
@@ -87,7 +105,7 @@ export function MatchupRow({ matchup, subjectName, showVerdict = false }: Matchu
                     <span className="matchup__notes">
                         {showVerdict ? (
                             <span className="note-chip" style={{ color: colour }}>
-                                {t(`counters.verdicts.${matchup.verdict}`)}
+                                {t(`counters.verdicts.${verdict}`)}
                             </span>
                         ) : null}
                         {notes.map((note) => (
@@ -99,12 +117,12 @@ export function MatchupRow({ matchup, subjectName, showVerdict = false }: Matchu
                 </span>
                 <span className="matchup__score">
                     <span className="matchup__value" style={{ color: colour }}>
-                        {efficiency(matchup.efficiency)}
+                        {efficiency(score)}
                     </span>
                     <span className="matchup__bar">
                         <span
                             className="matchup__fill"
-                            style={{ width: `${barWidth(matchup.efficiency)}%`, background: colour }}
+                            style={{ width: `${barWidth(score)}%`, background: colour }}
                         />
                     </span>
                 </span>

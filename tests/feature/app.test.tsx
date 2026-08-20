@@ -13,10 +13,11 @@ beforeAll(async () => {
 });
 
 describe('App', () => {
-    it('lands on the home screen with the category tiles', () => {
+    it('lands on the counter finder with an answer already on screen', async () => {
         render(<App />);
 
-        expect(screen.getByRole('heading', { level: 1, name: 'Unidades de Age of Empires II' })).toBeDefined();
+        expect(screen.getByRole('heading', { level: 1, name: 'O que você está enfrentando?' })).toBeDefined();
+        expect(await screen.findByRole('heading', { name: /Responda um Cavaleiro com/ })).toBeDefined();
     });
 
     it('opens the command palette from the header button', async () => {
