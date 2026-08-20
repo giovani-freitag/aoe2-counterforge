@@ -9,7 +9,8 @@ import { UnitListItem } from '../components/unit-list-item.tsx';
 import { Link } from 'react-router';
 import { Directory } from '../components/directory.tsx';
 import { Icon } from '../components/icon.tsx';
-import { PickerField } from '../components/picker-field.tsx';
+import { FilterPicker } from '../components/filter-picker.tsx';
+import { FilterToggle } from '../components/filter-toggle.tsx';
 import { SearchField } from '../components/search-field.tsx';
 import { buildingNames } from '../building-names.ts';
 import { precise, short } from '../format.ts';
@@ -110,17 +111,15 @@ export function UnitsPage() {
         return short(value);
     };
 
-    const toggle = (key: string, label: string, checked: boolean) => (
-        <label className="toggle">
-            <input
-                type="checkbox"
-                checked={checked}
-                onChange={(event) => {
-                    setFilter(key, event.target.checked ? '1' : null);
-                }}
-            />
-            {label}
-        </label>
+    const toggle = (key: string, label: string, active: boolean) => (
+        <FilterToggle
+            key={key}
+            label={label}
+            active={active}
+            onChange={(next) => {
+                setFilter(key, next ? '1' : null);
+            }}
+        />
     );
 
     return (
@@ -136,19 +135,21 @@ export function UnitsPage() {
             items={rows}
             keyOf={(row) => row.unit.key}
             empty={t('units.empty')}
+            search={
+                <SearchField
+                    hideLabel
+                    id="unit-filter"
+                    label={t('units.filterPlaceholder')}
+                    placeholder={t('units.filterHint')}
+                    value={term}
+                    onChange={(value) => {
+                        setFilter('q', value || null);
+                    }}
+                />
+            }
             filters={
                 <>
-                    <SearchField
-                        id="unit-filter"
-                        label={t('units.filterPlaceholder')}
-                        placeholder={t('units.filterHint')}
-                        value={term}
-                        onChange={(value) => {
-                            setFilter('q', value || null);
-                        }}
-                    />
-                    <PickerField
-                        id="unit-sort"
+                    <FilterPicker
                         label={t('units.sortBy')}
                         value={sort}
                         options={SORT_OPTIONS.map((option) => ({
@@ -159,8 +160,7 @@ export function UnitsPage() {
                             setFilter('sort', value);
                         }}
                     />
-                    <PickerField
-                        id="unit-category"
+                    <FilterPicker
                         label={t('units.category')}
                         value={category ?? ''}
                         options={[
@@ -174,8 +174,7 @@ export function UnitsPage() {
                             setFilter('category', value || null);
                         }}
                     />
-                    <PickerField
-                        id="unit-age"
+                    <FilterPicker
                         label={t('unit.age')}
                         value={age === null ? '' : String(age)}
                         options={[
@@ -186,10 +185,6 @@ export function UnitsPage() {
                             setFilter('age', value || null);
                         }}
                     />
-                </>
-            }
-            switches={
-                <>
                     {toggle('lines', t('units.onePerLine'), linesOnly)}
                     {toggle('unique', t('units.uniqueOnly'), uniqueOnly)}
                     {toggle('upgraded', t('units.withUpgrades'), upgraded)}

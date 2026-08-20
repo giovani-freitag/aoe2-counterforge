@@ -230,10 +230,10 @@
 /* ---------- the board that holds one unit's whole ranking ---------- */
 
 .board__sides {
-    margin-bottom: var(--space-3);
+    margin-block: var(--space-3);
 }
 
-/* Names the two halves of a row, because each one is about a different unit. */
+/* Every list in the guide is narrowed the same way: a name filter, then a row of these. */
 .board__columns {
     display: flex;
     justify-content: space-between;
@@ -246,7 +246,7 @@
     color: var(--text-faint);
 }
 
-.board__chips {
+.filter-chips {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2);

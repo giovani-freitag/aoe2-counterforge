@@ -8,7 +8,7 @@ export interface PickerFieldProps {
     onChange: (value: string) => void;
 }
 
-/** A labelled choice, sized like the input beside it. */
+/** A labelled choice the page is built around, sized like the input beside it. */
 export function PickerField({ id, label, value, options, onChange }: PickerFieldProps) {
     return (
         <div className="field">

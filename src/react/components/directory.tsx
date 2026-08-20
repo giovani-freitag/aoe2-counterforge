@@ -7,10 +7,10 @@ export interface DirectoryProps<T> {
     summary: string;
     /** A way out of the list, such as the tool that works on what it holds. */
     action?: ReactNode;
-    /** Controls that narrow the list, laid out across the filter card. */
-    filters: ReactNode;
-    /** Switches under the filters, for the pages that have any. */
-    switches?: ReactNode;
+    /** The name filter every list opens with, full width and label hidden. */
+    search: ReactNode;
+    /** The choices and switches that narrow the list further, laid out as a row of chips. */
+    filters?: ReactNode;
     items: readonly T[];
     keyOf: (item: T) => string;
     /** Height a row takes before it is measured, in pixels. */
@@ -32,8 +32,8 @@ export function Directory<T>({
     title,
     summary,
     action,
+    search,
     filters,
-    switches,
     items,
     keyOf,
     estimate = DEFAULT_ROW_HEIGHT,
@@ -51,13 +51,8 @@ export function Directory<T>({
             </header>
 
             <section className="card">
-                <div className="form-grid">{filters}</div>
-                {switches ? (
-                    <>
-                        <hr className="divider" />
-                        <div className="toggle-list">{switches}</div>
-                    </>
-                ) : null}
+                {search}
+                {filters ? <div className="filter-chips">{filters}</div> : null}
             </section>
 
             {items.length === 0 ? (

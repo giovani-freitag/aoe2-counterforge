@@ -34,8 +34,9 @@ export function CivilizationsPage() {
             keyOf={(entry) => entry.civilization.key}
             estimate={72}
             empty={t('civs.empty')}
-            filters={
+            search={
                 <SearchField
+                    hideLabel
                     id="civ-filter"
                     label={t('civs.filter')}
                     placeholder={t('civs.filterHint')}

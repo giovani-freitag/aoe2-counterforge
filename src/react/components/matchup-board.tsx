@@ -98,23 +98,6 @@ export function MatchupBoard({ matchups, subjectName, ownRoster = null }: Matchu
                 </h2>
             </div>
 
-            <div className="board__sides">
-                <SegmentedControl<Side>
-                    label={t('counters.side')}
-                    value={side}
-                    onChange={(next) => {
-                        const merged = new URLSearchParams(params);
-                        merged.set('side', next);
-                        setParams(merged, { replace: true });
-                    }}
-                    options={[
-                        { value: 'strong', label: t('counters.sides.strong'), count: counts.strong, tone: 'good' },
-                        { value: 'weak', label: t('counters.sides.weak'), count: counts.weak, tone: 'bad' },
-                        { value: 'all', label: t('counters.sides.all'), count: counts.all },
-                    ]}
-                />
-            </div>
-
             <SearchField
                 hideLabel
                 id="matchup-filter"
@@ -124,7 +107,18 @@ export function MatchupBoard({ matchups, subjectName, ownRoster = null }: Matchu
                 onChange={setTerm}
             />
 
-            <div className="board__chips">
+            <div className="filter-chips">
+                {ownRoster === null ? null : (
+                    <button
+                        type="button"
+                        className="chip"
+                        aria-pressed={ownRoster.active}
+                        onClick={() => { ownRoster.toggle(!ownRoster.active); }}
+                    >
+                        <Icon name="civilizations" />
+                        {t('counters.ownRoster', { civ: ownRoster.civ })}
+                    </button>
+                )}
                 <Picker
                     prefix={t('units.category')}
                     label={t('units.category')}
@@ -147,17 +141,6 @@ export function MatchupBoard({ matchups, subjectName, ownRoster = null }: Matchu
                     }))}
                     onChange={(value) => { update({ pool: value as OpponentPool }); }}
                 />
-                {ownRoster === null ? null : (
-                    <button
-                        type="button"
-                        className="chip"
-                        aria-pressed={ownRoster.active}
-                        onClick={() => { ownRoster.toggle(!ownRoster.active); }}
-                    >
-                        <Icon name="civilizations" />
-                        {t('counters.ownRoster', { civ: ownRoster.civ })}
-                    </button>
-                )}
                 <Picker
                     prefix={t('counters.model')}
                     label={t('counters.model')}
@@ -177,6 +160,23 @@ export function MatchupBoard({ matchups, subjectName, ownRoster = null }: Matchu
                         label: t(`counters.upgradeLevels.${option}`),
                     }))}
                     onChange={(value) => { update({ upgradeLevel: value as UpgradeLevel }); }}
+                />
+            </div>
+
+            <div className="board__sides">
+                <SegmentedControl<Side>
+                    label={t('counters.side')}
+                    value={side}
+                    onChange={(next) => {
+                        const merged = new URLSearchParams(params);
+                        merged.set('side', next);
+                        setParams(merged, { replace: true });
+                    }}
+                    options={[
+                        { value: 'strong', label: t('counters.sides.strong'), count: counts.strong, tone: 'good' },
+                        { value: 'weak', label: t('counters.sides.weak'), count: counts.weak, tone: 'bad' },
+                        { value: 'all', label: t('counters.sides.all'), count: counts.all },
+                    ]}
                 />
             </div>
 

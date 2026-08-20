@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import { AGE_IDS } from '../../domain/enums/age.ts';
 import { Directory } from '../components/directory.tsx';
 import { GameIcon } from '../components/game-icon.tsx';
-import { PickerField } from '../components/picker-field.tsx';
+import { FilterPicker } from '../components/filter-picker.tsx';
 import { SearchField } from '../components/search-field.tsx';
 import { useGameText } from '../hooks/use-game-text.ts';
 import { useNameFilter } from '../hooks/use-name-filter.ts';
@@ -57,17 +57,19 @@ export function TechnologiesPage() {
             keyOf={(technology) => technology.key}
             estimate={72}
             empty={t('techs.empty')}
+            search={
+                <SearchField
+                    hideLabel
+                    id="tech-filter"
+                    label={t('techs.filter')}
+                    placeholder={t('techs.filterHint')}
+                    value={term}
+                    onChange={setTerm}
+                />
+            }
             filters={
                 <>
-                    <SearchField
-                        id="tech-filter"
-                        label={t('techs.filter')}
-                        placeholder={t('techs.filterHint')}
-                        value={term}
-                        onChange={setTerm}
-                    />
-                    <PickerField
-                        id="tech-age"
+                    <FilterPicker
                         label={t('unit.age')}
                         value={age}
                         options={[
@@ -76,8 +78,7 @@ export function TechnologiesPage() {
                         ]}
                         onChange={setAge}
                     />
-                    <PickerField
-                        id="tech-building"
+                    <FilterPicker
                         label={t('techs.building')}
                         value={building}
                         options={[
