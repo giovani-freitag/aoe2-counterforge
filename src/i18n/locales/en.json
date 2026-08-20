@@ -228,7 +228,10 @@
             "perAge": "{{effect}} per age",
             "projectiles": "{{value}} projectile",
             "blast": "{{value}} blast radius",
-            "regeneration": "regenerates {{value}} HP per minute"
+            "regeneration": "regenerates {{value}} HP per minute",
+            "ballistics": "Shots lead moving targets",
+            "cost": "{{value}}% cost",
+            "costResource": "{{value}}% {{resource}} cost"
         },
         "uniqueHint": "Bonuses a civilization is given, and the castle technologies that reach this unit.",
         "noUnique": "No civilization changes this unit on its own.",

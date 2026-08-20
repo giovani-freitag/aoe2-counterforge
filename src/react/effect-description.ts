@@ -48,6 +48,18 @@ export function describeEffect(change: StatDelta, t: TFunction): string[] {
     if (change.projectiles) labels.push(t('upgrades.effect.projectiles', { value: delta(change.projectiles) }));
     if (change.blastWidth) labels.push(t('upgrades.effect.blast', { value: delta(change.blastWidth) }));
     if (change.regeneration) labels.push(t('upgrades.effect.regeneration', { value: short(change.regeneration) }));
+    if (change.ballistics) labels.push(t('upgrades.effect.ballistics'));
+
+    for (const [resource, factor] of Object.entries(change.costMultipliers ?? {})) {
+        if (factor === 1) continue;
+
+        const value = short((factor - 1) * 100);
+        labels.push(
+            resource === 'all'
+                ? t('upgrades.effect.cost', { value })
+                : t('upgrades.effect.costResource', { value, resource: t(`resources.${resource}`) }),
+        );
+    }
     if (change.trainTimeMultiplier && change.trainTimeMultiplier !== 1) {
         labels.push(t('upgrades.effect.trainSpeed', { value: short((1 / change.trainTimeMultiplier - 1) * 100) }));
     }

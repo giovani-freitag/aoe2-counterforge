@@ -47,6 +47,8 @@ export interface GenieUnit {
     minRange: number;
     blastWidth: number;
     reloadTime: number;
+    /** The missile record this unit fires, or a negative id when it fires none. */
+    projectileUnitId: number;
     accuracyPercent: number;
     frameDelay: number;
     displayedAttack: number;
@@ -406,6 +408,7 @@ export class GenieDatReader {
             minRange: 0,
             blastWidth: 0,
             reloadTime: 0,
+            projectileUnitId: -1,
             accuracyPercent: 0,
             frameDelay: 0,
             displayedAttack: 0,
@@ -440,7 +443,7 @@ export class GenieDatReader {
         unit.maxRange = this.reader.float();
         unit.blastWidth = this.reader.float();
         unit.reloadTime = this.reader.float();
-        this.reader.skip(2);
+        unit.projectileUnitId = this.reader.int16();
         unit.accuracyPercent = this.reader.int16();
         this.reader.skip(1);
         unit.frameDelay = this.reader.int16();

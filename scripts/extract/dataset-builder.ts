@@ -148,9 +148,15 @@ const ATTRIBUTES: Record<number, string> = {
     12: 'range',
     13: 'workRate',
     14: 'carryCapacity',
+    19: 'ballistics',
     22: 'blastWidth',
+    100: 'cost',
     101: 'trainTime',
     102: 'projectiles',
+    103: 'costFood',
+    104: 'costWood',
+    105: 'costGold',
+    106: 'costStone',
     109: 'regeneration',
 };
 
@@ -223,6 +229,7 @@ export class DatasetBuilder {
 
     /** Age of every age advance, resolved once because every bonus asks for it. */
     private ages: Map<number, number> | null = null;
+    private shooters: Map<number, number[]> | null = null;
 
     constructor(config: DatasetBuilderConfig) {
         this.config = config;
@@ -790,6 +797,30 @@ export class DatasetBuilder {
         return this.ages;
     }
 
+    /**
+     * Which units fire each missile in the file.
+     *
+     * Ballistics does not touch a single archer: it sets a flag on the arrows, and the reader who
+     * opens the Crossbowman is asking about the archer. Reading the missile each unit carries is
+     * what lets an effect aimed at the projectile be shown on the unit that shoots it.
+     *
+     * @returns Missile id mapped to the units that fire it.
+     */
+    private shootersByProjectile(): Map<number, number[]> {
+        if (this.shooters) return this.shooters;
+
+        this.shooters = new Map<number, number[]>();
+        for (const unit of this.referenceUnits().values()) {
+            if (unit.projectileUnitId < 0 || unit.type < UNIT_TYPE.creatable) continue;
+
+            const firing = this.shooters.get(unit.projectileUnitId) ?? [];
+            firing.push(unit.id);
+            this.shooters.set(unit.projectileUnitId, firing);
+        }
+
+        return this.shooters;
+    }
+
     /** Turns the game's own effect commands into the guide's vocabulary. */
     private effectsOf(effectId: number): TechEffectRecord[] {
         const effect = this.config.game.effects[effectId];
@@ -805,14 +836,19 @@ export class DatasetBuilder {
             const damageClass = packed ? CLASSES[Math.floor(command.value / 256)] : undefined;
             if (packed && !damageClass) continue;
 
-            records.push({
-                mode,
-                unit: command.unit >= 0 ? command.unit : null,
-                unitClass: command.unitClass >= 0 ? command.unitClass : null,
-                attribute,
-                value: packed ? command.value % 256 : this.round(command.value),
-                ...(damageClass ? { damageClass } : {}),
-            });
+            const shooters = command.unit >= 0 ? this.shootersByProjectile().get(command.unit) : undefined;
+            const targets = shooters ?? [command.unit >= 0 ? command.unit : null];
+
+            for (const target of targets) {
+                records.push({
+                    mode,
+                    unit: target,
+                    unitClass: command.unitClass >= 0 ? command.unitClass : null,
+                    attribute,
+                    value: packed ? command.value % 256 : this.round(command.value),
+                    ...(damageClass ? { damageClass } : {}),
+                });
+            }
         }
 
         return records;

@@ -27,6 +27,15 @@ export interface StatDelta {
     projectiles?: number;
     /** Hit points the unit gets back on its own, as the game counts them. */
     regeneration?: number;
+    /**
+     * Whether the unit's shots start leading a moving target.
+     *
+     * The game stores Ballistics as a flag rather than a number: the projectile aims where the
+     * target is going instead of where it stands, which is worth saying even though no stat moves.
+     */
+    ballistics?: boolean;
+    /** What each resource of the price is multiplied by, keyed by resource or 'all'. */
+    costMultipliers?: Readonly<Record<string, number>>;
     attack?: readonly ClassAmount[];
     attackMultipliers?: readonly ClassAmount[];
     armour?: readonly ClassAmount[];

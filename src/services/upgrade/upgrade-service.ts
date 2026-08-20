@@ -67,7 +67,22 @@ const MODELLED = new Set([
     'trainTime',
     'projectiles',
     'regeneration',
+    'ballistics',
+    'cost',
+    'costFood',
+    'costWood',
+    'costGold',
+    'costStone',
 ]);
+
+/** The resource each cost attribute scales, with the whole price under its own name. */
+const COST_OF: Record<string, string> = {
+    cost: 'all',
+    costFood: 'food',
+    costWood: 'wood',
+    costGold: 'gold',
+    costStone: 'stone',
+};
 
 /** Attack and armour multipliers are written as whole percentages, unlike every other factor. */
 const PERCENT = 100;
@@ -87,7 +102,13 @@ function canonical(delta: StatDelta): string {
         delta.reloadTime,
         delta.reloadTimeMultiplier,
         delta.trainTimeMultiplier,
+        delta.ballistics,
     ].map((value) => String(value ?? ''));
+
+    const costs = Object.entries(delta.costMultipliers ?? {})
+        .map(([resource, factor]) => `${resource}=${String(factor)}`)
+        .sort()
+        .join(',');
 
     const classes = [delta.attack, delta.attackMultipliers, delta.armour, delta.armourMultipliers].map((entries) =>
         (entries ?? [])
@@ -96,7 +117,7 @@ function canonical(delta: StatDelta): string {
             .join(','),
     );
 
-    return [...scalars, ...classes].join('|');
+    return [...scalars, costs, ...classes].join('|');
 }
 
 /** Whether the change is a factor, which cannot be split into equal parts the way a sum can. */
@@ -107,7 +128,8 @@ function scaled(delta: StatDelta): boolean {
         delta.reloadTimeMultiplier !== undefined ||
         delta.trainTimeMultiplier !== undefined ||
         delta.attackMultipliers !== undefined ||
-        delta.armourMultipliers !== undefined
+        delta.armourMultipliers !== undefined ||
+        delta.costMultipliers !== undefined
     );
 }
 
@@ -310,6 +332,11 @@ export class UpgradeService {
             }
 
             if (effect.mode === 'multiply') {
+                const resource = COST_OF[effect.attribute];
+                if (resource !== undefined) {
+                    const current = delta.costMultipliers ?? {};
+                    delta.costMultipliers = { ...current, [resource]: (current[resource] ?? 1) * effect.value };
+                }
                 if (effect.attribute === 'trainTime') {
                     delta.trainTimeMultiplier = (delta.trainTimeMultiplier ?? 1) * effect.value;
                 }
@@ -326,6 +353,7 @@ export class UpgradeService {
             // does nothing rather than a unit with no hit points.
             if (effect.mode === 'set') {
                 if (effect.value < 0) continue;
+                if (effect.attribute === 'ballistics' && effect.value >= 1) delta.ballistics = true;
                 if (effect.attribute === 'accuracy') {
                     delta.accuracyFloor = Math.max(delta.accuracyFloor ?? 0, effect.value);
                 }

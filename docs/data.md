@@ -72,6 +72,12 @@ are only re-encoded.
 - Duplicate entries merged: several units exist twice in the game because a second building can
   train them (Donjon, Krepost, Stable), and the guide shows one entry listing both places.
 
+## The technology that never names the unit
+
+Ballistics changes no archer. It sets a flag on the arrows, and the game files carry the missile
+each unit fires, so an effect aimed at a projectile is read back onto whoever shoots it. Sixty units
+turn out to be listed that way, and the reader who opens the Crossbowman is asking about the archer.
+
 ## What links a unit to a civilization
 
 Two statements in the same install, and they agree. The civilization's tech tree lists the node,
