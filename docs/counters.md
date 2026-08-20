@@ -41,7 +41,9 @@ pairs reach it.
 ## What the model does not do
 
 It is one unit against one unit. It does not model mass battles, focus fire, area damage over a
-group, monk conversions or perfect micro. Units that only exist to knock down buildings (Trebuchet,
+group, monk conversions or perfect micro. Where that matters most the row says so: a weapon with a
+blast radius is marked "hits crowds, not duels", because a Rocket Cart landing five damage on one
+horseman is not the unit anybody builds it to be. Units that only exist to knock down buildings (Trebuchet,
 Petard) are left out of the ranking, and units with no attack (Monk) show an explanation instead of
 a simulation.
 

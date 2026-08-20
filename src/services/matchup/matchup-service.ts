@@ -15,6 +15,7 @@ export type MatchupNote =
     | 'faster'
     | 'slower'
     | 'blast'
+    | 'faces-blast'
     | 'bonus-damage'
     | 'takes-bonus-damage'
     | 'min-range';
@@ -267,16 +268,24 @@ export class MatchupService {
         return 'countered';
     }
 
+    /**
+     * What a reader should know about the number, most surprising first.
+     *
+     * A row shows two or three of these, so the order is the point: being faster is the least
+     * surprising thing on the list, while a weapon built for crowds losing a duel is the one fact
+     * that changes how the ratio should be read.
+     */
     private notesFor(subject: UnitStats, opponent: UnitStats, duel: DuelResult): MatchupNote[] {
         const notes: MatchupNote[] = [];
-        if (subject.range >= opponent.range + 2) notes.push('out-ranges');
-        if (opponent.range >= subject.range + 2) notes.push('out-ranged');
-        if (subject.speed > opponent.speed) notes.push('faster');
-        if (subject.speed < opponent.speed) notes.push('slower');
-        if (subject.blastWidth > 0) notes.push('blast');
+        if (opponent.blastWidth > 0) notes.push('faces-blast');
         if (this.hasBonus(duel.attacker.breakdown.components)) notes.push('bonus-damage');
         if (this.hasBonus(duel.defender.breakdown.components)) notes.push('takes-bonus-damage');
+        if (subject.range >= opponent.range + 2) notes.push('out-ranges');
+        if (opponent.range >= subject.range + 2) notes.push('out-ranged');
+        if (subject.blastWidth > 0) notes.push('blast');
         if (subject.minRange > 0) notes.push('min-range');
+        if (subject.speed > opponent.speed) notes.push('faster');
+        if (subject.speed < opponent.speed) notes.push('slower');
 
         return notes;
     }
