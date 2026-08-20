@@ -24,7 +24,8 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "data:build": "vite-node scripts/extract-dataset.ts",
-    "data:icons": "vite-node scripts/extract-icons.ts"
+    "data:icons": "vite-node scripts/extract-icons.ts",
+    "data:export": "vite-node scripts/export-gamedata.ts"
   },
   "dependencies": {
     "@tanstack/react-virtual": "^3.14.10",

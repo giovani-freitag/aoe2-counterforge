@@ -9,3 +9,4 @@ coverage
 
 # The extraction scripts read the game folder from here.
 .env
+exports/

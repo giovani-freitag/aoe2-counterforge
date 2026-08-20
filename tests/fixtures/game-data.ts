@@ -1,5 +1,6 @@
 import { DatasetBuilder, type CivilizationMeta } from '../../scripts/extract/dataset-builder.ts';
 import type { CivilizationTechTree, TechTreeNode } from '../../scripts/extract/game-install.ts';
+import { blankUnitFields } from '../../scripts/extract/genie-dat.ts';
 import type { GenieData, GenieUnit } from '../../scripts/extract/genie-dat.ts';
 
 /** String ids of the sample roster, spaced like the ones the game itself uses. */
@@ -28,6 +29,7 @@ const CIV_HELP_OFFSET = 109879;
  */
 export function genieUnit(overrides: Partial<GenieUnit> & Pick<GenieUnit, 'id' | 'nameStringId'>): GenieUnit {
     return {
+        ...blankUnitFields(),
         internalName: 'SAMPLE',
         creatableType: 2,
         isHero: false,
@@ -162,6 +164,8 @@ export function sampleGameData(): GenieData {
                 ]),
             },
         ],
+        techTree: { ages: 4, buildings: 37, units: 255, researches: 233 },
+        bytesRemaining: 0,
         technologies: [
             {
                 effectId: 0,

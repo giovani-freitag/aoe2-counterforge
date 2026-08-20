@@ -95,6 +95,30 @@ describe.skipIf(!GAME_ROOT)('extraction from an installed game', () => {
         }).build();
     }, EXTRACTION_TIMEOUT_MS);
 
+    it('lands on the connection table with counts only a correct walk could produce', () => {
+        const game = new GameInstall({ root: GAME_ROOT ?? '' }).readGameData();
+
+        // Nothing before this point is fixed width: every unit, effect and technology record is as
+        // long as its own contents say. Four small, sane numbers here mean every width was right.
+        expect(game.techTree).toEqual({ ages: 4, buildings: 37, units: 255, researches: 233 });
+    }, EXTRACTION_TIMEOUT_MS);
+
+    it('reads the pierce armour the game itself displays, at the end of the creatable block', () => {
+        const game = new GameInstall({ root: GAME_ROOT ?? '' }).readGameData();
+        const table = game.civilizations[0].units;
+
+        // The last field of a long fixed run: it can only agree with the armour list if the whole
+        // run was read at the right widths.
+        const trainable = [...table.values()].filter((unit) => unit.type >= 70 && unit.creatableType > 0);
+        const agreeing = trainable.filter((unit) => {
+            const pierce = unit.armours.find((entry) => entry.class === 3);
+
+            return pierce !== undefined && pierce.amount === unit.displayedPierceArmour;
+        });
+
+        expect(agreeing.length).toBeGreaterThan(trainable.length * 0.5);
+    }, EXTRACTION_TIMEOUT_MS);
+
     it('reproduces every shipped unit record', () => {
         expect(plain(dataset.units)).toEqual(UNIT_RECORDS);
     });

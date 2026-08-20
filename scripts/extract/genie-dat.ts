@@ -52,6 +52,45 @@ export interface GenieUnit {
     accuracyPercent: number;
     /** Fraction of the damage from bonus classes this unit does not take. */
     bonusDamageResistance: number;
+    /** Every place the unit can be produced, with the time and button each one uses. */
+    trainLocations: { trainTime: number; unitId: number; buttonId: number; hotKeyId: number }[];
+    rearAttackModifier: number;
+    flankAttackModifier: number;
+    garrisonGraphic: number;
+    spawningGraphic: number;
+    upgradeGraphic: number;
+    heroGlowGraphic: number;
+    idleAttackGraphic: number;
+    /** How much charge the unit can hold before it spends it, and how fast it fills. */
+    maxCharge: number;
+    rechargeRate: number;
+    chargeEvent: number;
+    chargeType: number;
+    chargeTarget: number;
+    chargeProjectileUnit: number;
+    attackPriority: number;
+    invulnerabilityLevel: number;
+    buttonIconId: number;
+    buttonShortTooltipId: number;
+    buttonExtendedTooltipId: number;
+    buttonHotkeyAction: number;
+    minConversionTimeModifier: number;
+    maxConversionTimeModifier: number;
+    conversionChanceModifier: number;
+    /** Missiles released per shot, and the ceiling a technology can raise it to. */
+    totalProjectiles: number;
+    maxTotalProjectiles: number;
+    projectileSpawningArea: number[];
+    secondaryProjectileUnit: number;
+    specialGraphic: number;
+    specialAbility: number;
+    /** Only on a missile record: how it flies, and whether it leads a moving target. */
+    projectileType: number;
+    smartMode: number;
+    hitMode: number;
+    vanishMode: number;
+    areaEffectSpecials: number;
+    projectileArc: number;
     /** Bit field: 1 the unit's attacks ignore armour, 2 it resists attacks that do. */
     combatAbility: number;
     frameDelay: number;
@@ -105,11 +144,117 @@ export interface GenieTech {
     costs: ResourceAmount[];
 }
 
+/** The part of a unit record the reader always has before it knows the unit's type. */
+export type UnitHeader = Pick<
+    GenieUnit,
+    | 'id'
+    | 'type'
+    | 'internalName'
+    | 'nameStringId'
+    | 'creationStringId'
+    | 'helpStringId'
+    | 'classId'
+    | 'hitPoints'
+    | 'lineOfSight'
+    | 'garrisonCapacity'
+    | 'iconId'
+>;
+
+/**
+ * Every field of a unit record that is not part of its header, at rest.
+ *
+ * A unit's blocks are optional: a tree stops after the header, a projectile never reaches the
+ * creatable block. Rather than leave those fields absent, the reader starts from a full record and
+ * overwrites what the file actually carries, so the shape is the same whatever the unit is.
+ *
+ * @returns A fresh set of defaults, safe to mutate.
+ */
+export function blankUnitFields(): Omit<GenieUnit, keyof UnitHeader> {
+    return {
+    speed: 0,
+    attacks: [],
+    armours: [],
+    creatableType: 0,
+    isHero: false,
+    baseArmour: 0,
+    maxRange: 0,
+    minRange: 0,
+    blastWidth: 0,
+    reloadTime: 0,
+    projectileUnitId: -1,
+    accuracyPercent: 0,
+    bonusDamageResistance: 0,
+    trainLocations: [],
+    rearAttackModifier: 0,
+    flankAttackModifier: 0,
+    garrisonGraphic: -1,
+    spawningGraphic: -1,
+    upgradeGraphic: -1,
+    heroGlowGraphic: -1,
+    idleAttackGraphic: -1,
+    maxCharge: 0,
+    rechargeRate: 0,
+    chargeEvent: 0,
+    chargeType: 0,
+    chargeTarget: 0,
+    chargeProjectileUnit: -1,
+    attackPriority: 0,
+    invulnerabilityLevel: 0,
+    buttonIconId: -1,
+    buttonShortTooltipId: 0,
+    buttonExtendedTooltipId: 0,
+    buttonHotkeyAction: 0,
+    minConversionTimeModifier: 0,
+    maxConversionTimeModifier: 0,
+    conversionChanceModifier: 0,
+    totalProjectiles: 0,
+    maxTotalProjectiles: 0,
+    projectileSpawningArea: [],
+    secondaryProjectileUnit: -1,
+    specialGraphic: -1,
+    specialAbility: 0,
+    projectileType: 0,
+    smartMode: 0,
+    hitMode: 0,
+    vanishMode: 0,
+    areaEffectSpecials: 0,
+    projectileArc: 0,
+    combatAbility: 0,
+    frameDelay: 0,
+    displayedAttack: 0,
+    displayedMeleeArmour: 0,
+    displayedPierceArmour: 0,
+    displayedRange: 0,
+    displayedReloadTime: 0,
+    costs: [],
+    trainTime: 0,
+    trainLocationIds: [],
+    };
+}
+
+export interface TechTreeHeader {
+    ages: number;
+    buildings: number;
+    units: number;
+    researches: number;
+}
+
 export interface GenieData {
     version: string;
     civilizations: GenieCivilization[];
     technologies: GenieTech[];
     effects: GenieEffect[];
+    /**
+     * The counts the connection table opens with, read right after the technologies.
+     *
+     * The table itself is not decoded: the guide reads the per-civilization trees the game ships as
+     * their own files. These four numbers are read because they are the anchor — every record
+     * above them is variable width, so they can only land in a plausible range if every one of
+     * those widths was right.
+     */
+    techTree: TechTreeHeader;
+    /** Bytes the walk did not consume, which is the whole connection table. */
+    bytesRemaining: number;
 }
 
 const VERSION_SIZE = 8;
@@ -157,8 +302,16 @@ export class GenieDatReader {
 
         const civilizations = this.civilizations();
         const technologies = this.technologies();
+        const techTree = this.techTreeHeader();
 
-        return { version, civilizations, technologies, effects };
+        return {
+            version,
+            civilizations,
+            technologies,
+            effects,
+            techTree,
+            bytesRemaining: this.reader.remaining,
+        };
     }
 
     private version(): string {
@@ -379,53 +532,15 @@ export class GenieDatReader {
         if (type >= UNIT_TYPE.deadFish) this.deadFish();
         if (type >= UNIT_TYPE.bird) this.bird();
         if (type >= UNIT_TYPE.combatant) this.combatant(unit);
-        if (type === UNIT_TYPE.projectile) this.reader.skip(5 + 4);
+        if (type === UNIT_TYPE.projectile) this.projectile(unit);
         if (type >= UNIT_TYPE.creatable) this.creatable(unit);
         if (type === UNIT_TYPE.building) this.building();
 
         return unit;
     }
 
-    private emptyUnit(header: Pick<
-        GenieUnit,
-        | 'id'
-        | 'type'
-        | 'internalName'
-        | 'nameStringId'
-        | 'creationStringId'
-        | 'helpStringId'
-        | 'classId'
-        | 'hitPoints'
-        | 'lineOfSight'
-        | 'garrisonCapacity'
-        | 'iconId'
-    >): GenieUnit {
-        return {
-            ...header,
-            speed: 0,
-            attacks: [],
-            armours: [],
-            creatableType: 0,
-            isHero: false,
-            baseArmour: 0,
-            maxRange: 0,
-            minRange: 0,
-            blastWidth: 0,
-            reloadTime: 0,
-            projectileUnitId: -1,
-            accuracyPercent: 0,
-            bonusDamageResistance: 0,
-            combatAbility: 0,
-            frameDelay: 0,
-            displayedAttack: 0,
-            displayedMeleeArmour: 0,
-            displayedPierceArmour: 0,
-            displayedRange: 0,
-            displayedReloadTime: 0,
-            costs: [],
-            trainTime: 0,
-            trainLocationIds: [],
-        };
+    private emptyUnit(header: UnitHeader): GenieUnit {
+        return { ...header, ...blankUnitFields() };
     }
 
     private deadFish(): void {
@@ -464,6 +579,15 @@ export class GenieDatReader {
         this.reader.skip(4 + 4 + 4 + 2 + 4 + 2);
     }
 
+    private projectile(unit: GenieUnit): void {
+        unit.projectileType = this.reader.uint8();
+        unit.smartMode = this.reader.uint8();
+        unit.hitMode = this.reader.uint8();
+        unit.vanishMode = this.reader.uint8();
+        unit.areaEffectSpecials = this.reader.uint8();
+        unit.projectileArc = this.reader.float();
+    }
+
     private classAmounts(): ClassAmount[] {
         const count = this.reader.int16();
 
@@ -483,24 +607,72 @@ export class GenieDatReader {
         const locations = this.reader.list(locationCount, () => {
             const trainTime = this.reader.int16();
             const unitId = this.reader.int16();
-            this.reader.skip(1 + 4);
+            const buttonId = this.reader.uint8();
+            const hotKeyId = this.reader.int32();
 
-            return { trainTime, unitId };
+            return { trainTime, unitId, buttonId, hotKeyId };
         });
         unit.trainTime = locations[0]?.trainTime ?? 0;
         unit.trainLocationIds = locations.map((location) => location.unitId);
+        unit.trainLocations = locations;
 
-        this.reader.skip(4 + 4);
+        unit.rearAttackModifier = this.reader.float();
+        unit.flankAttackModifier = this.reader.float();
         unit.creatableType = this.reader.uint8();
         unit.isHero = this.reader.uint8() === 1;
-        this.reader.skip(4 + 2 + 2 + 2 + 2 + 4 + 4 + 2 + 2 + 2 + 4 + 1 + 4);
-        this.reader.skip(2 + 4 + 4 + 2 + 4 + 4 + 4);
-        this.reader.skip(4 + 1 + 12 + 4 + 4 + 1);
+        unit.garrisonGraphic = this.reader.int32();
+        unit.spawningGraphic = this.reader.int16();
+        unit.upgradeGraphic = this.reader.int16();
+        unit.heroGlowGraphic = this.reader.int16();
+        unit.idleAttackGraphic = this.reader.int16();
+        unit.maxCharge = this.reader.float();
+        unit.rechargeRate = this.reader.float();
+        unit.chargeEvent = this.reader.int16();
+        unit.chargeType = this.reader.int16();
+        unit.chargeTarget = this.reader.int16();
+        unit.chargeProjectileUnit = this.reader.int32();
+        unit.attackPriority = this.reader.uint8();
+        unit.invulnerabilityLevel = this.reader.float();
+        unit.buttonIconId = this.reader.int16();
+        unit.buttonShortTooltipId = this.reader.int32();
+        unit.buttonExtendedTooltipId = this.reader.int32();
+        unit.buttonHotkeyAction = this.reader.int16();
+        unit.minConversionTimeModifier = this.reader.float();
+        unit.maxConversionTimeModifier = this.reader.float();
+        unit.conversionChanceModifier = this.reader.float();
+        unit.totalProjectiles = this.reader.float();
+        unit.maxTotalProjectiles = this.reader.uint8();
+        unit.projectileSpawningArea = this.reader.list(3, () => this.reader.float());
+        unit.secondaryProjectileUnit = this.reader.int32();
+        unit.specialGraphic = this.reader.int32();
+        unit.specialAbility = this.reader.uint8();
         unit.displayedPierceArmour = this.reader.int16();
     }
 
     private building(): void {
         this.reader.skip(2 * 6 + 1 + 2 + 1 + 2 + 2 + 2 + 2 + 1 + 40 + 2 + 2 + 2 + 2 + 4 + 4 + 1 + 4 + 4 + 2 + 6);
+    }
+
+    /**
+     * Reads the four counts the connection table starts with.
+     *
+     * Nothing before this point has a fixed size — every unit, effect and technology record is as
+     * long as its own contents say. If any width were read wrong the cursor would arrive here
+     * somewhere else entirely, and these four numbers would be noise. That they are small and
+     * sane is what vouches for the walk above.
+     *
+     * @returns The four counts, checked against the range the game can hold.
+     */
+    private techTreeHeader(): TechTreeHeader {
+        // Seven counters the file keeps between the technologies and the connection table.
+        this.reader.skip(4 * 7);
+        const ages = this.expect(this.reader.uint8(), 20, 'tech tree age');
+        const buildings = this.expect(this.reader.uint8(), 200, 'tech tree building');
+        // Widened at this file version, because the unit count had already reached a byte's ceiling.
+        const units = this.expect(this.reader.int16(), 20000, 'tech tree unit');
+        const researches = this.expect(this.reader.uint8(), 250, 'tech tree research');
+
+        return { ages, buildings, units, researches };
     }
 
     private technologies(): GenieTech[] {

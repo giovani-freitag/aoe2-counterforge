@@ -72,6 +72,26 @@ are only re-encoded.
 - Duplicate entries merged: several units exist twice in the game because a second building can
   train them (Donjon, Krepost, Stable), and the guide shows one entry listing both places.
 
+## Reading the whole thing at once
+
+`npm run data:export` writes everything the game's files carry into readable JSON, under the ids the
+game itself uses. It has nothing to do with what the site ships: that dataset is curated and
+committed, this one is faithful and large, and it exists so a question about the game can be
+answered by reading a file instead of by opening the binary again.
+
+The sixty civilization tables each carry the whole roster, and all but a few thousand entries are
+byte-identical, so the export writes the reference table once and only the differences beside it.
+Everything else comes over whole: every effect, every technology, the string tables, the unit lines
+and the per-civilization trees the game keeps as its own files.
+
+What vouches for it is at the end of the walk. Nothing in the binary is fixed width — every unit,
+effect and technology record is as long as its own contents say — so if any field were read at the
+wrong width the cursor would arrive somewhere else entirely. Right after the technologies sit four
+counts, and they read 4 ages, 37 buildings, 255 units, 233 researches. Four small sane numbers
+there mean every width above them was right. The connection table those counts introduce is left
+undecoded, because the same relationships arrive in the per-civilization files without a binary
+layout to guess at.
+
 ## The technology that never names the unit
 
 Ballistics changes no archer. It sets a flag on the arrows, and the game files carry the missile
