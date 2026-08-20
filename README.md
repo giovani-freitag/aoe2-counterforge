@@ -37,6 +37,7 @@ you have, and whether you plan to stand and fight or shoot on the move.
 
 - ⚔️ **Counters that are calculated** — damage per hit, DPS, range exposure and kiting, weighted by what each side costs. Not a hand-written table.
 - 🛡️ **Every upgrade that touches the unit**, read from the game's effect table, with the number it changes and the total once everything is researched.
+- 🔨 **A page per technology** — what it costs, every unit it changes and by how much, and which civilizations get to research it.
 - 🏰 **Civilization-aware** — pick one and every stat, counter and ranking follows what it can research *and* the bonuses it is simply given.
 - 👥 **Villagers per resource** to keep a building producing non-stop, with the bottleneck called out.
 - ⚖️ **Four units side by side**, best value crowned on every row, plus a head-to-head matrix.
@@ -52,6 +53,16 @@ you have, and whether you plan to stand and fight or shoot on the move.
 <td width="50%" valign="top">
 <img src="docs/screenshots/search-dark.png" alt="Command palette with unit, civilization and technology results">
 <p align="center"><sub>One palette, every kind of result</sub></p>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<img src="docs/screenshots/technology-dark.png" alt="Technology page: cost, the units it changes and who researches it">
+<p align="center"><sub>Every technology, and what it actually does</sub></p>
+</td>
+<td width="50%" valign="top">
+<img src="docs/screenshots/economy-mobile.png" alt="Economy tab on a phone: gather technologies by age and villagers per resource">
+<p align="center"><sub>Mobile first, not mobile last</sub></p>
 </td>
 </tr>
 </table>
