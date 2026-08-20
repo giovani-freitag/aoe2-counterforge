@@ -159,7 +159,10 @@ const ATTRIBUTES: Record<number, string> = {
     13: 'workRate',
     14: 'carryCapacity',
     19: 'ballistics',
+    20: 'minRange',
     22: 'blastWidth',
+    24: 'bonusDamageResistance',
+    63: 'combatAbility',
     100: 'cost',
     101: 'trainTime',
     102: 'projectiles',
@@ -172,6 +175,10 @@ const ATTRIBUTES: Record<number, string> = {
 
 /** Commands that change a number; the rest enable units, swap graphics or rename things. */
 const MODES: Record<number, TechEffectRecord['mode']> = { 0: 'set', 4: 'add', 5: 'multiply' };
+
+/** Bits of the combat ability field: whether a unit's attacks skip armour, and whether they can be. */
+const IGNORES_ARMOUR = 1;
+const RESISTS_ARMOUR_IGNORE = 2;
 
 /** Attack and armour pack the damage class into the value: class times 256, plus the amount. */
 const PACKED = new Set(['attack', 'armour']);
@@ -946,6 +953,9 @@ export class DatasetBuilder {
             trainTime: unit.trainTime,
             hp: unit.hitPoints,
             baseArmour: unit.baseArmour,
+            bonusDamageResistance: this.round(unit.bonusDamageResistance),
+            ignoresArmour: (unit.combatAbility & IGNORES_ARMOUR) !== 0,
+            resistsArmourIgnore: (unit.combatAbility & RESISTS_ARMOUR_IGNORE) !== 0,
             attacks,
             armours,
             range: this.round(unit.displayedRange),

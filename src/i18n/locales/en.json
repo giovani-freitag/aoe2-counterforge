@@ -233,7 +233,10 @@
             "ballistics": "Shots lead moving targets",
             "cost": "{{value}}% cost",
             "costResource": "{{value}}% {{resource}} cost",
-            "accuracyFloor": "Accuracy raised to {{value}}%"
+            "accuracyFloor": "Accuracy raised to {{value}}%",
+            "bonusResistance": "Takes {{value}}% less bonus damage",
+            "ignoresArmour": "Attacks ignore armour",
+            "minRange": "Minimum range down to {{value}}"
         },
         "uniqueHint": "Bonuses a civilization is given, and the castle technologies that reach this unit.",
         "noUnique": "No civilization changes this unit on its own.",

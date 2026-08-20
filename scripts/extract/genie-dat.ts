@@ -50,6 +50,10 @@ export interface GenieUnit {
     /** The missile record this unit fires, or a negative id when it fires none. */
     projectileUnitId: number;
     accuracyPercent: number;
+    /** Fraction of the damage from bonus classes this unit does not take. */
+    bonusDamageResistance: number;
+    /** Bit field: 1 the unit's attacks ignore armour, 2 it resists attacks that do. */
+    combatAbility: number;
     frameDelay: number;
     displayedAttack: number;
     displayedMeleeArmour: number;
@@ -410,6 +414,8 @@ export class GenieDatReader {
             reloadTime: 0,
             projectileUnitId: -1,
             accuracyPercent: 0,
+            bonusDamageResistance: 0,
+            combatAbility: 0,
             frameDelay: 0,
             displayedAttack: 0,
             displayedMeleeArmour: 0,
@@ -439,13 +445,14 @@ export class GenieDatReader {
         unit.baseArmour = this.reader.int16();
         unit.attacks = this.classAmounts();
         unit.armours = this.classAmounts();
-        this.reader.skip(2 + 4);
+        this.reader.skip(2);
+        unit.bonusDamageResistance = this.reader.float();
         unit.maxRange = this.reader.float();
         unit.blastWidth = this.reader.float();
         unit.reloadTime = this.reader.float();
         unit.projectileUnitId = this.reader.int16();
         unit.accuracyPercent = this.reader.int16();
-        this.reader.skip(1);
+        unit.combatAbility = this.reader.uint8();
         unit.frameDelay = this.reader.int16();
         this.reader.skip(12 + 1);
         unit.minRange = this.reader.float();

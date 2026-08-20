@@ -40,8 +40,10 @@ const strings = new Map(
     Object.entries(LOCALES).map(([locale, language]) => [locale, install.readStrings(language)]),
 );
 
+const game = install.readGameData();
+
 const dataset = new DatasetBuilder({
-    game: install.readGameData(),
+    game,
     trees: install.readTechTrees(),
     civilizations: meta.civilization_list,
     strings,
@@ -56,6 +58,8 @@ write('civilizations.json', dataset.civilizations);
 write('economy.json', dataset.economy);
 for (const [locale, bundle] of dataset.strings) write(`strings.${locale}.json`, bundle);
 write('meta.json', {
+    // The version the data file itself declares, so a committed dataset can be traced to a patch.
+    gameVersion: game.version,
     unitCount: dataset.units.length,
     techCount: dataset.technologies.length,
     civCount: dataset.civilizations.length,

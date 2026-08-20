@@ -114,4 +114,48 @@ describe('DamageCalculator', () => {
 
         expect(damage.total).toBe(15);
     });
+    it('softens the bonus classes for a unit that resists them', () => {
+        const attacker = makeStats({ attacks: { 'base-melee': 4, cavalry: 32 } });
+        const defender = makeStats({ armours: { 'base-melee': 0, cavalry: 0 }, bonusDamageResistance: 0.4 });
+
+        const damage = calculator.between(attacker, defender);
+
+        expect(damage.total).toBeCloseTo(23.2);
+    });
+
+    it('leaves the base classes alone when bonus damage is resisted', () => {
+        const attacker = makeStats({ attacks: { 'base-melee': 10 } });
+        const defender = makeStats({ armours: { 'base-melee': 0 }, bonusDamageResistance: 0.4 });
+
+        const damage = calculator.between(attacker, defender);
+
+        expect(damage.total).toBe(10);
+    });
+
+    it('walks an armour-ignoring attack past the base armour', () => {
+        const attacker = makeStats({ attacks: { 'base-melee': 16 }, ignoresArmour: true });
+        const defender = makeStats({ armours: { 'base-melee': 10 } });
+
+        const damage = calculator.between(attacker, defender);
+
+        expect(damage.total).toBe(16);
+    });
+
+    it('stops it against a unit built to hold', () => {
+        const attacker = makeStats({ attacks: { 'base-melee': 16 }, ignoresArmour: true });
+        const defender = makeStats({ armours: { 'base-melee': 10 }, resistsArmourIgnore: true });
+
+        const damage = calculator.between(attacker, defender);
+
+        expect(damage.total).toBe(6);
+    });
+
+    it('keeps the bonus classes payable by an armour-ignoring attack', () => {
+        const attacker = makeStats({ attacks: { 'base-melee': 16, cavalry: 5 }, ignoresArmour: true });
+        const defender = makeStats({ armours: { 'base-melee': 10, cavalry: 4 } });
+
+        const damage = calculator.between(attacker, defender);
+
+        expect(damage.total).toBe(17);
+    });
 });

@@ -233,7 +233,10 @@
             "ballistics": "Tiros miram à frente do alvo",
             "cost": "{{value}}% de custo",
             "costResource": "{{value}}% de custo em {{resource}}",
-            "accuracyFloor": "Precisão elevada a {{value}}%"
+            "accuracyFloor": "Precisão elevada a {{value}}%",
+            "bonusResistance": "Recebe {{value}}% menos dano bônus",
+            "ignoresArmour": "Ataques ignoram armadura",
+            "minRange": "Alcance mínimo cai para {{value}}"
         },
         "uniqueHint": "Bônus que a civilização já ganha, e as tecnologias de castelo que alcançam a unidade.",
         "noUnique": "Nenhuma civilização muda esta unidade por conta própria.",

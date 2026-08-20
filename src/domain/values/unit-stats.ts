@@ -9,6 +9,12 @@ export interface UnitStatsConfig {
     armour: ArmourProfile;
     /** Stands in for any damage class the defender does not carry. */
     baseArmour: number;
+    /** Fraction of the damage from bonus classes the unit does not take. */
+    bonusDamageResistance: number;
+    /** Whether this unit's attacks go through melee and pierce armour. */
+    ignoresArmour: boolean;
+    /** Whether this unit's armour holds against attacks that go through it. */
+    resistsArmourIgnore: boolean;
     range: number;
     minRange: number;
     reloadTime: number;
@@ -39,6 +45,12 @@ export interface UnitStatsPatch {
     reloadTime?: number;
     reloadTimeMultiplier?: number;
     blastWidth?: number;
+    /** The highest resistance any of the unit's bonuses grants; they do not stack. */
+    bonusDamageResistance?: number;
+    /** Value an effect brings the minimum range down to. */
+    minRangeCeiling?: number;
+    /** True once a technology has taught the unit's attacks to go through armour. */
+    ignoresArmour?: boolean;
     attack?: readonly ClassAmount[];
     attackMultipliers?: readonly ClassAmount[];
     armour?: readonly ClassAmount[];
@@ -77,6 +89,18 @@ export class UnitStats {
 
     public get baseArmour(): number {
         return this.config.baseArmour;
+    }
+
+    public get bonusDamageResistance(): number {
+        return this.config.bonusDamageResistance;
+    }
+
+    public get ignoresArmour(): boolean {
+        return this.config.ignoresArmour;
+    }
+
+    public get resistsArmourIgnore(): boolean {
+        return this.config.resistsArmourIgnore;
     }
 
     public get armour(): ArmourProfile {
@@ -171,6 +195,9 @@ export class UnitStats {
             speed: this.config.speed * (patch.speedMultiplier ?? 1) + (patch.speed ?? 0),
             reloadTime: this.config.reloadTime * (patch.reloadTimeMultiplier ?? 1) + (patch.reloadTime ?? 0),
             blastWidth: this.config.blastWidth + (patch.blastWidth ?? 0),
+            bonusDamageResistance: Math.max(this.config.bonusDamageResistance, patch.bonusDamageResistance ?? 0),
+            minRange: Math.min(this.config.minRange, patch.minRangeCeiling ?? Number.POSITIVE_INFINITY),
+            ignoresArmour: this.config.ignoresArmour || (patch.ignoresArmour ?? false),
             attack: this.config.attack.scaled(patch.attackMultipliers ?? []).plus(patch.attack ?? []),
             armour: this.config.armour.scaled(patch.armourMultipliers ?? []).plus(patch.armour ?? []),
         });

@@ -52,6 +52,8 @@ export function genieUnit(overrides: Partial<GenieUnit> & Pick<GenieUnit, 'id' |
         blastWidth: 0,
         reloadTime: 2,
         projectileUnitId: -1,
+        bonusDamageResistance: 0,
+        combatAbility: 0,
         accuracyPercent: 100,
         frameDelay: 0,
         displayedAttack: 4,

@@ -34,6 +34,12 @@ export interface StatDelta {
      * target is going instead of where it stands, which is worth saying even though no stat moves.
      */
     ballistics?: boolean;
+    /** Value the minimum range is brought down to, for an effect that sets it outright. */
+    minRangeCeiling?: number;
+    /** True once a technology has taught the unit's attacks to go through armour. */
+    ignoresArmour?: boolean;
+    /** Fraction of the damage from bonus classes the unit stops taking. */
+    bonusDamageResistance?: number;
     /** What each resource of the price is multiplied by, keyed by resource or 'all'. */
     costMultipliers?: Readonly<Record<string, number>>;
     attack?: readonly ClassAmount[];

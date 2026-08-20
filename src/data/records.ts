@@ -30,6 +30,12 @@ export interface UnitRecord {
     hp: number;
     /** Stands in for any damage class the defender does not carry. */
     baseArmour: number;
+    /** Fraction of the damage from bonus classes the unit does not take. */
+    bonusDamageResistance: number;
+    /** Whether the unit's attacks go through melee and pierce armour. */
+    ignoresArmour: boolean;
+    /** Whether the unit's armour holds against attacks that go through it. */
+    resistsArmourIgnore: boolean;
     attacks: ClassAmountRecord[];
     armours: ClassAmountRecord[];
     range: number;

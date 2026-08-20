@@ -68,6 +68,9 @@ const MODELLED = new Set([
     'projectiles',
     'regeneration',
     'ballistics',
+    'bonusDamageResistance',
+    'minRange',
+    'combatAbility',
     'cost',
     'costFood',
     'costWood',
@@ -100,6 +103,9 @@ function canonical(delta: StatDelta): string {
         delta.reloadTimeMultiplier,
         delta.trainTimeMultiplier,
         delta.ballistics,
+        delta.bonusDamageResistance,
+        delta.minRangeCeiling,
+        delta.ignoresArmour,
     ].map((value) => String(value ?? ''));
 
     const costs = Object.entries(delta.costMultipliers ?? {})
@@ -351,6 +357,12 @@ export class UpgradeService {
             if (effect.mode === 'set') {
                 if (effect.value < 0) continue;
                 if (effect.attribute === 'ballistics' && effect.value >= 1) delta.ballistics = true;
+                if (effect.attribute === 'minRange') {
+                    delta.minRangeCeiling = Math.min(delta.minRangeCeiling ?? Number.POSITIVE_INFINITY, effect.value);
+                }
+                if (effect.attribute === 'bonusDamageResistance') {
+                    delta.bonusDamageResistance = Math.max(delta.bonusDamageResistance ?? 0, effect.value);
+                }
                 if (effect.attribute === 'accuracy') {
                     delta.accuracyFloor = Math.max(delta.accuracyFloor ?? 0, effect.value);
                 }
@@ -370,6 +382,8 @@ export class UpgradeService {
             if (effect.attribute === 'blastWidth') delta.blastWidth = (delta.blastWidth ?? 0) + effect.value;
             if (effect.attribute === 'projectiles') delta.projectiles = (delta.projectiles ?? 0) + effect.value;
             if (effect.attribute === 'regeneration') delta.regeneration = (delta.regeneration ?? 0) + effect.value;
+            // The combat ability is a bit field; only the lowest bit is the one that pierces armour.
+            if (effect.attribute === 'combatAbility' && effect.value === 1) delta.ignoresArmour = true;
         }
 
         const list = (table: Map<string, number>): ClassAmount[] =>
@@ -413,6 +427,16 @@ export class UpgradeService {
             patch.reloadTime = (patch.reloadTime ?? 0) + (delta.reloadTime ?? 0);
             patch.reloadTimeMultiplier = (patch.reloadTimeMultiplier ?? 1) * (delta.reloadTimeMultiplier ?? 1);
             patch.blastWidth = (patch.blastWidth ?? 0) + (delta.blastWidth ?? 0);
+            // Two bonuses that both soften bonus damage do not stack; the better one stands.
+            patch.bonusDamageResistance = Math.max(
+                patch.bonusDamageResistance ?? 0,
+                delta.bonusDamageResistance ?? 0,
+            );
+            patch.minRangeCeiling = Math.min(
+                patch.minRangeCeiling ?? Number.POSITIVE_INFINITY,
+                delta.minRangeCeiling ?? Number.POSITIVE_INFINITY,
+            );
+            patch.ignoresArmour = (patch.ignoresArmour ?? false) || (delta.ignoresArmour ?? false);
             attack.push(...(delta.attack ?? []));
             attackMultipliers.push(...(delta.attackMultipliers ?? []));
             armour.push(...(delta.armour ?? []));

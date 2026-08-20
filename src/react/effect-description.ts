@@ -62,6 +62,13 @@ export function describeEffect(change: StatDelta, t: TFunction): string[] {
         labels.push(t('upgrades.effect.regeneration', { value: short(change.regeneration) }));
     }
     if (change.ballistics) labels.push(t('upgrades.effect.ballistics'));
+    if (change.ignoresArmour) labels.push(t('upgrades.effect.ignoresArmour'));
+    if (change.minRangeCeiling !== undefined) {
+        labels.push(t('upgrades.effect.minRange', { value: short(change.minRangeCeiling) }));
+    }
+    if (change.bonusDamageResistance !== undefined) {
+        labels.push(t('upgrades.effect.bonusResistance', { value: short(change.bonusDamageResistance * 100) }));
+    }
 
     for (const [resource, factor] of Object.entries(change.costMultipliers ?? {})) {
         if (factor === 1) continue;
