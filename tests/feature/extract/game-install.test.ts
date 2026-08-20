@@ -18,6 +18,20 @@ import type { GeneratedDataset } from '../../../scripts/extract/dataset-builder.
 if (existsSync('.env')) process.loadEnvFile('.env');
 
 const GAME_ROOT = process.env.AOE2_GAME_ROOT;
+
+/** Command type that switches a unit on, with the second field set for "make available". */
+const ENABLE_UNIT = 2;
+const ENABLE_MODE = 1;
+
+/** The civilizations in the order the data file numbers them, which is how a technology names one. */
+function civilizationList(): CivilizationMeta[] {
+    const install = new GameInstall({ root: GAME_ROOT ?? '' });
+    const file = JSON.parse(readFileSync(install.path('resources', '_common', 'dat', 'civilizations.json'), 'utf8')) as {
+        civilization_list: CivilizationMeta[];
+    };
+
+    return file.civilization_list;
+}
 const EXTRACTION_TIMEOUT_MS = 120_000;
 
 let dataset: GeneratedDataset;
@@ -26,6 +40,40 @@ let dataset: GeneratedDataset;
 function plain<T>(value: T): T {
     return JSON.parse(JSON.stringify(value)) as T;
 }
+
+describe.skipIf(!GAME_ROOT)('unit availability against the effect table', () => {
+    it('lists a unit for the civilization its enabling technology names', () => {
+        const game = new GameInstall({ root: GAME_ROOT ?? '' }).readGameData();
+
+        /** A technology that switches a unit on names the civilization that gets it. */
+        const owner = new Map<number, number>();
+        for (const tech of game.technologies) {
+            for (const command of game.effects[tech.effectId]?.commands ?? []) {
+                if (command.type === ENABLE_UNIT && command.unitClass === ENABLE_MODE && tech.civ >= 0) {
+                    owner.set(command.unit, tech.civ);
+                }
+            }
+        }
+
+        // The emblem keeps the name the file uses, which is what joins a renamed civilization —
+        // Hindustanis to Indians, Maya to Mayans — back to its place in the game's own list.
+        const byEmblem = new Map(CIVILIZATION_RECORDS.map((civ) => [civ.icon, civ.key]));
+        const mismatches = UNIT_RECORDS.flatMap((unit) => {
+            const index = owner.get(unit.id);
+            if (index === undefined) return [];
+
+            const internal = (civilizationList()[index]?.internal_name ?? '').toLowerCase();
+            const expected = byEmblem.get(internal);
+            if (expected === undefined) return [];
+
+            return unit.civs.length === 1 && unit.civs[0] === expected
+                ? []
+                : [`${unit.key}: shipped [${unit.civs.join()}], the technology names ${expected}`];
+        });
+
+        expect(mismatches).toEqual([]);
+    });
+});
 
 describe.skipIf(!GAME_ROOT)('extraction from an installed game', () => {
     beforeAll(() => {

@@ -72,6 +72,18 @@ are only re-encoded.
 - Duplicate entries merged: several units exist twice in the game because a second building can
   train them (Donjon, Krepost, Stable), and the guide shows one entry listing both places.
 
+## What links a unit to a civilization
+
+Two statements in the same install, and they agree. The civilization's tech tree lists the node,
+which is the menu a player clicks; and the technology that switches the unit on carries the number
+of the civilization it belongs to, which is the switch behind that menu. Seventy units carry both,
+and `tests/feature/extract/game-install.test.ts` checks that all seventy match — joining a renamed
+civilization back to the file through its emblem, which keeps the old name: Hindustanis to Indians,
+Maya to Mayans.
+
+Nothing switches on the units a game starts with — the Militia, the Villager, the Scout are simply
+on — so the tree stays the source the dataset is built from, with the effect table as the check.
+
 ## The unit the trees leave out
 
 A tech tree is a menu, and one soldier is not on it: the Xolotl Warrior, which a converted Stable
