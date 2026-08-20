@@ -27,9 +27,9 @@ takes the technologies and bonuses of the civilization you picked, if you picked
 
 ## How the list is read
 
-Strong, weak and complete are three views of one ranking rather than three lists, so the tab holds a
-single card: the switch above the rows picks which end of it you are looking at, and each side
-carries how many matchups it holds. The name filter, the unit type and the opponent breadth apply to
+Favourable, unfavourable and complete are three views of one ranking rather than three lists, so the
+tab holds a single card, named after the unit whose page it is: the switch above the rows picks
+which end of it you are looking at, and each side carries how many matchups it holds. The name filter, the unit type and the opponent breadth apply to
 all three.
 
 Breadth decides who is in the ranking at all:

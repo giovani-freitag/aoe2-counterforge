@@ -135,7 +135,7 @@
         "pasture": "Pasture"
     },
     "counters": {
-        "title": "Trade simulation",
+        "title": "{{unit}}'s matchups",
         "empty": "No relevant matchup in this range.",
         "model": "Engagement",
         "models": {
@@ -186,10 +186,10 @@
         "filterHint": "e.g. pikeman",
         "demolition": "{{unit}} is left out of the simulation: it spends itself in one blow or only works against buildings, so there is no sustained damage to compare.",
         "openUnit": "Open {{unit}}",
-        "side": "Which end of the ranking",
+        "side": "Which matchups to show",
         "sides": {
-            "strong": "Strong",
-            "weak": "Weak",
+            "strong": "Favourable",
+            "weak": "Unfavourable",
             "all": "All"
         },
         "widen": "Search every upgrade step instead",

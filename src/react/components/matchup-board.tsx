@@ -85,7 +85,7 @@ export function MatchupBoard({ matchups, subjectName }: MatchupBoardProps) {
             <div className="card__title">
                 <h2>
                     <Icon name="strongAgainst" />
-                    {t('counters.title')}
+                    {t('counters.title', { unit: subjectName })}
                 </h2>
             </div>
 

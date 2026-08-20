@@ -135,9 +135,9 @@
         "pasture": "Pasto"
     },
     "counters": {
-        "title": "Simulação de troca",
+        "title": "Confrontos de {{unit}}",
         "empty": "Nenhum confronto relevante nesta faixa.",
-        "model": "Engajamento",
+        "model": "Combate",
         "models": {
             "stand": "Duelo parado",
             "skirmish": "Com alcance"
@@ -186,10 +186,10 @@
         "filterHint": "Ex.: piqueiro",
         "demolition": "{{unit}} não entra na simulação: ela se gasta em um único golpe ou só serve contra construções, então não tem dano sustentado para comparar.",
         "openUnit": "Abrir {{unit}}",
-        "side": "Qual ponta do ranking",
+        "side": "Quais confrontos mostrar",
         "sides": {
-            "strong": "Fortes",
-            "weak": "Fracos",
+            "strong": "Favoráveis",
+            "weak": "Desfavoráveis",
             "all": "Todos"
         },
         "widen": "Buscar em todas as versões",
