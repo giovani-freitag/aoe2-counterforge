@@ -4,6 +4,7 @@ import { Link, useSearchParams } from 'react-router';
 import { RESOURCES } from '../../domain/enums/resource.ts';
 import { EntityNotFoundError } from '../../domain/errors/domain-error.ts';
 import type { UnitStatsRecord } from '../../domain/values/unit-stats.ts';
+import { BackLink } from '../components/back-link.tsx';
 import { GameIcon } from '../components/game-icon.tsx';
 import { Icon } from '../components/icon.tsx';
 import { SegmentedControl } from '../components/segmented-control.tsx';
@@ -174,6 +175,7 @@ export function ComparePage() {
 
     return (
         <div className="stack">
+            <BackLink to="/units" label={t('nav.units')} />
             <header className="stack stack--tight">
                 <h1>{t('compare.title')}</h1>
                 <p className="card__hint">{t('compare.help', { max: MAX_UNITS })}</p>

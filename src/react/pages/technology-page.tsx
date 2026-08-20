@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router';
 import type { Unit } from '../../domain/entities/unit.ts';
 import { EntityNotFoundError } from '../../domain/errors/domain-error.ts';
+import { BackLink } from '../components/back-link.tsx';
 import { GameIcon } from '../components/game-icon.tsx';
 import { ResourceCostRow } from '../components/resource-cost-row.tsx';
 import { describeEffect } from '../effect-description.ts';
@@ -63,6 +64,7 @@ export function TechnologyPage() {
 
     return (
         <div className="stack">
+            <BackLink to="/techs" label={t('nav.technologies')} />
             <header className="card">
                 <div className="unit-hero">
                     <GameIcon
