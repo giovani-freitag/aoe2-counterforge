@@ -25,6 +25,10 @@ export interface ResourceAmount {
 export interface GenieUnit {
     /** Short name the designers use in the files, such as "VILLAGER_LUMBERJACK". */
     internalName: string;
+    /** What kind of thing the game thinks it is: a villager, a soldier, a trade cart, a ship. */
+    creatableType: number;
+    /** Set for the named characters of the campaigns, which no skirmish ever produces. */
+    isHero: boolean;
     id: number;
     type: number;
     nameStringId: number;
@@ -395,6 +399,8 @@ export class GenieDatReader {
             speed: 0,
             attacks: [],
             armours: [],
+            creatableType: 0,
+            isHero: false,
             baseArmour: 0,
             maxRange: 0,
             minRange: 0,
@@ -474,7 +480,10 @@ export class GenieDatReader {
         unit.trainTime = locations[0]?.trainTime ?? 0;
         unit.trainLocationIds = locations.map((location) => location.unitId);
 
-        this.reader.skip(4 + 4 + 1 + 1 + 4 + 2 + 2 + 2 + 2 + 4 + 4 + 2 + 2 + 2 + 4 + 1 + 4);
+        this.reader.skip(4 + 4);
+        unit.creatableType = this.reader.uint8();
+        unit.isHero = this.reader.uint8() === 1;
+        this.reader.skip(4 + 2 + 2 + 2 + 2 + 4 + 4 + 2 + 2 + 2 + 4 + 1 + 4);
         this.reader.skip(2 + 4 + 4 + 2 + 4 + 4 + 4);
         this.reader.skip(4 + 1 + 12 + 4 + 4 + 1);
         unit.displayedPierceArmour = this.reader.int16();

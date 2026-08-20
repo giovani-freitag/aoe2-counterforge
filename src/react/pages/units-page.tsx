@@ -55,6 +55,7 @@ export function UnitsPage() {
     const uniqueOnly = params.get('unique') === '1';
     const linesOnly = params.get('lines') === '1';
     const upgraded = params.get('upgraded') === '1';
+    const offTree = params.get('offtree') === '1';
 
     const setFilter = (name: string, value: string | null) => {
         const next = new URLSearchParams(params);
@@ -68,6 +69,7 @@ export function UnitsPage() {
             .units({
                 civ: preferences.civ,
                 combatOnly: true,
+                offTree,
                 categories: category ? [category] : undefined,
                 ages: age ? [age] : undefined,
             })
@@ -85,7 +87,21 @@ export function UnitsPage() {
         }
 
         return ranking.rank({ units: pool, sort, upgraded, civ: preferences.civ });
-    }, [catalog, ranking, text, matchesName, preferences.civ, category, age, sort, term, uniqueOnly, linesOnly, upgraded]);
+    }, [
+        catalog,
+        ranking,
+        text,
+        matchesName,
+        preferences.civ,
+        category,
+        age,
+        sort,
+        term,
+        uniqueOnly,
+        linesOnly,
+        upgraded,
+        offTree,
+    ]);
 
     const metricLabel = (value: number | null) => {
         if (value === null) return undefined;
@@ -180,6 +196,7 @@ export function UnitsPage() {
                     {toggle('lines', t('units.onePerLine'), linesOnly)}
                     {toggle('unique', t('units.uniqueOnly'), uniqueOnly)}
                     {toggle('upgraded', t('units.withUpgrades'), upgraded)}
+                    {toggle('offtree', t('units.offTree'), offTree)}
                 </>
             }
         >

@@ -34,6 +34,7 @@ export interface UnitRecordOverrides {
     line?: string;
     upgradesFrom?: string | null;
     upgradesTo?: string[];
+    inTechTree?: boolean;
 }
 
 /**
@@ -72,6 +73,7 @@ export function unitRecord(overrides: UnitRecordOverrides): UnitRecord {
         upgradesFrom: overrides.upgradesFrom ?? null,
         upgradesTo: overrides.upgradesTo ?? [],
         line: overrides.line ?? overrides.key,
+        inTechTree: overrides.inTechTree ?? true,
     };
 }
 

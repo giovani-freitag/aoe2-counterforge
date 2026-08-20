@@ -25,6 +25,8 @@ export interface UnitConfig {
     line: string;
     upgradesFrom: string | null;
     upgradesTo: readonly string[];
+    /** False for a unit the game can produce that no civilization's tech tree lists. */
+    inTechTree: boolean;
     upgrade: UnitUpgradeInfo | null;
     civs: readonly string[];
     uniqueTo: string | null;
@@ -97,6 +99,11 @@ export class Unit {
 
     public get upgradesTo(): readonly string[] {
         return this.config.upgradesTo;
+    }
+
+    /** Whether any civilization's tech tree names it, which is what a menu can promise. */
+    public get inTechTree(): boolean {
+        return this.config.inTechTree;
     }
 
     public get upgrade(): UnitUpgradeInfo | null {

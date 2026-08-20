@@ -72,17 +72,22 @@ are only re-encoded.
 - Duplicate entries merged: several units exist twice in the game because a second building can
   train them (Donjon, Krepost, Stable), and the guide shows one entry listing both places.
 
-## Where the roster stops
+## The units the trees leave out
 
-The tech trees decide what counts as a unit. That is the only statement in the files about what a
-normal game can produce, and it costs one real unit: the Xolotl Warrior, which a converted Stable
-turns out for a civilization with no cavalry of its own, appears in no tech tree at all.
+A tech tree is a menu, and the file holds soldiers that are not on it: the Xolotl Warrior a
+converted Stable turns out for a civilization with no cavalry of its own, the melee stance of the
+Ratha, a handful the campaigns use. Sixteen of them ship, marked as outside the tree, and the
+roster hides them until the reader asks for them.
 
-Including it would mean authoring by hand what the files do not say. The data was searched for a
-rule that separates it from the three hundred other creatable units the trees leave out — campaign
-heroes, villager jobs, livestock — and there is none: heroes carry costs too, and Raden Wijaya is
-trained at the Stable just like the Xolotl. So the boundary stays where the game draws it, and this
-paragraph is the note that it was a decision rather than an oversight.
+Telling them apart from the three hundred other leftovers is read, not typed. The file flags its
+campaign characters as heroes, which removes a hundred and seventy-six of them, and a soldier
+anybody fields has a price, an attack, and a building the trees actually use — which removes the
+villager jobs, the livestock and the map revealers.
+
+What no file says is which of them a skirmish can reach, so they are marked instead of judged. The
+one exception is a unit a technology explicitly switches on: that one stands in for what a
+civilization cannot train at that building, which is how the Xolotl Warrior ends up listed for the
+six civilizations whose Stable has no cavalry.
 
 `tests/feature/extract/game-install.test.ts` re-runs the extraction and compares it against the
 committed dataset. It only runs when `AOE2_GAME_ROOT` is set.

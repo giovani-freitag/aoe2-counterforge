@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import type { Unit } from '../../domain/entities/unit.ts';
 import { useGameText } from '../hooks/use-game-text.ts';
@@ -11,6 +12,7 @@ export interface UnitListItemProps {
 
 /** One unit row, linking to its detail page. */
 export function UnitListItem({ unit, subtitle, trailing }: UnitListItemProps) {
+    const { t } = useTranslation();
     const text = useGameText();
     const unitText = text.unit(unit.key);
 
@@ -21,6 +23,7 @@ export function UnitListItem({ unit, subtitle, trailing }: UnitListItemProps) {
                 <span className="list-item__title">{unitText.name}</span>
                 {subtitle ? <span className="list-item__subtitle">{subtitle}</span> : null}
             </span>
+            {unit.inTechTree ? null : <span className="badge">{t('units.offTreeBadge')}</span>}
             {trailing}
         </Link>
     );

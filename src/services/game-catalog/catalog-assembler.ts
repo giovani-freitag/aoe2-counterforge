@@ -51,6 +51,7 @@ export class CatalogAssembler {
                 lineOfSight: record.lineOfSight,
             }),
             line: record.line,
+            inTechTree: record.inTechTree,
             upgradesFrom: record.upgradesFrom,
             upgradesTo: record.upgradesTo,
             upgrade: this.toUpgradeInfo(record),

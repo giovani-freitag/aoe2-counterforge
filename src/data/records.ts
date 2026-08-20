@@ -42,6 +42,8 @@ export interface UnitRecord {
     upgradesFrom: string | null;
     upgradesTo: string[];
     line: string;
+    /** False for a unit the game can produce that no civilization's tech tree lists. */
+    inTechTree: boolean;
 }
 
 /** One change a technology makes, exactly as the game's own effect table states it. */

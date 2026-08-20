@@ -77,6 +77,7 @@ export function makeUnit(overrides: UnitOverrides = {}): Unit {
         id: overrides.id ?? 1,
         classId: overrides.classId ?? 6,
         key,
+        inTechTree: true,
         icon: null,
         category: overrides.category ?? 'infantry',
         tags: overrides.tags ?? ['melee'],

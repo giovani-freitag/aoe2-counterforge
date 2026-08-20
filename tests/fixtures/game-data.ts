@@ -11,6 +11,7 @@ export const STRING_IDS = {
     militiaUnit: 5079,
     manAtArmsUnit: 5080,
     forgingTech: 7067,
+    standInUnit: 5082,
 } as const;
 
 const HELP_OFFSET = 21000;
@@ -28,6 +29,8 @@ const CIV_HELP_OFFSET = 109879;
 export function genieUnit(overrides: Partial<GenieUnit> & Pick<GenieUnit, 'id' | 'nameStringId'>): GenieUnit {
     return {
         internalName: 'SAMPLE',
+        creatableType: 2,
+        isHero: false,
         type: 70,
         creationStringId: 0,
         helpStringId: 0,
@@ -132,6 +135,7 @@ export function sampleGameData(): GenieData {
             { name: 'Forging', commands: [{ type: 4, unit: -1, unitClass: 6, attribute: 9, value: 1025 }] },
             { name: 'Man-at-Arms', commands: [] },
             { name: 'Britons bonus', commands: [{ type: 5, unit: -1, unitClass: 6, attribute: 0, value: 1.2 }] },
+            { name: 'Stand-in', commands: [{ type: 2, unit: 77, unitClass: 1, attribute: -1, value: 0 }] },
         ],
         civilizations: [
             { name: 'Gaia', techTreeId: 0, teamBonusId: -1, resources: [], units: new Map() },
@@ -142,6 +146,7 @@ export function sampleGameData(): GenieData {
                 resources: FARM_FOOD_SLOT_RESOURCES,
                 units: new Map([
                     [74, genieUnit({ id: 74, nameStringId: STRING_IDS.militiaUnit })],
+                    [77, genieUnit({ id: 77, nameStringId: STRING_IDS.standInUnit, classId: 12, trainLocationIds: [12] })],
                     [
                         75,
                         genieUnit({
@@ -179,6 +184,17 @@ export function sampleGameData(): GenieData {
                     { type: 0, amount: 100 },
                     { type: 3, amount: 40 },
                 ],
+            },
+            {
+                effectId: 3,
+                prerequisites: [],
+                nameStringId: 0,
+                descriptionStringId: 0,
+                iconId: -1,
+                civ: -1,
+                researchTime: 0,
+                researchLocationIds: [],
+                costs: [],
             },
             {
                 effectId: 2,
@@ -251,6 +267,7 @@ export function sampleStrings(): Map<number, string> {
         [STRING_IDS.manAtArmsName, 'Man-at-Arms'],
         [STRING_IDS.forgingName, 'Forging'],
         [STRING_IDS.britonsName, 'Britons'],
+        [STRING_IDS.standInUnit, 'Stand-in Rider'],
         [
             STRING_IDS.militiaUnit + HELP_OFFSET,
             'Create <b>Militia<b> (<cost>)\nAll-purpose Infantry. Strong vs. buildings.\n<i>Upgrades: attack.<i>',

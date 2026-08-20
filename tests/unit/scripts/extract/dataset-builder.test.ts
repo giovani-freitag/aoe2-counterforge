@@ -17,7 +17,7 @@ const manAtArms = dataset.units.find((entry) => entry.key === 'man-at-arms');
 
 describe('DatasetBuilder', () => {
     it('keys units on the name players see', () => {
-        expect(dataset.units.map((entry) => entry.key)).toEqual(['militia', 'man-at-arms']);
+        expect(dataset.units.map((entry) => entry.key)).toEqual(['militia', 'man-at-arms', 'stand-in-rider']);
     });
 
     it('carries the stats straight through from the game data', () => {
@@ -52,6 +52,7 @@ describe('DatasetBuilder', () => {
         expect(dataset.units.map((entry) => [entry.key, entry.upgradesFrom, entry.line])).toEqual([
             ['militia', null, 'militia'],
             ['man-at-arms', 'militia', 'militia'],
+            ['stand-in-rider', null, 'stand-in-rider'],
         ]);
     });
 
@@ -95,6 +96,12 @@ describe('DatasetBuilder', () => {
         ]);
     });
 
+    it('keeps a unit the trees leave out but a technology switches on', () => {
+        const standIn = dataset.units.find((entry) => entry.key === 'stand-in-rider');
+
+        expect(standIn).toMatchObject({ buildings: ['barracks'], civs: ['britons'], inTechTree: false });
+    });
+
     it('reads the passive bonuses of a civilization off its own technologies', () => {
         expect(dataset.civilizations[0]?.bonusEffects).toEqual([
             { mode: 'multiply', unit: null, unitClass: 6, attribute: 'hp', value: 1.2 },
@@ -127,6 +134,7 @@ describe('DatasetBuilder duplicates', () => {
         expect(built.units.map((entry) => [entry.key, entry.buildings])).toEqual([
             ['militia', ['barracks', 'castle']],
             ['man-at-arms', ['barracks']],
+            ['stand-in-rider', ['barracks']],
         ]);
     });
 
@@ -139,6 +147,7 @@ describe('DatasetBuilder duplicates', () => {
         expect(built.units.map((entry) => [entry.key, entry.buildings])).toEqual([
             ['militia', ['barracks']],
             ['man-at-arms', ['barracks']],
+            ['stand-in-rider', ['barracks']],
         ]);
     });
 });

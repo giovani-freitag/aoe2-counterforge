@@ -15,7 +15,7 @@ import type {
 } from '../../src/data/records.ts';
 import type { CivilizationTechTree, TechTreeNode } from './game-install.ts';
 import { cleanText, parseCivilizationHelp, parseUnitHelp, slug } from './game-text.ts';
-import type { ClassAmount, GenieData, GenieUnit } from './genie-dat.ts';
+import { UNIT_TYPE, type ClassAmount, type GenieData, type GenieUnit } from './genie-dat.ts';
 
 /** One civilization as the game's own metadata file describes it. */
 export interface CivilizationMeta {
@@ -201,6 +201,10 @@ const CARRY_CAPACITY = 14;
 const WALK_SPEED = 5;
 const FARM_FOOD_SLOT = 36;
 
+/** Command type that switches a unit on, with the second field set for "make available". */
+const ENABLE_COMMAND = 2;
+const ENABLE_MODE = 1;
+
 /** Class every villager belongs to, which is how a technology reaches all of them at once. */
 const CIVILIAN_CLASS = 4;
 
@@ -253,6 +257,30 @@ export class DatasetBuilder {
                 unitStrings.get(locale)?.set(key, {
                     ...help,
                     name: this.text(locale, entry.node['Name String ID']) || englishName,
+                });
+            }
+        }
+
+        for (const found of this.offTreeUnits(nodes, stats)) {
+            const englishName = this.text(this.config.fallbackLocale, found.unit.nameStringId);
+            const key = this.uniqueKey(englishName || `unit-${String(found.unit.id)}`, found.unit.id, usedKeys);
+            unitKeyById.set(found.unit.id, key);
+            units.push(
+                this.unitRecord({
+                    id: found.unit.id,
+                    key,
+                    unit: found.unit,
+                    entry: found.entry,
+                    upgrades,
+                    inTechTree: false,
+                }),
+            );
+
+            for (const locale of this.config.strings.keys()) {
+                const help = parseUnitHelp(this.raw(locale, found.unit.nameStringId + HELP_OFFSET));
+                unitStrings.get(locale)?.set(key, {
+                    ...help,
+                    name: this.text(locale, found.unit.nameStringId) || englishName,
                 });
             }
         }
@@ -481,6 +509,111 @@ export class DatasetBuilder {
     }
 
     /**
+     * Units the game can produce that no tech tree lists.
+     *
+     * A tech tree is a menu, and the file holds soldiers that are not on it: the Xolotl Warrior a
+     * converted Stable turns out, the melee stance of the Ratha, a handful the campaigns use. What
+     * separates them from the three hundred other leftovers is read rather than typed — the file
+     * flags its campaign characters as heroes, and a soldier anybody fields has a price, an attack
+     * and a real building to come out of.
+     *
+     * Which of them a skirmish can actually reach is not written anywhere, so they are marked
+     * instead of judged, and the reader decides whether to see them.
+     *
+     * @param nodes - The indexed tech tree nodes.
+     * @param stats - The reference roster the attributes come from.
+     * @returns Each such unit with a stand-in node describing where it appears.
+     */
+    private offTreeUnits(nodes: CollectedNodes, stats: Map<number, GenieUnit>): SwitchedOnUnit[] {
+        // Every node of every tree, buildings included: a tech switches those on too, and a
+        // building is not a unit however creatable the file says it is.
+        const inTree = new Set(
+            [...nodes.byCiv.values()].flatMap((tree) =>
+                [...tree.civ_techs_units, ...tree.civ_techs_buildings].map((node) => node['Node ID']),
+            ),
+        );
+        const switchedOn = new Map<number, number>();
+
+        this.config.game.technologies.forEach((tech, id) => {
+            for (const command of this.config.game.effects[tech.effectId]?.commands ?? []) {
+                if (command.type === ENABLE_COMMAND && command.unitClass === ENABLE_MODE) {
+                    switchedOn.set(command.unit, id);
+                }
+            }
+        });
+
+        const treeBuildings = new Set(
+            [...nodes.byCiv.values()].flatMap((tree) => tree.civ_techs_units.map((node) => node['Building ID'])),
+        );
+
+        const found: SwitchedOnUnit[] = [];
+        for (const unit of stats.values()) {
+            const building = unit.trainLocationIds.find((id) => treeBuildings.has(id));
+            const techId = switchedOn.get(unit.id);
+
+            if (unit.isHero || inTree.has(unit.id) || building === undefined) continue;
+            if (unit.type !== UNIT_TYPE.creatable || unit.classId === CIVILIAN_CLASS) continue;
+            if (unit.attacks.length === 0 || !unit.costs.some((cost) => cost.amount > 0)) continue;
+            if (this.text(this.config.fallbackLocale, unit.nameStringId) === '') continue;
+
+            // A unit switched on by a technology stands in for what a civilization cannot train at
+            // that building; for the rest, no tree says who fields them, and an empty list says so.
+            const civs = techId === undefined ? [] : this.civsWithoutTheirOwn(unit, building);
+
+            found.push({
+                unit,
+                entry: {
+                    node: {
+                        Name: '',
+                        'Node ID': unit.id,
+                        'Name String ID': unit.nameStringId,
+                        'Node Type': 'Unit',
+                        'Link Node Type': 'BuildingTech',
+                        'Use Type': 'Unit',
+                        'Node Status': 'ResearchedCompleted',
+                        'Age ID': techId === undefined ? 1 : (this.ageOf(techId) ?? 1),
+                        'Building ID': building,
+                        'Picture Index': unit.iconId,
+                    },
+                    candidates: [],
+                    civs,
+                },
+            });
+        }
+
+        return found;
+    }
+
+    /**
+     * The civilizations a stand-in unit is actually for.
+     *
+     * The building trains whatever its owner knows how to train, so a unit that stands in at the
+     * Stable only ever appears for the civilizations whose Stable has no cavalry of their own.
+     *
+     * @param unit - The unit that stands in.
+     * @param building - Where it is produced.
+     * @returns Slugs of the civilizations with nothing of that kind at that building.
+     */
+    private civsWithoutTheirOwn(unit: GenieUnit, building: number): string[] {
+        const owners = new Set<string>();
+
+        for (const meta of this.civilizations()) {
+            const tree = this.config.trees.find((entry) => entry.civ_id === meta.tech_tree_name);
+            if (!tree) continue;
+
+            const trains = tree.civ_techs_units.some(
+                (node) =>
+                    node['Building ID'] === building &&
+                    node['Node Status'] !== 'NotAvailable' &&
+                    this.referenceUnits().get(node['Node ID'])?.classId === unit.classId,
+            );
+            if (!trains) owners.add(this.civKey(meta));
+        }
+
+        return [...owners].sort();
+    }
+
+    /**
      * The villager planner's inputs, read from the same effect table as everything else.
      *
      * @param techKeyById - Slug of every technology that reached the guide, by its id in the file.
@@ -697,6 +830,8 @@ export class DatasetBuilder {
         unit: GenieUnit;
         entry: NodeEntry;
         upgrades: Map<number, LineUpgrade>;
+        /** False when the entry was assembled for a unit no tech tree names. */
+        inTechTree?: boolean;
     }): UnitRecord {
         const { id, key, unit, entry, upgrades } = input;
         const buildingId = entry.node['Building ID'];
@@ -735,6 +870,7 @@ export class DatasetBuilder {
             upgradesFrom: predecessor === null ? null : String(predecessor),
             upgradesTo: [],
             line: key,
+            inTechTree: input.inTechTree ?? true,
         };
     }
 
@@ -1020,6 +1156,11 @@ export class DatasetBuilder {
 
         return bundles;
     }
+}
+
+interface SwitchedOnUnit {
+    unit: GenieUnit;
+    entry: NodeEntry;
 }
 
 interface NodeEntry {

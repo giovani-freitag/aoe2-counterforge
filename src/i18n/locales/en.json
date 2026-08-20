@@ -381,7 +381,9 @@
         },
         "filterHint": "e.g. knight",
         "category": "Type",
-        "empty": "No unit matches these filters."
+        "empty": "No unit matches these filters.",
+        "offTree": "Outside the tech tree",
+        "offTreeBadge": "Off-tree"
     },
     "settings": {
         "language": "Language",
