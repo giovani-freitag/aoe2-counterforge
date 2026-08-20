@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { normalize } from '../../services/search/fuzzy-matcher.ts';
+import { FuzzyMatcher, normalize } from '../../services/search/fuzzy-matcher.ts';
 import { useListbox } from '../hooks/use-listbox.ts';
 import { Icon } from './icon.tsx';
 
@@ -28,6 +28,9 @@ export interface PickerProps {
 /** Above this many entries, scanning the list stops working and typing takes over. */
 const SEARCH_FROM = 10;
 
+/** The same scoring the command palette uses, so "brt" finds the Britons here too. */
+const matcher = new FuzzyMatcher();
+
 /** A single-choice list that can carry a flag, an emblem or an icon beside each entry. */
 export function Picker({ label, value, options, onChange, compact, block, id, align = 'end' }: PickerProps) {
     const { t } = useTranslation();
@@ -38,8 +41,13 @@ export function Picker({ label, value, options, onChange, compact, block, id, al
 
     const visible = useMemo(() => {
         const fragment = normalize(term.trim());
+        if (!fragment) return options;
 
-        return fragment ? options.filter((option) => normalize(option.label).includes(fragment)) : options;
+        return options
+            .map((option) => ({ option, match: matcher.match(fragment, normalize(option.label)) }))
+            .filter((entry) => entry.match !== null)
+            .sort((left, right) => (right.match?.score ?? 0) - (left.match?.score ?? 0))
+            .map((entry) => entry.option);
     }, [options, term]);
 
     const current = options.find((option) => option.value === value) ?? options[0];
