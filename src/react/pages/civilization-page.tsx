@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router';
 import { LAND_CATEGORIES } from '../../domain/enums/unit-category.ts';
 import { EntityNotFoundError } from '../../domain/errors/domain-error.ts';
+import { Forge } from '../components/forge.tsx';
 import { GameIcon } from '../components/game-icon.tsx';
 import { UnitListItem } from '../components/unit-list-item.tsx';
 import { useGameText } from '../hooks/use-game-text.ts';
@@ -29,6 +30,17 @@ export function CivilizationPage() {
             throw error;
         }
     }, [catalog, key]);
+
+    // The banner names a signature unit, and the elite step is the same one further along.
+    const signature = useMemo(() => {
+        const byLine = new Map<string, string>();
+        for (const unitKey of civilization?.uniqueUnits ?? []) {
+            const unit = catalog.unit(unitKey);
+            if (!byLine.has(unit.line)) byLine.set(unit.line, unitKey);
+        }
+
+        return [...byLine.values()];
+    }, [catalog, civilization]);
 
     const roster = useMemo(
         () =>
@@ -62,14 +74,31 @@ export function CivilizationPage() {
         <div className="stack">
             <BackLink to="/civs" label={t('nav.civilizations')} />
             <header className="card">
-                <div className="unit-hero">
-                    <GameIcon path={`Civs/${civilization.icon}.png`} alt="" size="lg" className="icon--civ" />
-                    <div className="unit-hero__body">
-                        <h1 className="unit-hero__name">{civText.name}</h1>
-                        <p className="card__hint">{civText.intro}</p>
-                    </div>
-                </div>
-                <hr className="divider" />
+                <Forge
+                    name={civText.name}
+                    subtitle={civText.intro}
+                    portrait={
+                        <GameIcon path={`Civs/${civilization.icon}.png`} alt="" size="lg" className="icon--civ" />
+                    }
+                    meta={
+                        signature.length === 0
+                            ? undefined
+                            : signature.map((unitKey) => (
+                                  <Link className="badge badge--gold" key={unitKey} to={`/unit/${unitKey}`}>
+                                      <GameIcon
+                                          path={
+                                              catalog.unit(unitKey).icon === null
+                                                  ? null
+                                                  : `Unit/${String(catalog.unit(unitKey).icon)}.png`
+                                          }
+                                          alt=""
+                                          size="sm"
+                                      />
+                                      {text.unit(unitKey).name}
+                                  </Link>
+                              ))
+                    }
+                />
                 <button
                     type="button"
                     className="chip"

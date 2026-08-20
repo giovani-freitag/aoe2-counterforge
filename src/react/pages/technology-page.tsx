@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router';
 import type { Unit } from '../../domain/entities/unit.ts';
 import { EntityNotFoundError } from '../../domain/errors/domain-error.ts';
 import { BackLink } from '../components/back-link.tsx';
+import { Forge } from '../components/forge.tsx';
 import { GameIcon } from '../components/game-icon.tsx';
 import { ResourceCostRow } from '../components/resource-cost-row.tsx';
 import { describeEffect } from '../effect-description.ts';
@@ -66,26 +67,27 @@ export function TechnologyPage() {
         <div className="stack">
             <BackLink to="/techs" label={t('nav.technologies')} />
             <header className="card">
-                <div className="unit-hero">
-                    <GameIcon
-                        path={technology.icon === null ? null : `Tech/${technology.icon}.png`}
-                        alt=""
-                        size="lg"
-                    />
-                    <div className="unit-hero__body">
-                        <h1 className="unit-hero__name">{technologyText.name}</h1>
-                        <p className="card__hint">{technologyText.description}</p>
-                        <div className="unit-hero__meta">
-                            <span className="badge">{t(`ages.${technology.age}`)}</span>
-                            <span className="badge">{t(`buildings.${technology.building}`, technology.building)}</span>
-                            <span className="badge">
-                                {technology.isUnique
-                                    ? t('tech.uniqueTo', { civ: civilizations[0]?.name ?? '' })
-                                    : t('tech.civCount', { count: technology.civs.length })}
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                <Forge
+                    name={technologyText.name}
+                    subtitle={t(`buildings.${technology.building}`, technology.building)}
+                    age={technology.age}
+                    portrait={
+                        <GameIcon
+                            path={technology.icon === null ? null : `Tech/${technology.icon}.png`}
+                            alt=""
+                            size="lg"
+                        />
+                    }
+                    meta={
+                        <span className={technology.isUnique ? 'badge badge--gold' : 'badge'}>
+                            {technology.isUnique
+                                ? t('tech.uniqueTo', { civ: civilizations[0]?.name ?? '' })
+                                : t('tech.civCount', { count: technology.civs.length })}
+                        </span>
+                    }
+                />
+
+                <p className="prose">{technologyText.description}</p>
                 <hr className="divider" />
                 <ResourceCostRow
                     cost={technology.cost}
