@@ -35,8 +35,6 @@ export interface MatchupServiceConfig {
     thresholds: MatchupThresholds;
     /** Minimum number of civilizations that must train a unit for it to count as a common opponent. */
     commonOpponentCivs: number;
-    /** Bounds the printed ratio so a one-sided fight does not drown out the rest of the list. */
-    maxEfficiency: number;
 }
 
 export type UpgradeLevel = 'base' | 'full';
@@ -85,16 +83,29 @@ const MIN_SPEED = 0.1;
 const KITE_PENALTY = 0.4;
 
 /**
- * Where the fight stops being a fight.
+ * Where the fight stops growing in a straight line.
  *
- * A Rocket Cart needs eleven minutes to kill a Xolotl Warrior that kills it in five seconds, and
- * calling that a hundred to one says nothing a reader can use: past a certain point one side
- * simply cannot answer, and the arithmetic after that only drowns out the matchups that are close
- * enough to think about. Capping the fight and letting cost decide the rest keeps the ordering
- * about value traded rather than about who is most helpless.
+ * A Rocket Cart needs eleven minutes to kill the cavalry that kills it in five seconds, and the
+ * difference between a hundred to one and thirty to one is not something a reader can act on. Past
+ * this knee the ratio grows by its logarithm instead: nothing is truncated, so the order still
+ * holds and no two fights collapse into the same number, but the runaway end stops drowning out
+ * the matchups close enough to think about.
  */
-const MAX_KILL_RATIO = 8;
+const FIGHT_KNEE = 4;
 const MIN_EXPOSURE = 0.05;
+
+/**
+ * Bends a lopsided fight towards its logarithm, the same way in both directions.
+ *
+ * @param ratio - How much longer the opponent needs to win than this unit does.
+ * @returns The ratio itself while the fight is close, its compressed form once it is not.
+ */
+function compress(ratio: number): number {
+    if (ratio < 1) return 1 / compress(1 / ratio);
+    if (ratio <= FIGHT_KNEE) return ratio;
+
+    return FIGHT_KNEE * (1 + Math.log(ratio / FIGHT_KNEE));
+}
 
 /** Ranks every plausible opponent of a unit by how well the trade goes. */
 export class MatchupService {
@@ -186,10 +197,7 @@ export class MatchupService {
 
         const subjectKill = trade.opponent.stats.hp / Math.max(MIN_DPS, trade.subject.dps * subjectExposure);
         const opponentKill = trade.subject.stats.hp / Math.max(MIN_DPS, trade.opponent.dps * opponentExposure);
-        const fight = Math.min(MAX_KILL_RATIO, Math.max(1 / MAX_KILL_RATIO, opponentKill / subjectKill));
-        const efficiency = fight * (trade.opponent.value / trade.subject.value);
-
-        return Math.min(this.config.maxEfficiency, Math.max(1 / this.config.maxEfficiency, efficiency));
+        return compress(opponentKill / subjectKill) * (trade.opponent.value / trade.subject.value);
     }
 
     /**

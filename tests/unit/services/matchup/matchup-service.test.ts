@@ -27,7 +27,6 @@ function buildService(units = defaultUnits()) {
             resourceWeights: { food: 1, wood: 1, gold: 1.6, stone: 1.6 },
             thresholds: { dominant: 2, favourable: 1.25, even: 0.8, unfavourable: 0.5 },
             commonOpponentCivs: 2,
-            maxEfficiency: 25,
         }),
     };
 }
@@ -184,7 +183,7 @@ describe('MatchupService opponent pools', () => {
 });
 
 describe('MatchupService saturation', () => {
-    it('stops counting once one side cannot answer, and lets cost tell the rest apart', () => {
+    it('bends a runaway fight instead of cutting it off', () => {
         const catalog = new GameCatalogService({
             assembler: new CatalogAssembler(),
             units: [
@@ -203,15 +202,15 @@ describe('MatchupService saturation', () => {
             resourceWeights: { food: 1, wood: 1, gold: 1.6, stone: 1.6 },
             thresholds: { dominant: 2, favourable: 1.25, even: 0.8, unfavourable: 0.5 },
             commonOpponentCivs: 2,
-            maxEfficiency: 30,
         });
 
         const report = matchups.rank({ unit: catalog.unit('brute'), pool: 'every' });
         const efficiencyOf = (key: string) =>
             report.all.find((matchup) => matchup.opponent.key === key)?.efficiency ?? 0;
 
-        // Both are helpless, so the fight itself stops separating them and only the price does.
-        expect(efficiencyOf('weak')).toBe(efficiencyOf('weaker'));
-        expect(efficiencyOf('costly')).toBeGreaterThan(efficiencyOf('weak'));
+        // Neither can answer, so the two fights stay ordered without either running away.
+        expect(efficiencyOf('weaker')).toBeGreaterThan(efficiencyOf('weak'));
+        expect(efficiencyOf('weaker')).toBeLessThan(2 * efficiencyOf('weak'));
+        expect(efficiencyOf('costly')).toBeGreaterThan(efficiencyOf('weaker'));
     });
 });
