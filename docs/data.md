@@ -72,22 +72,27 @@ are only re-encoded.
 - Duplicate entries merged: several units exist twice in the game because a second building can
   train them (Donjon, Krepost, Stable), and the guide shows one entry listing both places.
 
-## The units the trees leave out
+## The unit the trees leave out
 
-A tech tree is a menu, and the file holds soldiers that are not on it: the Xolotl Warrior a
-converted Stable turns out for a civilization with no cavalry of its own, the melee stance of the
-Ratha, a handful the campaigns use. Sixteen of them ship, marked as outside the tree, and the
-roster hides them until the reader asks for them.
-
-Telling them apart from the three hundred other leftovers is read, not typed. The file flags its
-campaign characters as heroes, which removes a hundred and seventy-six of them, and a soldier
-anybody fields has a price, an attack, and a building the trees actually use — which removes the
-villager jobs, the livestock and the map revealers.
-
-What no file says is which of them a skirmish can reach, so they are marked instead of judged. The
-one exception is a unit a technology explicitly switches on: that one stands in for what a
-civilization cannot train at that building, which is how the Xolotl Warrior ends up listed for the
+A tech tree is a menu, and one soldier is not on it: the Xolotl Warrior, which a converted Stable
+turns out for a civilization with no cavalry of its own. It ships anyway, and everything about it is
+read rather than typed — a technology switches it on, that technology waits on the Castle Age, and
+the building trains whatever its owner knows how to train, which is how it ends up listed for the
 six civilizations whose Stable has no cavalry.
+
+Three hundred other creatable units are left out, and the file says why for each kind:
+
+- **Campaign characters** carry a hero flag. That is 176 of them, Richard the Lionheart through
+  King Arthur.
+- **Villagers at work** — the Lumberjack, the Farmer, the Shepherd — are the same villager drawn
+  doing a job, and the trees already list the Villager.
+- **Alternate stances** such as the melee Ratha and the barrage War Chariot carry no help text of
+  their own and are created by the same button as the unit they belong to, which is already listed.
+- **Scenario-editor units** — the Ninja, the War Dog, the Crusader Knight — are what is left, and
+  nothing in the file connects them to a game: no tree, no technology, no unit they replace.
+
+The Condottiero and the Genitour look like they belong here and do not: their owners' trees name
+them, so they arrive with everyone else.
 
 `tests/feature/extract/game-install.test.ts` re-runs the extraction and compares it against the
 committed dataset. It only runs when `AOE2_GAME_ROOT` is set.

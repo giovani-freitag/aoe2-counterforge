@@ -509,16 +509,11 @@ export class DatasetBuilder {
     }
 
     /**
-     * Units the game can produce that no tech tree lists.
+     * Units a game produces that no tech tree lists.
      *
-     * A tech tree is a menu, and the file holds soldiers that are not on it: the Xolotl Warrior a
-     * converted Stable turns out, the melee stance of the Ratha, a handful the campaigns use. What
-     * separates them from the three hundred other leftovers is read rather than typed — the file
-     * flags its campaign characters as heroes, and a soldier anybody fields has a price, an attack
-     * and a real building to come out of.
-     *
-     * Which of them a skirmish can actually reach is not written anywhere, so they are marked
-     * instead of judged, and the reader decides whether to see them.
+     * A tech tree is a menu, and one soldier is not on it: the Xolotl Warrior a converted Stable
+     * turns out. What says so is a technology that switches the unit on — a statement in the file
+     * that a game reaches it, which the scenario-editor leftovers around it never carry.
      *
      * @param nodes - The indexed tech tree nodes.
      * @param stats - The reference roster the attributes come from.
@@ -547,18 +542,17 @@ export class DatasetBuilder {
         );
 
         const found: SwitchedOnUnit[] = [];
-        for (const unit of stats.values()) {
-            const building = unit.trainLocationIds.find((id) => treeBuildings.has(id));
-            const techId = switchedOn.get(unit.id);
+        for (const [unitId, techId] of switchedOn) {
+            const unit = stats.get(unitId);
+            const building = unit?.trainLocationIds.find((id) => treeBuildings.has(id));
 
-            if (unit.isHero || inTree.has(unit.id) || building === undefined) continue;
+            if (!unit || unit.isHero || inTree.has(unitId) || building === undefined) continue;
             if (unit.type !== UNIT_TYPE.creatable || unit.classId === CIVILIAN_CLASS) continue;
-            if (unit.attacks.length === 0 || !unit.costs.some((cost) => cost.amount > 0)) continue;
             if (this.text(this.config.fallbackLocale, unit.nameStringId) === '') continue;
 
-            // A unit switched on by a technology stands in for what a civilization cannot train at
-            // that building; for the rest, no tree says who fields them, and an empty list says so.
-            const civs = techId === undefined ? [] : this.civsWithoutTheirOwn(unit, building);
+            // The unit stands in for what this civilization cannot train at that building.
+            const civs = this.civsWithoutTheirOwn(unit, building);
+            if (civs.length === 0) continue;
 
             found.push({
                 unit,
@@ -571,7 +565,7 @@ export class DatasetBuilder {
                         'Link Node Type': 'BuildingTech',
                         'Use Type': 'Unit',
                         'Node Status': 'ResearchedCompleted',
-                        'Age ID': techId === undefined ? 1 : (this.ageOf(techId) ?? 1),
+                        'Age ID': this.ageOf(techId) ?? 1,
                         'Building ID': building,
                         'Picture Index': unit.iconId,
                     },
