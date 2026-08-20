@@ -87,6 +87,63 @@
     display: none;
 }
 
+/* A phone has no keyboard to press, so the button says what it does and stops there. */
+.searchbutton__short {
+    font-size: 0.875rem;
+}
+
+/* Below the wide header the three choices move into a panel, reached from one button. */
+.menubutton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: var(--control-height);
+    height: var(--control-height);
+    margin-left: auto;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--text-muted);
+}
+
+.menubutton:hover {
+    border-color: var(--border-strong);
+}
+
+.sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: flex-end;
+    background: color-mix(in srgb, var(--bg) 72%, transparent);
+    backdrop-filter: blur(4px);
+}
+
+.sheet__panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    width: min(20rem, 88vw);
+    padding: var(--space-4);
+    overflow-y: auto;
+    background: var(--bg-elevated);
+    border-left: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+}
+
+.sheet__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+}
+
+.sheet__head h2 {
+    margin: 0;
+}
+
 .tabbar {
     position: fixed;
     inset: auto 0 0;
@@ -119,7 +176,38 @@
     line-height: 1;
 }
 
+/* A label and its shortcut fit long before the layout is wide enough to centre them. */
+@media (min-width: 40rem) {
+    .searchbutton__short {
+        display: none;
+    }
+
+    .searchbutton {
+        flex: 1;
+        max-width: 22rem;
+    }
+
+    .searchbutton__label {
+        display: block;
+        flex: 1;
+        overflow: hidden;
+        text-align: left;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .searchbutton__kbd {
+        display: inline-flex;
+        flex: none;
+        gap: 2px;
+    }
+}
+
 @media (min-width: 45rem) {
+    .menubutton {
+        display: none;
+    }
+
     .topbar__name {
         display: inline;
     }
@@ -156,17 +244,6 @@
 
     .searchbutton {
         min-width: 18rem;
-    }
-
-    .searchbutton__label {
-        display: block;
-        flex: 1;
-        text-align: left;
-    }
-
-    .searchbutton__kbd {
-        display: inline-flex;
-        gap: 2px;
     }
 
     /* Wide screens get the same bar, docked in the middle instead of stretched. */

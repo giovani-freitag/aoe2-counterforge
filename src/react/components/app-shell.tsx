@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, Outlet, useLocation } from 'react-router';
 import { assetUrl } from '../format.ts';
@@ -37,11 +38,33 @@ function openTab(bar: HTMLElement | null): { from: number; width: number } {
     return { from: box.left - frame.left + box.width * 0.2, width: box.width * 0.6 };
 }
 
+/**
+ * Whether the reader's keyboard says Command where everyone else's says Control.
+ *
+ * @returns True on Apple hardware, where the palette answers to the meta key.
+ */
+function isApple(): boolean {
+    return typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.userAgent);
+}
+
 /** Frame shared by every page: header, navigation and the search overlay. */
 export function AppShell() {
     const { t } = useTranslation();
     const { open } = useCommandPalette();
+    const [isMenuOpen, setMenuOpen] = useState(false);
     const { pathname } = useLocation();
+
+    useEffect(() => {
+        if (!isMenuOpen) return undefined;
+
+        const onKey = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') setMenuOpen(false);
+        };
+
+        window.addEventListener('keydown', onKey);
+
+        return () => { window.removeEventListener('keydown', onKey); };
+    }, [isMenuOpen]);
     useSpecular('.card, .topbar');
 
     return (
@@ -60,16 +83,49 @@ export function AppShell() {
 
                 <button type="button" className="searchbutton" onClick={open}>
                     <Icon name="search" />
+                    <span className="searchbutton__short">{t('search.short')}</span>
                     <span className="searchbutton__label">{t('search.open')}</span>
                     <span className="searchbutton__kbd" aria-hidden="true">
-                        <kbd>Ctrl</kbd>
+                        <kbd>{isApple() ? '⌘' : 'Ctrl'}</kbd>
                         <kbd>K</kbd>
                     </span>
                     <span className="visually-hidden">{t('search.open')}</span>
                 </button>
 
                 <SettingsBar />
+
+                <button
+                    type="button"
+                    className="menubutton"
+                    aria-expanded={isMenuOpen}
+                    onClick={() => { setMenuOpen(true); }}
+                >
+                    <Icon name="menu" />
+                    <span className="visually-hidden">{t('settings.title')}</span>
+                </button>
             </header>
+
+            {isMenuOpen ? (
+                <div
+                    className="sheet"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label={t('settings.title')}
+                    onMouseDown={(event) => {
+                        if (event.target === event.currentTarget) setMenuOpen(false);
+                    }}
+                >
+                    <div className="sheet__panel">
+                        <div className="sheet__head">
+                            <h2>{t('settings.title')}</h2>
+                            <button type="button" className="chip" onClick={() => { setMenuOpen(false); }}>
+                                {t('common.close')}
+                            </button>
+                        </div>
+                        <SettingsBar stacked />
+                    </div>
+                </div>
+            ) : null}
 
             <nav className="tabbar" aria-label={t('app.title')}>
                 <EmberCanvas className="tabbar__embers" column={() => openTab(document.querySelector('.tabbar'))} />

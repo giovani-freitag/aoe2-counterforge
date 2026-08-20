@@ -14,6 +14,7 @@ import {
     Heart,
     House,
     Info,
+    Menu,
     Monitor,
     Moon,
     Scale,
@@ -81,6 +82,7 @@ const GLYPHS = {
     best: Crown,
     down: ChevronDown,
     source: GitHubMark,
+    menu: Menu,
 } as const;
 
 export type IconName = keyof typeof GLYPHS;

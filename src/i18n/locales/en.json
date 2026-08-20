@@ -29,7 +29,8 @@
             "navigate": "navigate",
             "select": "open",
             "close": "close"
-        }
+        },
+        "short": "Search"
     },
     "home": {
         "browseByCategory": "Browse by type",
@@ -384,7 +385,7 @@
     "settings": {
         "language": "Language",
         "theme": "Theme",
-        "title": "Preferences"
+        "title": "Settings"
     },
     "languages": {
         "pt-BR": "Portuguese",

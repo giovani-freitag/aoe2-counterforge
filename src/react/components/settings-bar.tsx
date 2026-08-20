@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LOCALES } from '../../i18n/index.ts';
 import { useGameText } from '../hooks/use-game-text.ts';
@@ -16,8 +17,13 @@ const THEMES: readonly { value: string; icon: IconName }[] = [
     { value: 'dark', icon: 'dark' },
 ];
 
+export interface SettingsBarProps {
+    /** Lays the choices out as labelled rows, for the panel a phone opens them in. */
+    stacked?: boolean;
+}
+
 /** The three choices that follow the reader everywhere: civilization, language and theme. */
-export function SettingsBar() {
+export function SettingsBar({ stacked = false }: SettingsBarProps) {
     const { t, i18n } = useTranslation();
     const locale = useLocale();
     const theme = useTheme();
@@ -44,44 +50,77 @@ export function SettingsBar() {
             .sort((left, right) => left.label.localeCompare(right.label)),
     ];
 
+    /**
+     * Wraps a control in its own labelled row, or leaves it bare in the header.
+     *
+     * @param label - What the control chooses.
+     * @param control - The control itself.
+     * @returns The control, dressed for wherever the bar is being shown.
+     */
+    function field(label: string, control: ReactNode): ReactNode {
+        if (!stacked) return control;
+
+        return (
+            <div className="field" key={label}>
+                <span className="field__label">{label}</span>
+                {control}
+            </div>
+        );
+    }
+
     return (
-        <div className="settings">
-            <Picker
-                label={t('civ.select')}
-                value={preferences.civ ?? ''}
-                options={civs}
-                onChange={(value) => {
-                    update({ civ: value === '' ? null : value });
-                }}
-            />
+        <div className={stacked ? 'settings settings--stacked' : 'settings'}>
+            {field(
+                t('civ.select'),
+                <Picker
+                    key="civ"
+                    label={t('civ.select')}
+                    block={stacked}
+                    value={preferences.civ ?? ''}
+                    options={civs}
+                    onChange={(value) => {
+                        update({ civ: value === '' ? null : value });
+                    }}
+                />,
+            )}
 
-            <Picker
-                label={t('settings.language')}
-                value={locale}
-                compact
-                options={SUPPORTED_LOCALES.map((tag) => ({
-                    value: tag,
-                    label: t(`languages.${tag}`),
-                    visual: <Flag locale={tag} />,
-                }))}
-                onChange={(value) => {
-                    void i18n.changeLanguage(value);
-                }}
-            />
+            {field(
+                t('settings.language'),
+                <Picker
+                    key="language"
+                    label={t('settings.language')}
+                    value={locale}
+                    compact={!stacked}
+                    block={stacked}
+                    options={SUPPORTED_LOCALES.map((tag) => ({
+                        value: tag,
+                        label: t(`languages.${tag}`),
+                        visual: <Flag locale={tag} />,
+                    }))}
+                    onChange={(value) => {
+                        void i18n.changeLanguage(value);
+                    }}
+                />,
+            )}
 
-            <Picker
-                label={t('settings.theme')}
-                value={theme.choice}
-                compact
-                options={THEMES.map((entry) => ({
-                    value: entry.value,
-                    label: t(`themes.${entry.value}`),
-                    visual: <Icon name={entry.icon} />,
-                }))}
-                onChange={(value) => {
-                    theme.set(value as 'system' | 'light' | 'dark');
-                }}
-            />
+            {field(
+                t('settings.theme'),
+                <Picker
+                    key="theme"
+                    label={t('settings.theme')}
+                    value={theme.choice}
+                    compact={!stacked}
+                    block={stacked}
+                    options={THEMES.map((entry) => ({
+                        value: entry.value,
+                        label: t(`themes.${entry.value}`),
+                        visual: <Icon name={entry.icon} />,
+                    }))}
+                    onChange={(value) => {
+                        theme.set(value as 'system' | 'light' | 'dark');
+                    }}
+                />,
+            )}
 
             <a
                 className="settings__source"
@@ -92,7 +131,7 @@ export function SettingsBar() {
             >
                 <Icon name="source" />
                 <span className="settings__version">{__APP_VERSION__}</span>
-                <span className="visually-hidden">{t('app.source')}</span>
+                <span className={stacked ? undefined : 'visually-hidden'}>{t('app.source')}</span>
             </a>
         </div>
     );

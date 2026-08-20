@@ -319,6 +319,25 @@
     margin-left: auto;
 }
 
+.settings--stacked {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-4);
+    margin-left: 0;
+}
+
+.settings--stacked .picker__button {
+    max-width: none;
+    padding: 0 var(--space-3);
+}
+
+.settings--stacked .settings__source {
+    justify-content: center;
+    padding: var(--space-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
 .picker {
     position: relative;
 }
@@ -345,8 +364,19 @@
     height: 1rem;
 }
 
-/* On a narrow phone the search needs that room more than the version number does. */
-@media (max-width: 26rem) {
+/* Below the wide layout the button keeps its own width, so its label never clips. */
+@media (max-width: 39.9375rem) {
+    .searchbutton {
+        flex: none;
+    }
+}
+
+/* On a phone the version number rides in the panel, not the header. */
+@media (max-width: 44.9375rem) {
+    .topbar > .settings {
+        display: none;
+    }
+
     .settings__version {
         display: none;
     }
@@ -521,27 +551,21 @@
     margin-bottom: var(--space-2);
 }
 
-/* On a phone the header has room for the search or for three labels, not both. */
-@media (max-width: 48rem) {
-    .settings .picker__value {
+/* Until the wide layout the header has room for the search or for three labels, not both. */
+@media (max-width: 60rem) {
+    .topbar .settings .picker__value {
         display: none;
     }
 
-    .settings .picker__button {
+    .topbar .settings .picker__button {
         max-width: none;
         padding: var(--space-1);
     }
-
-    /* Stretched with nothing in it, the search reads as a broken field; a circle reads as a
-       button, and it lines up with the pickers beside it. */
-    .searchbutton {
-        flex: none;
-        width: var(--control-height);
-        min-width: 0;
-        padding: 0;
-        justify-content: center;
-    }
 }
+
+/* Stretched with nothing in it, the search reads as a broken field; on a phone a circle reads as
+   a button instead, and it lines up with the pickers beside it. */
+
 
 .topbar {
     gap: var(--space-2);
