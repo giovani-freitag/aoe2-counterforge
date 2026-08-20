@@ -232,7 +232,8 @@
             "regeneration": "regenera {{value}} PV por minuto",
             "ballistics": "Tiros miram à frente do alvo",
             "cost": "{{value}}% de custo",
-            "costResource": "{{value}}% de custo em {{resource}}"
+            "costResource": "{{value}}% de custo em {{resource}}",
+            "accuracyFloor": "Precisão elevada a {{value}}%"
         },
         "uniqueHint": "Bônus que a civilização já ganha, e as tecnologias de castelo que alcançam a unidade.",
         "noUnique": "Nenhuma civilização muda esta unidade por conta própria.",

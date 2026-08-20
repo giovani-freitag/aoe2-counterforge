@@ -412,6 +412,7 @@ export class UpgradeService {
             patch.speedMultiplier = (patch.speedMultiplier ?? 1) * (delta.speedMultiplier ?? 1);
             patch.reloadTime = (patch.reloadTime ?? 0) + (delta.reloadTime ?? 0);
             patch.reloadTimeMultiplier = (patch.reloadTimeMultiplier ?? 1) * (delta.reloadTimeMultiplier ?? 1);
+            patch.blastWidth = (patch.blastWidth ?? 0) + (delta.blastWidth ?? 0);
             attack.push(...(delta.attack ?? []));
             attackMultipliers.push(...(delta.attackMultipliers ?? []));
             armour.push(...(delta.armour ?? []));

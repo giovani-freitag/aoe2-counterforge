@@ -27,27 +27,40 @@ export function describeEffect(change: StatDelta, t: TFunction): string[] {
             ? ''
             : t('upgrades.effect.against', { class: t(`armourClasses.${armourClass}`) });
 
-    if (change.hp) labels.push(t('upgrades.effect.hp', { value: delta(change.hp) }));
+    if (change.hp !== undefined) labels.push(t('upgrades.effect.hp', { value: delta(change.hp) }));
     if (change.hpMultiplier && change.hpMultiplier !== 1) {
         labels.push(t('upgrades.effect.hpPercent', { value: percentDelta(change.hpMultiplier) }));
     }
-    if (change.range) labels.push(t('upgrades.effect.range', { value: delta(change.range) }));
-    if (change.lineOfSight) labels.push(t('upgrades.effect.lineOfSight', { value: delta(change.lineOfSight) }));
-    if (change.lineOfSightFloor) {
+    if (change.range !== undefined) labels.push(t('upgrades.effect.range', { value: delta(change.range) }));
+    if (change.lineOfSight !== undefined) {
+        labels.push(t('upgrades.effect.lineOfSight', { value: delta(change.lineOfSight) }));
+    }
+    if (change.lineOfSightFloor !== undefined) {
         labels.push(t('upgrades.effect.lineOfSight', { value: short(change.lineOfSightFloor) }));
     }
-    if (change.accuracy) labels.push(t('upgrades.effect.accuracy', { value: 100 }));
-    if (change.speed) labels.push(t('upgrades.effect.speedFlat', { value: delta(change.speed) }));
-    if (change.reloadTime) labels.push(t('upgrades.effect.reload', { value: delta(change.reloadTime) }));
+    if (change.accuracy !== undefined) labels.push(t('upgrades.effect.accuracy', { value: 100 }));
+    if (change.accuracyFloor !== undefined) {
+        labels.push(t('upgrades.effect.accuracyFloor', { value: short(change.accuracyFloor) }));
+    }
+    if (change.speed !== undefined) labels.push(t('upgrades.effect.speedFlat', { value: delta(change.speed) }));
+    if (change.reloadTime !== undefined) {
+        labels.push(t('upgrades.effect.reload', { value: delta(change.reloadTime) }));
+    }
     if (change.speedMultiplier && change.speedMultiplier !== 1) {
         labels.push(t('upgrades.effect.speed', { value: percentDelta(change.speedMultiplier) }));
     }
     if (change.reloadTimeMultiplier && change.reloadTimeMultiplier !== 1) {
         labels.push(t('upgrades.effect.attackSpeed', { value: percentDelta(1 / change.reloadTimeMultiplier) }));
     }
-    if (change.projectiles) labels.push(t('upgrades.effect.projectiles', { value: delta(change.projectiles) }));
-    if (change.blastWidth) labels.push(t('upgrades.effect.blast', { value: delta(change.blastWidth) }));
-    if (change.regeneration) labels.push(t('upgrades.effect.regeneration', { value: short(change.regeneration) }));
+    if (change.projectiles !== undefined) {
+        labels.push(t('upgrades.effect.projectiles', { value: delta(change.projectiles) }));
+    }
+    if (change.blastWidth !== undefined) {
+        labels.push(t('upgrades.effect.blast', { value: delta(change.blastWidth) }));
+    }
+    if (change.regeneration !== undefined) {
+        labels.push(t('upgrades.effect.regeneration', { value: short(change.regeneration) }));
+    }
     if (change.ballistics) labels.push(t('upgrades.effect.ballistics'));
 
     for (const [resource, factor] of Object.entries(change.costMultipliers ?? {})) {

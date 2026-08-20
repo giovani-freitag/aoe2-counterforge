@@ -38,6 +38,7 @@ export interface UnitStatsPatch {
     speedMultiplier?: number;
     reloadTime?: number;
     reloadTimeMultiplier?: number;
+    blastWidth?: number;
     attack?: readonly ClassAmount[];
     attackMultipliers?: readonly ClassAmount[];
     armour?: readonly ClassAmount[];
@@ -169,6 +170,7 @@ export class UnitStats {
                 Math.max(patch.lineOfSightFloor ?? 0, this.config.lineOfSight) + (patch.lineOfSight ?? 0),
             speed: this.config.speed * (patch.speedMultiplier ?? 1) + (patch.speed ?? 0),
             reloadTime: this.config.reloadTime * (patch.reloadTimeMultiplier ?? 1) + (patch.reloadTime ?? 0),
+            blastWidth: this.config.blastWidth + (patch.blastWidth ?? 0),
             attack: this.config.attack.scaled(patch.attackMultipliers ?? []).plus(patch.attack ?? []),
             armour: this.config.armour.scaled(patch.armourMultipliers ?? []).plus(patch.armour ?? []),
         });
