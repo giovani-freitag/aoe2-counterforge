@@ -82,6 +82,33 @@ written['unit-overrides.json'] = write(
     })),
 );
 
+written['tasks.json'] = write(
+    'tasks.json',
+    [...reference.units.values()].flatMap((unit) =>
+        unit.tasks.map((task) => ({ unit: unit.id, ...task })),
+    ),
+);
+
+written['unit-headers.json'] = write(
+    'unit-headers.json',
+    game.unitHeaders.flatMap((header, slot) => (header.exists === 0 ? [] : [{ slot, tasks: header.tasks }])),
+);
+
+written['tech-tree.json'] = write('tech-tree.json', game.techTree);
+
+written['terrain-restrictions.json'] = write('terrain-restrictions.json', game.terrainRestrictions);
+
+written['terrains.json'] = write(
+    'terrains.json',
+    game.terrains.map((terrain, id) => ({ id, ...terrain })),
+);
+
+written['graphics.json'] = write('graphics.json', game.graphics);
+
+written['sounds.json'] = write('sounds.json', game.sounds);
+
+written['player-colours.json'] = write('player-colours.json', game.playerColours);
+
 written['effects.json'] = write(
     'effects.json',
     game.effects.map((effect, id) => ({ id, ...effect })),
@@ -125,11 +152,22 @@ write('manifest.json', {
         civilizations: game.civilizations.length,
         effects: game.effects.length,
         technologies: game.technologies.length,
+        unitHeaders: game.unitHeaders.length,
+        graphics: game.graphics.length,
+        sounds: game.sounds.length,
+        terrains: game.terrains.length,
+        terrainRestrictions: game.terrainRestrictions.length,
+        techTreeConnections:
+            game.techTree.ages.length +
+            game.techTree.buildings.length +
+            game.techTree.units.length +
+            game.techTree.researches.length,
     },
-    /** The four counts the connection table opens with; they vouch for every width read above. */
-    techTreeHeader: game.techTree,
-    /** The connection table itself, which the guide reads from the per-civilization files instead. */
+    /** Where each table ended. Nothing here is fixed width, so these are the proof of the walk. */
+    sections: game.sections,
+    /** Zero, or a field above was read at the wrong width. */
     bytesNotDecoded: game.bytesRemaining,
+    counters: game.counters,
     files: written,
 });
 

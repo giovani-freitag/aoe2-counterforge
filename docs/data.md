@@ -79,18 +79,19 @@ game itself uses. It has nothing to do with what the site ships: that dataset is
 committed, this one is faithful and large, and it exists so a question about the game can be
 answered by reading a file instead of by opening the binary again.
 
-The sixty civilization tables each carry the whole roster, and all but a few thousand entries are
-byte-identical, so the export writes the reference table once and only the differences beside it.
-Everything else comes over whole: every effect, every technology, the string tables, the unit lines
-and the per-civilization trees the game keeps as its own files.
+Every table comes over: units with every field of every block, the tasks that say what a unit knows
+how to do, technologies, effects, the connection table that draws the tech tree, terrain
+restrictions, graphics, sounds, colours, the string tables, and the files the game keeps beside the
+binary. The sixty civilization tables each carry the whole roster and all but a few thousand entries
+are byte-identical, so the reference table is written once and only the differences beside it.
 
-What vouches for it is at the end of the walk. Nothing in the binary is fixed width — every unit,
-effect and technology record is as long as its own contents say — so if any field were read at the
-wrong width the cursor would arrive somewhere else entirely. Right after the technologies sit four
-counts, and they read 4 ages, 37 buildings, 255 units, 233 researches. Four small sane numbers
-there mean every width above them was right. The connection table those counts introduce is left
-undecoded, because the same relationships arrive in the per-civilization files without a binary
-layout to guess at.
+**Nothing in the binary is fixed width.** Every record is as long as its own contents say, so the
+only way to reach the last table is to have read every field of every record before it correctly.
+That is also the proof: the walk ends on the last byte of the file, with zero left over, and the
+manifest records where each table ended. A single field read one byte wide too many or too few
+moves that endpoint. The reader also refuses any revision but the one it was written for, because
+the format's conditionals were resolved once, by hand, and a reader that re-derived them at run
+time would re-open every one of them.
 
 ## The technology that never names the unit
 

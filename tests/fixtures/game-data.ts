@@ -1,7 +1,7 @@
 import { DatasetBuilder, type CivilizationMeta } from '../../scripts/extract/dataset-builder.ts';
 import type { CivilizationTechTree, TechTreeNode } from '../../scripts/extract/game-install.ts';
 import { blankUnitFields } from '../../scripts/extract/genie-dat.ts';
-import type { GenieData, GenieUnit } from '../../scripts/extract/genie-dat.ts';
+import type { GenieData, GenieTech, GenieUnit } from '../../scripts/extract/genie-dat.ts';
 
 /** String ids of the sample roster, spaced like the ones the game itself uses. */
 export const STRING_IDS = {
@@ -27,6 +27,35 @@ const CIV_HELP_OFFSET = 109879;
  * @param overrides - Fields to replace, on top of an identity and a name.
  * @returns The unit record as the binary reader would have produced it.
  */
+/**
+ * A technology record with everything the reader would have filled in.
+ *
+ * @param overrides - The fields a test cares about.
+ * @returns A complete record.
+ */
+export function genieTech(overrides: Partial<GenieTech>): GenieTech {
+    return {
+        prerequisites: [],
+        requiredTechCount: 0,
+        costs: [],
+        civ: -1,
+        fullTechMode: 0,
+        nameStringId: 0,
+        descriptionStringId: 0,
+        effectId: -1,
+        type: 0,
+        iconId: -1,
+        helpStringId: 0,
+        techTreeStringId: 0,
+        internalName: '',
+        repeatable: 0,
+        researchTime: 0,
+        researchLocationIds: [],
+        locations: [],
+        ...overrides,
+    };
+}
+
 export function genieUnit(overrides: Partial<GenieUnit> & Pick<GenieUnit, 'id' | 'nameStringId'>): GenieUnit {
     return {
         ...blankUnitFields(),
@@ -64,8 +93,8 @@ export function genieUnit(overrides: Partial<GenieUnit> & Pick<GenieUnit, 'id' |
         displayedRange: 0,
         displayedReloadTime: 2,
         costs: [
-            { type: 0, amount: 50 },
-            { type: 3, amount: 20 },
+            { type: 0, amount: 50, flag: 0 },
+            { type: 3, amount: 20, flag: 0 },
         ],
         trainTime: 21,
         trainLocationIds: [12],
@@ -143,10 +172,20 @@ export function sampleGameData(): GenieData {
             { name: 'Stand-in', commands: [{ type: 2, unit: 77, unitClass: 1, attribute: -1, value: 0 }] },
         ],
         civilizations: [
-            { name: 'Gaia', techTreeId: 0, teamBonusId: -1, resources: [], units: new Map() },
+            {
+                name: 'Gaia',
+                playerType: 1,
+                iconSet: 0,
+                techTreeId: 0,
+                teamBonusId: -1,
+                resources: [],
+                units: new Map(),
+            },
             {
                 name: 'British',
-                techTreeId: 1,
+                playerType: 1,
+        iconSet: 0,
+        techTreeId: 1,
                 teamBonusId: 1,
                 resources: FARM_FOOD_SLOT_RESOURCES,
                 units: new Map([
@@ -164,10 +203,26 @@ export function sampleGameData(): GenieData {
                 ]),
             },
         ],
-        techTree: { ages: 4, buildings: 37, units: 255, researches: 233 },
+        terrainRestrictions: [],
+        playerColours: [],
+        sounds: [],
+        graphics: [],
+        terrains: [],
+        unitHeaders: [],
+        counters: {
+            timeSlice: 30,
+            unitKillRate: 7,
+            unitKillTotal: 14,
+            unitHitPointRate: 700,
+            unitHitPointTotal: 1400,
+            razingKillRate: 5,
+            razingKillTotal: 10,
+        },
+        techTree: { totalUnitTechGroups: 0, ages: [], buildings: [], units: [], researches: [] },
+        sections: {},
         bytesRemaining: 0,
         technologies: [
-            {
+            genieTech({
                 effectId: 0,
                 prerequisites: [],
                 nameStringId: STRING_IDS.forgingTech,
@@ -176,9 +231,9 @@ export function sampleGameData(): GenieData {
                 civ: -1,
                 researchTime: 50,
                 researchLocationIds: [103],
-                costs: [{ type: 0, amount: 150 }],
-            },
-            {
+                costs: [{ type: 0, amount: 150, flag: 0 }],
+            }),
+            genieTech({
                 effectId: 1,
                 prerequisites: [],
                 nameStringId: 7068,
@@ -188,11 +243,11 @@ export function sampleGameData(): GenieData {
                 researchTime: 40,
                 researchLocationIds: [12],
                 costs: [
-                    { type: 0, amount: 100 },
-                    { type: 3, amount: 40 },
+                    { type: 0, amount: 100, flag: 0 },
+                    { type: 3, amount: 40, flag: 0 },
                 ],
-            },
-            {
+            }),
+            genieTech({
                 effectId: 3,
                 prerequisites: [],
                 nameStringId: 0,
@@ -202,8 +257,8 @@ export function sampleGameData(): GenieData {
                 researchTime: 0,
                 researchLocationIds: [],
                 costs: [],
-            },
-            {
+            }),
+            genieTech({
                 effectId: 2,
                 prerequisites: [],
                 nameStringId: 0,
@@ -213,7 +268,7 @@ export function sampleGameData(): GenieData {
                 researchTime: 0,
                 researchLocationIds: [],
                 costs: [],
-            },
+            }),
         ],
     };
 }

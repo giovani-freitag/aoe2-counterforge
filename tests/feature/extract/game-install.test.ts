@@ -95,12 +95,25 @@ describe.skipIf(!GAME_ROOT)('extraction from an installed game', () => {
         }).build();
     }, EXTRACTION_TIMEOUT_MS);
 
-    it('lands on the connection table with counts only a correct walk could produce', () => {
+    it('reads the file to its last byte', () => {
         const game = new GameInstall({ root: GAME_ROOT ?? '' }).readGameData();
 
-        // Nothing before this point is fixed width: every unit, effect and technology record is as
-        // long as its own contents say. Four small, sane numbers here mean every width was right.
-        expect(game.techTree).toEqual({ ages: 4, buildings: 37, units: 255, researches: 233 });
+        // Nothing in the file is fixed width: every record is as long as its own contents say. A
+        // walk that consumes the file exactly could not have read any field at the wrong width.
+        expect(game.bytesRemaining).toBe(0);
+    }, EXTRACTION_TIMEOUT_MS);
+
+    it('finds the connection table where the tables before it end', () => {
+        const game = new GameInstall({ root: GAME_ROOT ?? '' }).readGameData();
+
+        const counts = {
+            ages: game.techTree.ages.length,
+            buildings: game.techTree.buildings.length,
+            units: game.techTree.units.length,
+            researches: game.techTree.researches.length,
+        };
+
+        expect(counts).toEqual({ ages: 4, buildings: 37, units: 255, researches: 233 });
     }, EXTRACTION_TIMEOUT_MS);
 
     it('reads the pierce armour the game itself displays, at the end of the creatable block', () => {

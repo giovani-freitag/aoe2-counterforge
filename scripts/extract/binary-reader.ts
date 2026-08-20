@@ -45,6 +45,13 @@ export class BinaryReader {
         return value;
     }
 
+    public uint32(): number {
+        const value = this.view.getUint32(this.cursor, true);
+        this.cursor += 4;
+
+        return value;
+    }
+
     public int32(): number {
         const value = this.view.getInt32(this.cursor, true);
         this.cursor += 4;
