@@ -51,12 +51,12 @@ a page cannot accidentally put them in one row.
   filled in.
 - The chips survive translation better than a grid: a long Portuguese label wraps the row instead of
   stretching a column.
-- The density comes from the chips, not from deleting captions. A row of six chips is about a third
-  the height of six stacked fields, and the name filter keeps its caption on top of that row.
+- The density comes from the chips, not from deleting captions: a wrapped row of them is far shorter
+  than the same filters stacked, and the name filter keeps its caption on top of that row.
 - The filter's name lives inside the chip, so its accessible name is `label: value` rather than the
   label alone. Tests that looked controls up by label text have to look them up by role and name.
-- A page with many filters gets a two or three line chip row rather than a tidy grid. That is the
-  trade: density and one shape everywhere, against the alignment a grid would give.
+- A page with many filters gets a wrapped row rather than a tidy grid. That is the trade: density
+  and one shape everywhere, against the alignment a grid would give.
 - The distinction between a filter and a subject has to be made deliberately. When it is unclear,
   the question to ask is whether the control changes *which rows are shown* or *what the page is
   showing at all*.
