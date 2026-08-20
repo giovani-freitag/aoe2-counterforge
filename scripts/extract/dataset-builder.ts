@@ -827,27 +827,49 @@ export class DatasetBuilder {
         if (!effect) return [];
 
         const records: TechEffectRecord[] = [];
-        for (const command of effect.commands) {
-            const mode = MODES[command.type];
-            const attribute = ATTRIBUTES[command.attribute];
-            if (!mode || !attribute) continue;
 
-            const packed = PACKED.has(attribute);
-            const damageClass = packed ? CLASSES[Math.floor(command.value / 256)] : undefined;
-            if (packed && !damageClass) continue;
+        // A unit can be named by the effect and reached again through the missile it fires, and a
+        // unit that fires several missiles is reached once per missile. Both would hand it the same
+        // change twice, so a change that arrives by way of a projectile is only kept if it is new.
+        const emitted = new Set<string>();
+        const add = (record: TechEffectRecord, derived: boolean): void => {
+            const key = [record.unit, record.unitClass, record.attribute, record.damageClass, record.mode].join('|');
+            if (derived && emitted.has(key)) return;
 
-            const shooters = command.unit >= 0 ? this.shootersByProjectile().get(command.unit) : undefined;
-            const targets = shooters ?? [command.unit >= 0 ? command.unit : null];
+            emitted.add(key);
+            records.push(record);
+        };
 
-            for (const target of targets) {
-                records.push({
-                    mode,
-                    unit: target,
-                    unitClass: command.unitClass >= 0 ? command.unitClass : null,
-                    attribute,
-                    value: packed ? command.value % 256 : this.round(command.value),
-                    ...(damageClass ? { damageClass } : {}),
-                });
+        const commands = effect.commands.map((command) => ({
+            command,
+            mode: MODES[command.type],
+            attribute: ATTRIBUTES[command.attribute],
+        }));
+
+        for (const pass of ['direct', 'derived'] as const) {
+            for (const { command, mode, attribute } of commands) {
+                if (!mode || !attribute) continue;
+
+                const shooters = command.unit >= 0 ? this.shootersByProjectile().get(command.unit) : undefined;
+                if ((shooters !== undefined) !== (pass === 'derived')) continue;
+
+                const packed = PACKED.has(attribute);
+                const damageClass = packed ? CLASSES[Math.floor(command.value / 256)] : undefined;
+                if (packed && !damageClass) continue;
+
+                for (const target of shooters ?? [command.unit >= 0 ? command.unit : null]) {
+                    add(
+                        {
+                            mode,
+                            unit: target,
+                            unitClass: command.unitClass >= 0 ? command.unitClass : null,
+                            attribute,
+                            value: packed ? command.value % 256 : this.round(command.value),
+                            ...(damageClass ? { damageClass } : {}),
+                        },
+                        pass === 'derived',
+                    );
+                }
             }
         }
 
