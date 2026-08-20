@@ -43,15 +43,22 @@ export function percentDelta(multiplier: number): string {
     return delta((multiplier - 1) * 100);
 }
 
+/** The ratio the matchup service refuses to go past, in either direction. */
+const EFFICIENCY_CEILING = 30;
+
 /**
  * Formats a trade efficiency ratio.
  *
- * Above ten the decimals stop carrying information and only make the column harder to scan.
+ * Above ten the decimals stop carrying information and only make the column harder to scan, and at
+ * the ceiling the number itself stops meaning anything beyond "this one does not lose".
  *
  * @param value - Ratio where one means an even trade.
  * @returns The ratio with its multiplier sign.
  */
 export function efficiency(value: number): string {
+    if (value >= EFFICIENCY_CEILING) return `${String(EFFICIENCY_CEILING)}x+`;
+    if (value <= 1 / EFFICIENCY_CEILING) return `1/${String(EFFICIENCY_CEILING)}x`;
+
     return `${value >= 10 ? Math.round(value) : precise(value)}x`;
 }
 

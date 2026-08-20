@@ -184,13 +184,14 @@ describe('MatchupService opponent pools', () => {
 });
 
 describe('MatchupService saturation', () => {
-    it('spreads one-sided matchups instead of stacking them on the ceiling', () => {
+    it('stops counting once one side cannot answer, and lets cost tell the rest apart', () => {
         const catalog = new GameCatalogService({
             assembler: new CatalogAssembler(),
             units: [
                 unitRecord({ key: 'brute', hp: 200, attacks: { 'base-melee': 20 }, cost: { food: 60 }, civs: ALL_CIVS }),
                 unitRecord({ key: 'weak', hp: 60, attacks: { 'base-melee': 4 }, cost: { food: 60 }, civs: ALL_CIVS }),
                 unitRecord({ key: 'weaker', hp: 40, attacks: { 'base-melee': 4 }, cost: { food: 60 }, civs: ALL_CIVS }),
+                unitRecord({ key: 'costly', hp: 40, attacks: { 'base-melee': 4 }, cost: { gold: 200 }, civs: ALL_CIVS }),
             ],
             technologies: [],
             civilizations: [],
@@ -202,12 +203,15 @@ describe('MatchupService saturation', () => {
             resourceWeights: { food: 1, wood: 1, gold: 1.6, stone: 1.6 },
             thresholds: { dominant: 2, favourable: 1.25, even: 0.8, unfavourable: 0.5 },
             commonOpponentCivs: 2,
-            maxEfficiency: 99,
+            maxEfficiency: 30,
         });
 
         const report = matchups.rank({ unit: catalog.unit('brute'), pool: 'every' });
+        const efficiencyOf = (key: string) =>
+            report.all.find((matchup) => matchup.opponent.key === key)?.efficiency ?? 0;
 
-        expect(report.all.every((matchup) => matchup.efficiency < 99)).toBe(true);
-        expect(new Set(report.all.map((matchup) => matchup.efficiency)).size).toBe(2);
+        // Both are helpless, so the fight itself stops separating them and only the price does.
+        expect(efficiencyOf('weak')).toBe(efficiencyOf('weaker'));
+        expect(efficiencyOf('costly')).toBeGreaterThan(efficiencyOf('weak'));
     });
 });

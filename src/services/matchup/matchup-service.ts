@@ -82,6 +82,17 @@ const MIN_SPEED = 0.1;
 
 /** A unit that is both outranged and outrun keeps losing the approach it just finished. */
 const KITE_PENALTY = 0.4;
+
+/**
+ * Where the fight stops being a fight.
+ *
+ * A Rocket Cart needs eleven minutes to kill a Xolotl Warrior that kills it in five seconds, and
+ * calling that a hundred to one says nothing a reader can use: past a certain point one side
+ * simply cannot answer, and the arithmetic after that only drowns out the matchups that are close
+ * enough to think about. Capping the fight and letting cost decide the rest keeps the ordering
+ * about value traded rather than about who is most helpless.
+ */
+const MAX_KILL_RATIO = 8;
 const MIN_EXPOSURE = 0.05;
 
 /** Ranks every plausible opponent of a unit by how well the trade goes. */
@@ -174,7 +185,8 @@ export class MatchupService {
 
         const subjectKill = trade.opponent.stats.hp / Math.max(MIN_DPS, trade.subject.dps * subjectExposure);
         const opponentKill = trade.subject.stats.hp / Math.max(MIN_DPS, trade.opponent.dps * opponentExposure);
-        const efficiency = (opponentKill / subjectKill) * (trade.opponent.value / trade.subject.value);
+        const fight = Math.min(MAX_KILL_RATIO, Math.max(1 / MAX_KILL_RATIO, opponentKill / subjectKill));
+        const efficiency = fight * (trade.opponent.value / trade.subject.value);
 
         return Math.min(this.config.maxEfficiency, Math.max(1 / this.config.maxEfficiency, efficiency));
     }

@@ -382,7 +382,6 @@
         "filterHint": "Ex.: cavaleiro",
         "category": "Tipo",
         "empty": "Nenhuma unidade com esses filtros.",
-        "offTree": "Fora da árvore tecnológica",
         "offTreeBadge": "Fora da árvore"
     },
     "settings": {

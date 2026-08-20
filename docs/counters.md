@@ -16,7 +16,9 @@ damage formula over the two stat lines and compares what each side destroys per 
    proportion to the time it takes to close the gap. Losing the speed race on top of the range gap
    adds the kiting penalty, because the approach never ends.
 4. **Trade efficiency** compares how much value each side destroys per second, with gold and stone
-   weighted above food and wood.
+   weighted above food and wood. The fight itself is capped at eight to one before cost is applied:
+   a Rocket Cart needs eleven minutes to kill the cavalry that kills it in five seconds, and saying
+   a hundred to one there adds no information while drowning out the matchups worth thinking about.
 
 Both sides are rated fully upgraded by default — you can face any civilization — and the subject
 takes the technologies and bonuses of the civilization you picked, if you picked one.

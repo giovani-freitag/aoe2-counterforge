@@ -35,7 +35,7 @@ you have, and whether you plan to stand and fight or shoot on the move.
 
 ## ✨ Features
 
-- ⚔️ **Counters that are calculated** — damage per hit, DPS, range exposure and kiting, weighted by what each side costs. Not a hand-written table.
+- ⚔️ **Counters that are calculated** — damage per hit, DPS, range exposure and kiting, weighted by what each side costs, with the fight capped where one side stops being able to answer. Not a hand-written table.
 - 🛡️ **Every upgrade that touches the unit**, read from the game's effect table, with the number it changes and the total once everything is researched.
 - 🔨 **A page per technology** — what it costs, every unit it changes and by how much, and which civilizations get to research it.
 - 🏰 **Civilization-aware** — pick one and every stat, counter and ranking follows what it can research *and* the bonuses it is simply given.

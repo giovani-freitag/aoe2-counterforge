@@ -83,7 +83,7 @@ export function createServices(): AppServices {
         resourceWeights: RESOURCE_WEIGHTS,
         thresholds: MATCHUP_THRESHOLDS,
         commonOpponentCivs: 20,
-        maxEfficiency: 99,
+        maxEfficiency: 30,
     });
 
     const ranking = new UnitRankingService({ upgrades, resourceWeights: RESOURCE_WEIGHTS });
