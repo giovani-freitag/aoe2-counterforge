@@ -36,7 +36,6 @@ export function CivilizationsPage() {
             empty={t('civs.empty')}
             search={
                 <SearchField
-                    hideLabel
                     id="civ-filter"
                     label={t('civs.filter')}
                     placeholder={t('civs.filterHint')}

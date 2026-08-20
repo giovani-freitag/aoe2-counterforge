@@ -13,7 +13,7 @@ argue with the reasoning instead of guessing at it.
 | [0005](0005-numbers-from-the-game.md) | Every number comes from the game, never from a hand-written table | Accepted |
 | [0006](0006-static-hosting.md) | Static hosting with a hash router | Accepted |
 | [0007](0007-three-layers-of-tests.md) | Three layers of tests, one of them structural | Accepted |
-| [0008](0008-one-shape-for-every-filter.md) | One shape for every filter row | Accepted |
+| [0008](0008-one-shape-for-every-filter.md) | One shape for every filter row, and every field keeps its label | Accepted |
 
 Two of these are enforced by tooling rather than by review: `eslint.config.js` fails the build when
 `domain/` or `services/` reach for React or the DOM, and `tests/arch/layering.test.ts` reads the

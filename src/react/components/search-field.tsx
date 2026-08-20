@@ -4,15 +4,13 @@ export interface SearchFieldProps {
     placeholder: string;
     value: string;
     onChange: (value: string) => void;
-    /** Leaves the label to assistive technology, for a row too tight to spell it out. */
-    hideLabel?: boolean;
 }
 
 /** The name filter every catalogue page opens with. */
-export function SearchField({ id, label, placeholder, value, onChange, hideLabel = false }: SearchFieldProps) {
+export function SearchField({ id, label, placeholder, value, onChange }: SearchFieldProps) {
     return (
         <div className="field">
-            <label className={hideLabel ? 'visually-hidden' : 'field__label'} htmlFor={id}>
+            <label className="field__label" htmlFor={id}>
                 {label}
             </label>
             <input

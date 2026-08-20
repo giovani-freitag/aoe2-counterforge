@@ -59,7 +59,6 @@ export function TechnologiesPage() {
             empty={t('techs.empty')}
             search={
                 <SearchField
-                    hideLabel
                     id="tech-filter"
                     label={t('techs.filter')}
                     placeholder={t('techs.filterHint')}

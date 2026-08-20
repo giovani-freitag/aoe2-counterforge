@@ -137,7 +137,6 @@ export function UnitsPage() {
             empty={t('units.empty')}
             search={
                 <SearchField
-                    hideLabel
                     id="unit-filter"
                     label={t('units.filterPlaceholder')}
                     placeholder={t('units.filterHint')}

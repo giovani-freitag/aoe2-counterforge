@@ -99,7 +99,6 @@ export function MatchupBoard({ matchups, subjectName, ownRoster = null }: Matchu
             </div>
 
             <SearchField
-                hideLabel
                 id="matchup-filter"
                 label={t('counters.filterPlaceholder')}
                 placeholder={t('counters.filterHint')}
