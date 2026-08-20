@@ -6,6 +6,7 @@ import { CivilizationsPage } from './pages/civilizations-page.tsx';
 import { ComparePage } from './pages/compare-page.tsx';
 import { HomePage } from './pages/home-page.tsx';
 import { NotFoundPage } from './pages/not-found-page.tsx';
+import { TechnologiesPage } from './pages/technologies-page.tsx';
 import { TechnologyPage } from './pages/technology-page.tsx';
 import { UnitPage } from './pages/unit-page.tsx';
 import { UnitsPage } from './pages/units-page.tsx';
@@ -29,6 +30,7 @@ export function App() {
                                 <Route path="unit/:key" element={<UnitPage />} />
                                 <Route path="civs" element={<CivilizationsPage />} />
                                 <Route path="civ/:key" element={<CivilizationPage />} />
+                                <Route path="techs" element={<TechnologiesPage />} />
                                 <Route path="tech/:key" element={<TechnologyPage />} />
                                 <Route path="*" element={<NotFoundPage />} />
                             </Route>

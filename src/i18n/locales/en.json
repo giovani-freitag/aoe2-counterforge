@@ -11,7 +11,8 @@
         "civilizations": "Civilizations",
         "about": "About",
         "compare": "Compare",
-        "backTo": "Back to {{section}}"
+        "backTo": "Back to {{section}}",
+        "technologies": "Technologies"
     },
     "search": {
         "open": "Search a unit or civilization",
@@ -403,5 +404,14 @@
         "civCount_other": "{{count}} civilizations",
         "uniqueTo": "Unique to the {{civ}}",
         "trainsFaster": "Units train {{value}}% faster where it is researched."
+    },
+    "techs": {
+        "count_one": "{{count}} technology",
+        "count_other": "{{count}} technologies",
+        "filter": "Filter by name",
+        "filterHint": "e.g. bloodlines",
+        "building": "Researched at",
+        "unique": "Unique",
+        "empty": "No technology matches."
     }
 }

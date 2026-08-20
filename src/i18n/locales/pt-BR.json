@@ -11,7 +11,8 @@
         "civilizations": "Civilizações",
         "about": "Sobre",
         "compare": "Comparar",
-        "backTo": "Voltar para {{section}}"
+        "backTo": "Voltar para {{section}}",
+        "technologies": "Tecnologias"
     },
     "search": {
         "open": "Buscar unidade ou civilização",
@@ -403,5 +404,14 @@
         "civCount_other": "{{count}} civilizações",
         "uniqueTo": "Exclusiva dos {{civ}}",
         "trainsFaster": "As unidades treinam {{value}}% mais rápido onde ela é pesquisada."
+    },
+    "techs": {
+        "count_one": "{{count}} tecnologia",
+        "count_other": "{{count}} tecnologias",
+        "filter": "Filtrar por nome",
+        "filterHint": "ex.: linhagem",
+        "building": "Pesquisada em",
+        "unique": "Exclusiva",
+        "empty": "Nenhuma tecnologia corresponde."
     }
 }

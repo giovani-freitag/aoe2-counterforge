@@ -17,7 +17,8 @@ import { SettingsBar } from './settings-bar.tsx';
  */
 const NAV_ITEMS = [
     { to: '/', key: 'home', icon: 'home', owns: ['/'] },
-    { to: '/units', key: 'units', icon: 'units', owns: ['/units', '/unit/', '/tech/'] },
+    { to: '/units', key: 'units', icon: 'units', owns: ['/units', '/unit/'] },
+    { to: '/techs', key: 'technologies', icon: 'upgrades', owns: ['/techs', '/tech/'] },
     { to: '/compare', key: 'compare', icon: 'compare', owns: ['/compare'] },
     { to: '/civs', key: 'civilizations', icon: 'civilizations', owns: ['/civs', '/civ/'] },
 ] as const satisfies readonly { to: string; key: string; icon: IconName; owns: readonly string[] }[];
