@@ -678,6 +678,7 @@
     fill: none;
     stroke: var(--border-strong);
     stroke-width: 1.5;
+    stroke-linecap: round;
 }
 
 .line-diagram__head {

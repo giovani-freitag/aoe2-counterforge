@@ -56,6 +56,58 @@ function wrap(name: string, limit: number): string[] {
     return lines.length <= 2 ? lines : [lines[0], `${lines.slice(1).join(' ').slice(0, limit - 1)}…`];
 }
 
+/** How far the arrow stops short of the box it points at. */
+const ARROW_HEAD = 8;
+const CORNER = 8;
+
+/**
+ * Draws the connector between two boxes as an elbow with rounded corners.
+ *
+ * A curve that arrives at a box diagonally puts its arrowhead at an angle nothing else on the page
+ * shares, and on a fork the two curves lean into each other. Turning the corner instead lets every
+ * arrow meet its box square on, the way a tree is drawn.
+ *
+ * @param from - Where the connector leaves the parent.
+ * @param to - Where it meets the child, head included.
+ * @param vertical - True while the steps run down the page rather than across it.
+ * @returns The path data for the connector.
+ */
+function elbow(from: Point, to: Point, vertical: boolean): string {
+    const move = `M ${String(from.x)} ${String(from.y)}`;
+    const same = vertical ? from.x === to.x : from.y === to.y;
+    if (same) return `${move} ${vertical ? 'V' : 'H'} ${String(vertical ? to.y : to.x)}`;
+
+    const span = vertical ? to.y - from.y : to.x - from.x;
+    const shift = vertical ? to.x - from.x : to.y - from.y;
+    const turn = Math.min(CORNER, Math.abs(span) / 2, Math.abs(shift) / 2);
+    const along = Math.sign(span) * turn;
+    const across = Math.sign(shift) * turn;
+    const middle = (vertical ? from.y + to.y : from.x + to.x) / 2;
+
+    return vertical
+        ? [
+              move,
+              `V ${String(middle - along)}`,
+              `Q ${String(from.x)} ${String(middle)}, ${String(from.x + across)} ${String(middle)}`,
+              `H ${String(to.x - across)}`,
+              `Q ${String(to.x)} ${String(middle)}, ${String(to.x)} ${String(middle + along)}`,
+              `V ${String(to.y)}`,
+          ].join(' ')
+        : [
+              move,
+              `H ${String(middle - along)}`,
+              `Q ${String(middle)} ${String(from.y)}, ${String(middle)} ${String(from.y + across)}`,
+              `V ${String(to.y - across)}`,
+              `Q ${String(middle)} ${String(to.y)}, ${String(middle + along)} ${String(to.y)}`,
+              `H ${String(to.x)}`,
+          ].join(' ');
+}
+
+interface Point {
+    x: number;
+    y: number;
+}
+
 interface PlacedNode {
     unit: Unit;
     name: string;
@@ -119,17 +171,13 @@ export function UnitLineDiagram({ steps, current }: UnitLineDiagramProps) {
             ? { x: parent.x + nodeWidth / 2, y: parent.y + nodeHeight }
             : { x: parent.x + nodeWidth, y: parent.y + nodeHeight / 2 };
         const end = stacked
-            ? { x: node.x + nodeWidth / 2, y: node.y - 7 }
-            : { x: node.x - 7, y: node.y + nodeHeight / 2 };
-        const bend = stacked ? STACKED_GAP * 0.6 : COLUMN_GAP * 0.6;
-        const control = stacked
-            ? `${String(start.x)} ${String(start.y + bend)}, ${String(end.x)} ${String(end.y - bend)}`
-            : `${String(start.x + bend)} ${String(start.y)}, ${String(end.x - bend)} ${String(end.y)}`;
+            ? { x: node.x + nodeWidth / 2, y: node.y - 1 }
+            : { x: node.x - 1, y: node.y + nodeHeight / 2 };
 
         return [
             {
                 key: `${parent.unit.key}-${node.unit.key}`,
-                path: `M ${String(start.x)} ${String(start.y)} C ${control}, ${String(end.x)} ${String(end.y)}`,
+                path: elbow(start, end, stacked),
             },
         ];
     });
@@ -150,16 +198,18 @@ export function UnitLineDiagram({ steps, current }: UnitLineDiagramProps) {
                     <clipPath id="line-diagram-icon" clipPathUnits="objectBoundingBox">
                         <rect width="1" height="1" rx="0.14" ry="0.14" />
                     </clipPath>
+                    {/* Sized in user space so the head stays the same arrow whatever the stroke. */}
                     <marker
                         id="line-diagram-arrow"
                         viewBox="0 0 8 8"
-                        refX="7"
+                        refX="8"
                         refY="4"
-                        markerWidth="7"
-                        markerHeight="7"
-                        orient="auto-start-reverse"
+                        markerWidth={ARROW_HEAD}
+                        markerHeight={ARROW_HEAD}
+                        markerUnits="userSpaceOnUse"
+                        orient="auto"
                     >
-                        <path className="line-diagram__head" d="M 0 1 L 7 4 L 0 7 z" />
+                        <path className="line-diagram__head" d="M 0.5 0.5 L 8 4 L 0.5 7.5 z" />
                     </marker>
                 </defs>
 
