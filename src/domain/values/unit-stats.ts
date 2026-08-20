@@ -7,6 +7,8 @@ export interface UnitStatsConfig {
     hp: number;
     attack: AttackProfile;
     armour: ArmourProfile;
+    /** Stands in for any damage class the defender does not carry. */
+    baseArmour: number;
     range: number;
     minRange: number;
     reloadTime: number;
@@ -70,6 +72,10 @@ export class UnitStats {
 
     public get attack(): AttackProfile {
         return this.config.attack;
+    }
+
+    public get baseArmour(): number {
+        return this.config.baseArmour;
     }
 
     public get armour(): ArmourProfile {

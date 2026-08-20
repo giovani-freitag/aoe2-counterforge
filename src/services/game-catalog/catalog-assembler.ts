@@ -42,6 +42,7 @@ export class CatalogAssembler {
                 hp: record.hp,
                 attack: new AttackProfile({ entries: this.toClassAmounts(record.attacks) }),
                 armour: new ArmourProfile({ entries: this.toClassAmounts(record.armours) }),
+                baseArmour: record.baseArmour,
                 range: record.range,
                 minRange: record.minRange,
                 reloadTime: record.reloadTime,

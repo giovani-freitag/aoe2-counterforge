@@ -6,8 +6,12 @@ damage formula over the two stat lines and compares what each side destroys per 
 ## The four steps
 
 1. **Damage per hit** uses the game's formula: for every armour class the two sides share, attack
-   minus armour; sum them; a floor of 1 damage. Negative armour increases the damage taken, as in
-   the game.
+   minus armour, floored at zero so that armour cancels a class rather than eating the damage of
+   the others. A handful of units carry a negative amount in a class on purpose — the game's way of
+   saying a weapon does less against those — and those survive to the sum, as does negative armour,
+   which increases the damage taken. A class the defender does not carry falls back to the value
+   the game keeps for that case, which almost every unit sets far above any attack. The total is
+   floored at 1: a hit always hurts.
 2. **DPS** applies accuracy for ranged units and divides by the reload time. An accuracy recorded as
    zero (Rocket Cart, Petard, fire ships) means the game resolves that projectile through a special
    case rather than the accuracy roll, so it is read as always hitting instead of never hitting.

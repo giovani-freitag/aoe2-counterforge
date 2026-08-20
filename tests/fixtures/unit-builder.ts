@@ -7,6 +7,8 @@ import { ResourceCost, type ResourceCostConfig } from '../../src/domain/values/r
 import { UnitStats } from '../../src/domain/values/unit-stats.ts';
 
 export interface StatsOverrides {
+    /** What answers a damage class the unit has no armour entry for. */
+    baseArmour?: number;
     hp?: number;
     attacks?: Partial<Record<ArmourClass, number>>;
     armours?: Partial<Record<ArmourClass, number>>;
@@ -50,6 +52,7 @@ function toEntries(values: Partial<Record<ArmourClass, number>>): ClassAmount[] 
 export function makeStats(overrides: StatsOverrides = {}): UnitStats {
     return new UnitStats({
         hp: overrides.hp ?? 100,
+        baseArmour: overrides.baseArmour ?? 10000,
         attack: new AttackProfile({ entries: toEntries(overrides.attacks ?? { 'base-melee': 10 }) }),
         armour: new ArmourProfile({
             entries: toEntries(overrides.armours ?? { 'base-melee': 0, 'base-pierce': 0 }),

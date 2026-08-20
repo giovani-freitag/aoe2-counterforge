@@ -61,4 +61,57 @@ describe('DamageCalculator', () => {
             { armourClass: 'base-melee', attack: 4, armour: 1, net: 3 },
         ]);
     });
+    it('stops a class the armour outmatches from eating the damage of the others', () => {
+        const attacker = makeStats({ attacks: { 'base-melee': 14, cavalry: 0 } });
+        const defender = makeStats({ armours: { 'base-melee': 2, cavalry: 12 } });
+
+        const damage = calculator.between(attacker, defender);
+
+        expect(damage.total).toBe(12);
+    });
+
+    it('keeps an attack the game wrote as a reduction', () => {
+        const attacker = makeStats({ attacks: { 'base-pierce': 10, infantry: -10 } });
+        const defender = makeStats({ armours: { 'base-pierce': 0, infantry: 0 } });
+
+        const damage = calculator.between(attacker, defender);
+
+        expect(damage.total).toBe(1);
+    });
+
+    it('lets matching negative armour cancel a reduction out', () => {
+        const attacker = makeStats({ attacks: { 'base-melee': 10, cavalry: -3 } });
+        const defender = makeStats({ armours: { 'base-melee': 0, cavalry: -3 } });
+
+        const damage = calculator.between(attacker, defender);
+
+        expect(damage.total).toBe(10);
+    });
+
+    it('applies the reduction once the armour that was cancelling it is gone', () => {
+        const attacker = makeStats({ attacks: { 'base-melee': 10, cavalry: -3 } });
+        const defender = makeStats({ armours: { 'base-melee': 0, cavalry: 0 } });
+
+        const damage = calculator.between(attacker, defender);
+
+        expect(damage.total).toBe(7);
+    });
+
+    it('turns negative armour into damage taken', () => {
+        const attacker = makeStats({ attacks: { 'base-melee': 4, 'cavalry-archer': 0 } });
+        const defender = makeStats({ armours: { 'base-melee': 0, 'cavalry-archer': -4 } });
+
+        const damage = calculator.between(attacker, defender);
+
+        expect(damage.total).toBe(8);
+    });
+
+    it('falls back to the base armour for a class the defender does not carry', () => {
+        const attacker = makeStats({ attacks: { 'base-melee': 6, cavalry: 9 } });
+        const defender = makeStats({ armours: { 'base-melee': 0 }, baseArmour: 0 });
+
+        const damage = calculator.between(attacker, defender);
+
+        expect(damage.total).toBe(15);
+    });
 });

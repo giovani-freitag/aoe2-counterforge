@@ -908,6 +908,7 @@ export class DatasetBuilder {
             cost: this.cost(unit.costs),
             trainTime: unit.trainTime,
             hp: unit.hitPoints,
+            baseArmour: unit.baseArmour,
             attacks,
             armours,
             range: this.round(unit.displayedRange),

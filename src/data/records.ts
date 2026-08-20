@@ -28,6 +28,8 @@ export interface UnitRecord {
     cost: CostRecord;
     trainTime: number;
     hp: number;
+    /** Stands in for any damage class the defender does not carry. */
+    baseArmour: number;
     attacks: ClassAmountRecord[];
     armours: ClassAmountRecord[];
     range: number;

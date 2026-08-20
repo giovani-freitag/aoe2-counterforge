@@ -59,6 +59,7 @@ export function unitRecord(overrides: UnitRecordOverrides): UnitRecord {
         cost: { ...NO_COST, ...overrides.cost },
         trainTime: overrides.trainTime ?? 20,
         hp: overrides.hp ?? 100,
+        baseArmour: 10000,
         attacks: toClassAmounts(overrides.attacks ?? { 'base-melee': 10 }),
         armours: toClassAmounts(overrides.armours ?? { 'base-melee': 0, 'base-pierce': 0 }),
         range: overrides.range ?? 0,
