@@ -188,8 +188,8 @@
         "openUnit": "Open {{unit}}",
         "side": "Which matchups to show",
         "sides": {
-            "strong": "Favourable",
-            "weak": "Unfavourable",
+            "strong": "Strong",
+            "weak": "Weak",
             "all": "All"
         },
         "widen": "Search every upgrade step instead",

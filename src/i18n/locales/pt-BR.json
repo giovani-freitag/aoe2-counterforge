@@ -188,8 +188,8 @@
         "openUnit": "Abrir {{unit}}",
         "side": "Quais confrontos mostrar",
         "sides": {
-            "strong": "Favoráveis",
-            "weak": "Desfavoráveis",
+            "strong": "Fortes",
+            "weak": "Fracos",
             "all": "Todos"
         },
         "widen": "Buscar em todas as versões",

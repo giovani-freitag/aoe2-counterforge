@@ -50,7 +50,7 @@ describe('App', () => {
 
         await user.click(await screen.findByRole('tab', { name: 'Counters' }));
 
-        expect(await screen.findByRole('button', { name: /^Favoráveis/ })).toBeDefined();
+        expect(await screen.findByRole('button', { name: /^Fortes/ })).toBeDefined();
     });
 
     it('reaches the complete ranking without leaving the card', async () => {
@@ -73,9 +73,9 @@ describe('App', () => {
         await user.type(await screen.findByRole('searchbox', { name: /Filtrar advers/ }), 'alabard');
 
         await waitFor(() => {
-            expect(screen.getByRole('button', { name: /^Favoráveis/ }).textContent).toBe('Favoráveis0');
+            expect(screen.getByRole('button', { name: /^Fortes/ }).textContent).toBe('Fortes0');
         });
-        expect(screen.getByRole('button', { name: /^Desfavoráveis/ }).textContent).toBe('Desfavoráveis1');
+        expect(screen.getByRole('button', { name: /^Fracos/ }).textContent).toBe('Fracos1');
     });
 
     it('puts two units side by side with a head to head table', async () => {
@@ -148,7 +148,7 @@ describe('App', () => {
         window.location.hash = '#/unit/knight?tab=counters';
         render(<App />);
 
-        await user.click(await screen.findByRole('button', { name: /^Desfavoráveis/ }));
+        await user.click(await screen.findByRole('button', { name: /^Fracos/ }));
         const [row] = await screen.findAllByRole('button', { name: /Alabardeiro/ });
         await user.click(row);
 
