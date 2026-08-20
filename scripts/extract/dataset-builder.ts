@@ -100,13 +100,16 @@ const BUILDINGS: Record<number, string> = {
 
 /** Armour and attack class ids that carry meaning for the damage model. */
 const CLASSES: Record<number, string> = {
+    0: 'unused-0',
     1: 'infantry',
+    2: 'capital-ship',
     3: 'base-pierce',
     4: 'base-melee',
     5: 'war-elephant',
     8: 'cavalry',
     11: 'all-buildings',
     13: 'stone-defense',
+    14: 'predator-animal',
     15: 'archer',
     16: 'ship',
     17: 'ram',
@@ -116,15 +119,22 @@ const CLASSES: Record<number, string> = {
     21: 'standard-building',
     22: 'wall-gate',
     23: 'gunpowder',
+    24: 'boar',
     25: 'monk',
     26: 'castle',
     27: 'spearman',
     28: 'cavalry-archer',
     29: 'eagle-warrior',
     30: 'camel',
+    31: 'unused-31',
+    32: 'condottiero',
+    34: 'fishing-ship',
     35: 'mameluke',
-    37: 'armored-elephant',
+    36: 'hero-king',
+    37: 'heavy-siege',
     38: 'skirmisher',
+    39: 'royal-heir',
+    40: 'unused-40',
     41: 'fire-ship',
     60: 'ship-secondary',
 };
@@ -165,6 +175,33 @@ const MODES: Record<number, TechEffectRecord['mode']> = { 0: 'set', 4: 'add', 5:
 
 /** Attack and armour pack the damage class into the value: class times 256, plus the amount. */
 const PACKED = new Set(['attack', 'armour']);
+
+/** The packed low byte, which a multiplying command writes as a whole percentage. */
+const LOW_BYTE = 0xff;
+const PERCENT = 100;
+
+/**
+ * Splits a packed attack or armour value into the class it names and what it does to it.
+ *
+ * The sign belongs to the amount, not to the class: the file writes a reduction as a negative
+ * whole, so the class has to be read from the magnitude or a technology that takes damage away
+ * lands on a class that does not exist and is thrown away. A multiplying command uses the same
+ * two halves, except its low byte is a percentage rather than an amount.
+ *
+ * @param raw - The value exactly as the file stores it.
+ * @param mode - How the command applies the value.
+ * @returns The class id and the value in the guide's own terms.
+ */
+function unpack(raw: number, mode: TechEffectRecord['mode']): { classId: number; value: number } {
+    const whole = Math.trunc(raw);
+    const magnitude = Math.abs(whole);
+    const low = magnitude & LOW_BYTE;
+
+    return {
+        classId: magnitude >> 8,
+        value: mode === 'multiply' ? low / PERCENT : Math.sign(whole) * low,
+    };
+}
 
 /**
  * Decimals kept from the file's 32-bit floats.
@@ -853,9 +890,9 @@ export class DatasetBuilder {
                 const shooters = command.unit >= 0 ? this.shootersByProjectile().get(command.unit) : undefined;
                 if ((shooters !== undefined) !== (pass === 'derived')) continue;
 
-                const packed = PACKED.has(attribute);
-                const damageClass = packed ? CLASSES[Math.floor(command.value / 256)] : undefined;
-                if (packed && !damageClass) continue;
+                const packed = PACKED.has(attribute) ? unpack(command.value, mode) : null;
+                const damageClass = packed === null ? undefined : CLASSES[packed.classId];
+                if (packed !== null && !damageClass) continue;
 
                 for (const target of shooters ?? [command.unit >= 0 ? command.unit : null]) {
                     add(
@@ -864,7 +901,7 @@ export class DatasetBuilder {
                             unit: target,
                             unitClass: command.unitClass >= 0 ? command.unitClass : null,
                             attribute,
-                            value: packed ? command.value % 256 : this.round(command.value),
+                            value: packed === null ? this.round(command.value) : packed.value,
                             ...(damageClass ? { damageClass } : {}),
                         },
                         pass === 'derived',

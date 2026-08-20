@@ -84,9 +84,6 @@ const COST_OF: Record<string, string> = {
     costStone: 'stone',
 };
 
-/** Attack and armour multipliers are written as whole percentages, unlike every other factor. */
-const PERCENT = 100;
-
 /** A stat delta written so that two equal deltas produce the same string, whatever their order. */
 function canonical(delta: StatDelta): string {
     const scalars = [
@@ -325,7 +322,7 @@ export class UpgradeService {
                 const scale = effect.mode === 'multiply';
                 const table = classed[effect.attribute][scale ? 'scaled' : 'added'];
                 const current = table.get(effect.damageClass);
-                const value = scale ? effect.value / PERCENT : effect.value;
+                const value = effect.value;
                 table.set(effect.damageClass, scale ? (current ?? 1) * value : (current ?? 0) + value);
 
                 continue;

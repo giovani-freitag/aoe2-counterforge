@@ -6,6 +6,13 @@ export const ARMOUR_CLASSES = [
     'base-melee',
     'base-pierce',
     'infantry',
+    'capital-ship',
+    'predator-animal',
+    'boar',
+    'condottiero',
+    'fishing-ship',
+    'hero-king',
+    'royal-heir',
     'archer',
     'skirmisher',
     'spearman',
@@ -15,7 +22,7 @@ export const ARMOUR_CLASSES = [
     'camel',
     'mameluke',
     'war-elephant',
-    'armored-elephant',
+    'heavy-siege',
     'monk',
     'siege-weapon',
     'ram',
@@ -30,6 +37,9 @@ export const ARMOUR_CLASSES = [
     'castle',
     'wall-gate',
     'tree',
+    'unused-0',
+    'unused-31',
+    'unused-40',
 ] as const;
 
 export type ArmourClass = (typeof ARMOUR_CLASSES)[number];

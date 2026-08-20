@@ -62,7 +62,7 @@ function buildService() {
                 bonusEffects: [{ mode: 'multiply', unit: null, unitClass: CAVALRY, attribute: 'hp', value: 1.2 }],
             }),
             civilizationRecord('britons'),
-            // A factor on attack and armour is written as a whole percentage, class by class.
+            // A factor on attack and armour reaches the dataset already decoded, class by class.
             civilizationRecord('gurjaras', {
                 bonusEffects: [
                     {
@@ -70,7 +70,7 @@ function buildService() {
                         unit: null,
                         unitClass: CAVALRY,
                         attribute: 'attack',
-                        value: 125,
+                        value: 1.25,
                         damageClass: 'base-melee',
                     },
                 ],
@@ -160,7 +160,7 @@ describe('UpgradeService', () => {
         expect(outcome.stats.hp).toBe(140);
     });
 
-    it('reads an attack factor as the percentage the game packs into it', () => {
+    it('scales an attack class by the factor the extraction decoded', () => {
         const { catalog, upgrades } = buildService();
 
         const outcome = upgrades.apply({ unit: catalog.unit('knight'), techs: [], civ: 'gurjaras' });
