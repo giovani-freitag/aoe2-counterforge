@@ -72,5 +72,17 @@ are only re-encoded.
 - Duplicate entries merged: several units exist twice in the game because a second building can
   train them (Donjon, Krepost, Stable), and the guide shows one entry listing both places.
 
+## Where the roster stops
+
+The tech trees decide what counts as a unit. That is the only statement in the files about what a
+normal game can produce, and it costs one real unit: the Xolotl Warrior, which a converted Stable
+turns out for a civilization with no cavalry of its own, appears in no tech tree at all.
+
+Including it would mean authoring by hand what the files do not say. The data was searched for a
+rule that separates it from the three hundred other creatable units the trees leave out — campaign
+heroes, villager jobs, livestock — and there is none: heroes carry costs too, and Raden Wijaya is
+trained at the Stable just like the Xolotl. So the boundary stays where the game draws it, and this
+paragraph is the note that it was a decision rather than an oversight.
+
 `tests/feature/extract/game-install.test.ts` re-runs the extraction and compares it against the
 committed dataset. It only runs when `AOE2_GAME_ROOT` is set.
