@@ -25,6 +25,10 @@ damage formula over the two stat lines and compares what each side destroys per 
 Both sides are rated fully upgraded by default — you can face any civilization — and the subject
 takes the technologies and bonuses of the civilization you picked, if you picked one.
 
+The opposition can be narrowed to what that civilization trains, and then it is rated with that
+civilization's upgrades and bonuses rather than generically. On a unit your civilization cannot
+build the list starts that way, because nobody opens an enemy unit to read how it fights for them.
+
 ## How the list is read
 
 Strong, weak and complete are three views of one ranking rather than three lists, so the

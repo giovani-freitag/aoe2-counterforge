@@ -44,7 +44,8 @@ export function HomePage() {
     );
 
     const enemy = useMemo(() => catalog.units().find((unit) => unit.key === enemyKey) ?? null, [catalog, enemyKey]);
-    const report = useMatchups(enemy);
+    // The enemy belongs to whoever fields it; the answers are the reader's own, upgrades included.
+    const report = useMatchups(enemy, { subjectCiv: null, opponentCiv: preferences.civ });
     const answers = report?.weakAgainst ?? [];
     const enemyName = enemy ? text.unit(enemy.key).name : '';
 

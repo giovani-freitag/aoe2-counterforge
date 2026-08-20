@@ -48,7 +48,7 @@
         "trainTime": "Tempo de treino",
         "age": "Época",
         "uniqueTo": "Exclusiva de {{civ}}",
-        "notAvailable": "{{civ}} não treina esta unidade.",
+        "notAvailable": "{{civ}} não treinam esta unidade.",
         "tabs": {
             "overview": "Visão geral",
             "counters": "Counters",
@@ -61,7 +61,7 @@
         "stats": "Atributos",
         "statsBase": "Base",
         "statsUpgraded": "Com melhorias",
-        "statsWithCiv": "Tudo o que {{civ}} pode pesquisar, mais os bônus que a civilização já ganha de saída.",
+        "statsWithCiv": "Tudo o que {{civ}} podem pesquisar, mais os bônus que a civilização já ganha de saída.",
         "bonusDamage": "Dano bônus",
         "armourClasses": "Classes de armadura",
         "line": "Linha de evolução",
@@ -199,7 +199,8 @@
             "trade": "Troca de {{unit}}",
             "answer": "Resposta",
             "tradeAgainst": "Troca contra {{unit}}"
-        }
+        },
+        "ownRoster": "Treináveis por {{civ}}"
     },
     "upgrades": {
         "lineTitle": "Evoluções da linha",
@@ -407,7 +408,7 @@
         "researchedBy": "Quem pesquisa",
         "civCount_one": "{{count}} civilização",
         "civCount_other": "{{count}} civilizações",
-        "uniqueTo": "Exclusiva dos {{civ}}",
+        "uniqueTo": "Exclusiva de {{civ}}",
         "trainsFaster": "As unidades treinam {{value}}% mais rápido onde ela é pesquisada."
     },
     "techs": {

@@ -13,9 +13,18 @@ import { SearchField } from './search-field.tsx';
 import { SegmentedControl } from './segmented-control.tsx';
 import { VirtualList } from './virtual-list.tsx';
 
+export interface OwnRoster {
+    /** Name of the civilization the reader picked, for the switch to say whose roster it is. */
+    civ: string;
+    active: boolean;
+    toggle: (active: boolean) => void;
+}
+
 export interface MatchupBoardProps {
     matchups: readonly Matchup[];
     subjectName: string;
+    /** The switch that narrows the opposition to what the reader can actually train, when there is one. */
+    ownRoster?: OwnRoster | null;
 }
 
 const SIDES = ['strong', 'weak', 'all'] as const;
@@ -37,7 +46,7 @@ function sideOf(verdict: Matchup['verdict']): Side | 'even' {
  * set of filters instead of stacking into a page nobody reaches the bottom of. The switch between
  * them sits above the rows as a filter rather than as a second row of tabs.
  */
-export function MatchupBoard({ matchups, subjectName }: MatchupBoardProps) {
+export function MatchupBoard({ matchups, subjectName, ownRoster = null }: MatchupBoardProps) {
     const { t } = useTranslation();
     const matchesName = useNameFilter();
     const { preferences, update } = usePreferences();
@@ -138,6 +147,17 @@ export function MatchupBoard({ matchups, subjectName }: MatchupBoardProps) {
                     }))}
                     onChange={(value) => { update({ pool: value as OpponentPool }); }}
                 />
+                {ownRoster === null ? null : (
+                    <button
+                        type="button"
+                        className="chip"
+                        aria-pressed={ownRoster.active}
+                        onClick={() => { ownRoster.toggle(!ownRoster.active); }}
+                    >
+                        <Icon name="civilizations" />
+                        {t('counters.ownRoster', { civ: ownRoster.civ })}
+                    </button>
+                )}
                 <Picker
                     prefix={t('counters.model')}
                     label={t('counters.model')}

@@ -58,6 +58,14 @@ export type OpponentPool = 'common' | 'all' | 'every';
 export interface MatchupQuery {
     unit: Unit;
     civ?: string | null;
+    /**
+     * The civilization fielding the opposition, or null for anyone's.
+     *
+     * A reader looking at an enemy unit is asking what they themselves can build against it, and the
+     * answer is worth nothing if it names a unit their civilization cannot train — or rates it without
+     * the upgrades and bonuses their civilization would give it.
+     */
+    opponentCiv?: string | null;
     model?: EngagementModel;
     upgradeLevel?: UpgradeLevel;
     categories?: readonly UnitCategory[];
@@ -162,8 +170,9 @@ export class MatchupService {
     }
 
     private compare(query: MatchupQuery, subjectStats: UnitStats, opponent: Unit): Matchup {
-        // Opponents are rated at their generic fully upgraded strength: you can face any civilization.
-        const opponentStats = this.statsFor(opponent, null, query.upgradeLevel ?? 'full');
+        // Without a civilization behind them, opponents are rated at their generic fully upgraded
+        // strength, because you can face anyone; with one, they are that civilization's own units.
+        const opponentStats = this.statsFor(opponent, query.opponentCiv ?? null, query.upgradeLevel ?? 'full');
         const duel = this.config.combat.duel({
             attacker: subjectStats,
             defender: opponentStats,
@@ -251,6 +260,7 @@ export class MatchupService {
             .filter((unit) => (pool === 'every' ? unit.key !== query.unit.key : unit.line !== query.unit.line))
             .filter((unit) => unit.stats.canAttack())
             .filter((unit) => !unit.hasTag('demolition'))
+            .filter((unit) => query.opponentCiv == null || unit.availableTo(query.opponentCiv))
             .filter((unit) => pool !== 'common' || unit.civs.length >= this.config.commonOpponentCivs);
 
         if (pool === 'every') return candidates;

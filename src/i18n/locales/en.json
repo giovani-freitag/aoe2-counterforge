@@ -199,7 +199,8 @@
             "trade": "{{unit}}'s trade",
             "answer": "Answer",
             "tradeAgainst": "Trade vs {{unit}}"
-        }
+        },
+        "ownRoster": "Trainable by {{civ}}"
     },
     "upgrades": {
         "lineTitle": "Line upgrades",

@@ -95,7 +95,7 @@ export function UnitPage() {
             </div>
 
             {tab === 'overview' ? <UnitOverviewPanel unit={unit} upgradedStats={upgrades.upgradedStats} /> : null}
-            {tab === 'counters' ? <UnitCountersPanel unit={unit} /> : null}
+            {tab === 'counters' ? <UnitCountersPanel key={unit.key} unit={unit} /> : null}
             {tab === 'upgrades' ? <UnitUpgradesPanel unit={unit} /> : null}
             {tab === 'economy' ? <UnitEconomyPanel unit={unit} /> : null}
         </div>
