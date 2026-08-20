@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FuzzyMatcher, normalize } from '../../services/search/fuzzy-matcher.ts';
 import { useListbox } from '../hooks/use-listbox.ts';
@@ -18,12 +18,17 @@ export interface PickerProps {
     onChange: (value: string) => void;
     /** Hides the label text in the button, leaving only the visual. */
     compact?: boolean;
+    /** Names the filter inside the button, for a picker that stands outside a form field. */
+    prefix?: string;
     /** Fills the width of a form field, the way a plain select does. */
     block?: boolean;
     /** Ties the button to a label written next to it. */
     id?: string;
     align?: 'start' | 'end';
 }
+
+/** How close to the window edge an open list is allowed to come, in pixels. */
+const EDGE_MARGIN = 8;
 
 /** Above this many entries, scanning the list stops working and typing takes over. */
 const SEARCH_FROM = 10;
@@ -32,10 +37,12 @@ const SEARCH_FROM = 10;
 const matcher = new FuzzyMatcher();
 
 /** A single-choice list that can carry a flag, an emblem or an icon beside each entry. */
-export function Picker({ label, value, options, onChange, compact, block, id, align = 'end' }: PickerProps) {
+export function Picker({ label, value, options, onChange, compact, prefix, block, id, align = 'end' }: PickerProps) {
     const { t } = useTranslation();
     const [term, setTerm] = useState('');
     const container = useRef<HTMLDivElement>(null);
+    const popup = useRef<HTMLDivElement>(null);
+    const [shift, setShift] = useState(0);
     const search = useRef<HTMLInputElement>(null);
     const searchable = options.length > SEARCH_FROM;
 
@@ -69,27 +76,56 @@ export function Picker({ label, value, options, onChange, compact, block, id, al
         if (list.isOpen) search.current?.focus();
     }, [list.isOpen]);
 
+    // A list anchored to a small button can hang off the screen, so it slides back into it.
+    useLayoutEffect(() => {
+        if (!list.isOpen || !popup.current) {
+            setShift(0);
+
+            return;
+        }
+
+        const rect = popup.current.getBoundingClientRect();
+        const past = rect.right - (window.innerWidth - EDGE_MARGIN);
+        const before = EDGE_MARGIN - rect.left;
+
+        if (past > 0) setShift(-past);
+        else if (before > 0) setShift(before);
+        else setShift(0);
+    }, [list.isOpen]);
+
     return (
-        <div className={block ? 'picker picker--block' : 'picker'} ref={container} onKeyDown={list.onKeyDown}>
+        <div
+            className={['picker', block ? 'picker--block' : '', prefix === undefined ? '' : 'picker--labelled']
+                .filter(Boolean)
+                .join(' ')}
+            ref={container}
+            onKeyDown={list.onKeyDown}
+        >
             <button
                 id={id}
                 type="button"
                 className="picker__button"
                 aria-haspopup="listbox"
                 aria-expanded={list.isOpen}
-                aria-label={compact ? `${label}: ${current.label}` : undefined}
+                aria-label={compact || prefix !== undefined ? `${label}: ${current.label}` : undefined}
                 onClick={() => {
                     setTerm('');
                     list.toggle();
                 }}
             >
                 {current.visual}
+                {prefix === undefined ? null : <span className="picker__prefix">{prefix}</span>}
                 {compact ? null : <span className="picker__value">{current.label}</span>}
                 <Icon name="down" className="picker__caret" />
             </button>
 
             {list.isOpen ? (
-                <div className="picker__popup" data-align={block ? 'start' : align}>
+                <div
+                    ref={popup}
+                    className="picker__popup"
+                    data-align={block ? 'start' : align}
+                    style={shift === 0 ? undefined : { transform: `translateX(${String(shift)}px)` }}
+                >
                     {searchable ? (
                         <input
                             ref={search}

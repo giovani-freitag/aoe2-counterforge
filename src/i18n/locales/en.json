@@ -136,29 +136,22 @@
     },
     "counters": {
         "title": "Trade simulation",
-        "explain": "Ranked with the game's own damage formula: damage per hit, HP, rate of fire, range and what each unit costs.",
-        "strong": "Strong against",
-        "weak": "Weak against",
         "empty": "No relevant matchup in this range.",
         "model": "Engagement",
         "models": {
             "stand": "Stand and fight",
             "skirmish": "With range"
         },
-        "modelHelp": {
-            "stand": "Both units stand still and trade hits. Range and speed are ignored.",
-            "skirmish": "Accounts for who shoots from afar and who can run while shooting."
-        },
         "pool": "Opponents",
         "pools": {
             "common": "Common",
-            "all": "Include unique units",
+            "all": "With uniques",
             "every": "Every version"
         },
         "upgradeLevel": "Upgrades",
         "upgradeLevels": {
-            "base": "No upgrades",
-            "full": "Fully upgraded"
+            "base": "None",
+            "full": "Full"
         },
         "efficiency": "Trade efficiency",
         "verdicts": {
@@ -189,19 +182,17 @@
         },
         "noAttack": "{{unit}} has no attack: it converts enemy units instead of fighting them.",
         "seconds": "{{value}} s",
-        "allTitle": "Every matchup",
-        "allHint": "Every upgrade step of every line, whatever the two shortlists above are set to.",
-        "matchupCount_one": "{{count}} matchup",
-        "matchupCount_other": "{{count}} matchups",
         "filterPlaceholder": "Filter opponent",
-        "sort": "Order",
-        "sorts": {
-            "best": "Best first",
-            "worst": "Worst first"
-        },
         "filterHint": "e.g. pikeman",
         "demolition": "{{unit}} is left out of the simulation: it spends itself in one blow or only works against buildings, so there is no sustained damage to compare.",
-        "openUnit": "Open {{unit}}"
+        "openUnit": "Open {{unit}}",
+        "side": "Which end of the ranking",
+        "sides": {
+            "strong": "Strong",
+            "weak": "Weak",
+            "all": "All"
+        },
+        "widen": "Search every upgrade step instead"
     },
     "upgrades": {
         "lineTitle": "Line upgrades",

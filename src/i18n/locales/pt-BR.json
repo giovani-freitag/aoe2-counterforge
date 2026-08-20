@@ -136,29 +136,22 @@
     },
     "counters": {
         "title": "Simulação de troca",
-        "explain": "Ranking calculado com a fórmula de dano do jogo: dano por golpe, PV, cadência, alcance e o custo de cada unidade.",
-        "strong": "Forte contra",
-        "weak": "Fraco contra",
         "empty": "Nenhum confronto relevante nesta faixa.",
         "model": "Engajamento",
         "models": {
             "stand": "Duelo parado",
             "skirmish": "Com alcance"
         },
-        "modelHelp": {
-            "stand": "Os dois ficam parados trocando golpes. Ignora alcance e velocidade.",
-            "skirmish": "Considera quem atira de longe e quem consegue fugir enquanto atira."
-        },
         "pool": "Adversários",
         "pools": {
             "common": "Comuns",
-            "all": "Incluir exclusivas",
+            "all": "Com únicas",
             "every": "Todas as versões"
         },
         "upgradeLevel": "Melhorias",
         "upgradeLevels": {
-            "base": "Sem melhorias",
-            "full": "Totalmente melhoradas"
+            "base": "Nenhuma",
+            "full": "Todas"
         },
         "efficiency": "Eficiência de troca",
         "verdicts": {
@@ -189,19 +182,17 @@
         },
         "noAttack": "{{unit}} não tem ataque: ela converte unidades inimigas em vez de lutar.",
         "seconds": "{{value}} s",
-        "allTitle": "Todos os confrontos",
-        "allHint": "Todos os passos de melhoria de todas as linhas, independente do que as duas listas acima mostram.",
-        "matchupCount_one": "{{count}} confronto",
-        "matchupCount_other": "{{count}} confrontos",
         "filterPlaceholder": "Filtrar adversário",
-        "sort": "Ordem",
-        "sorts": {
-            "best": "Melhores primeiro",
-            "worst": "Piores primeiro"
-        },
         "filterHint": "Ex.: piqueiro",
         "demolition": "{{unit}} não entra na simulação: ela se gasta em um único golpe ou só serve contra construções, então não tem dano sustentado para comparar.",
-        "openUnit": "Abrir {{unit}}"
+        "openUnit": "Abrir {{unit}}",
+        "side": "Qual ponta do ranking",
+        "sides": {
+            "strong": "Fortes",
+            "weak": "Fracos",
+            "all": "Todos"
+        },
+        "widen": "Buscar em todas as versões"
     },
     "upgrades": {
         "lineTitle": "Evoluções da linha",

@@ -361,6 +361,11 @@
     border-color: var(--gold);
 }
 
+/* A picker that carries its own label needs the room to say both halves. */
+.picker--labelled .picker__button {
+    max-width: none;
+}
+
 .picker__value {
     overflow: hidden;
     text-overflow: ellipsis;

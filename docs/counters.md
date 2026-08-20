@@ -25,17 +25,22 @@ damage formula over the two stat lines and compares what each side destroys per 
 Both sides are rated fully upgraded by default — you can face any civilization — and the subject
 takes the technologies and bonuses of the civilization you picked, if you picked one.
 
-## How wide the list is
+## How the list is read
 
-The shortlists at the top of the tab follow the opponent pool you choose:
+Strong, weak and complete are three views of one ranking rather than three lists, so the tab holds a
+single card: the switch above the rows picks which end of it you are looking at, and each side
+carries how many matchups it holds. The name filter, the unit type and the opponent breadth apply to
+all three.
 
-| Pool | Who is in it |
+Breadth decides who is in the ranking at all:
+
+| Breadth | Who is in it |
 |---|---|
 | Common | One representative per line, only what most civilizations train (~11 opponents) |
 | Include unique units | One representative per line, now with the unique units (~95) |
 | Every version | Each step of each line on its own (~190) |
 
-The table at the foot of the tab always lists every version, whatever the shortlists are set to.
+A search that finds nothing at the current breadth offers the widest one rather than a dead end.
 
 There is no ceiling on efficiency. Across all thirty-seven thousand pairs the median is an even
 trade, nine in ten land under 5x, and the most lopsided fight in the game reaches 75x.

@@ -50,20 +50,22 @@ describe('App', () => {
 
         await user.click(await screen.findByRole('tab', { name: 'Counters' }));
 
-        expect(await screen.findByRole('heading', { name: 'Forte contra' })).toBeDefined();
+        expect(await screen.findByRole('button', { name: /^Fortes/ })).toBeDefined();
     });
 
-    it('lists every matchup below the summary lists', async () => {
+    it('reaches the complete ranking without leaving the card', async () => {
         const user = userEvent.setup();
         window.location.hash = '#/unit/knight?tab=counters';
         render(<App />);
 
-        await user.click(await screen.findByRole('tab', { name: 'Counters' }));
+        const complete = await screen.findByRole('button', { name: /^Todos/ });
+        await user.click(complete);
 
-        expect(await screen.findByRole('heading', { name: 'Todos os confrontos' })).toBeDefined();
+        expect(complete.getAttribute('aria-pressed')).toBe('true');
+        expect(complete.textContent).toBe('Todos11');
     });
 
-    it('filters the full matchup list by opponent name', async () => {
+    it('counts what the opponent filter leaves on each end of the ranking', async () => {
         const user = userEvent.setup();
         window.location.hash = '#/unit/knight?tab=counters';
         render(<App />);
@@ -71,8 +73,9 @@ describe('App', () => {
         await user.type(await screen.findByRole('searchbox', { name: /Filtrar advers/ }), 'alabard');
 
         await waitFor(() => {
-            expect(screen.getByText('1 confronto')).toBeDefined();
+            expect(screen.getByRole('button', { name: /^Fortes/ }).textContent).toBe('Fortes0');
         });
+        expect(screen.getByRole('button', { name: /^Fracos/ }).textContent).toBe('Fracos1');
     });
 
     it('puts two units side by side with a head to head table', async () => {
@@ -145,6 +148,7 @@ describe('App', () => {
         window.location.hash = '#/unit/knight?tab=counters';
         render(<App />);
 
+        await user.click(await screen.findByRole('button', { name: /^Fracos/ }));
         const [row] = await screen.findAllByRole('button', { name: /Alabardeiro/ });
         await user.click(row);
 
