@@ -32,6 +32,10 @@ export interface UnitRecord {
     baseArmour: number;
     /** Fraction of the damage from bonus classes the unit does not take. */
     bonusDamageResistance: number;
+    /** Missiles a single shot puts in the air beyond the first. */
+    extraProjectiles: number;
+    /** What each of those extra missiles hits with, which is not what the shooter hits with. */
+    secondaryAttacks: ClassAmountRecord[];
     /** Whether the unit's attacks go through melee and pierce armour. */
     ignoresArmour: boolean;
     /** Whether the unit's armour holds against attacks that go through it. */

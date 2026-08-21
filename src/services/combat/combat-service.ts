@@ -97,7 +97,7 @@ export class CombatService {
         const reload = Math.max(MIN_RELOAD, attacker.reloadTime);
 
         return {
-            damagePerHit: breakdown.total,
+            damagePerHit: breakdown.total + breakdown.volley.extra * breakdown.volley.each,
             effectiveDamagePerHit: effective,
             dps: this.dps(attacker, defender),
             hitsToKill,
@@ -108,7 +108,9 @@ export class CombatService {
     }
 
     private effectiveDamage(attacker: UnitStats, defender: UnitStats): number {
-        return Math.max(0.1, this.damage(attacker, defender).total * attacker.hitChance());
+        const hit = this.damage(attacker, defender);
+
+        return Math.max(0.1, (hit.total + hit.volley.extra * hit.volley.each) * attacker.hitChance());
     }
 
     /**

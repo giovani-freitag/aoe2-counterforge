@@ -966,6 +966,28 @@ export class DatasetBuilder {
         return records;
     }
 
+    /**
+     * The extra missiles a single shot puts in the air, and the damage each of them carries.
+     *
+     * A Chu Ko Nu looses one arrow of its own and two more behind it, and the file says so twice:
+     * the unit counts its missiles, and the record of the second missile carries an attack list
+     * that is not the shooter's. Only that pairing counts as a volley — a siege weapon also
+     * declares several projectiles, but those are the pieces of one blast, and its second missile
+     * carries no damage of its own.
+     *
+     * @param unit - The shooter, as the file describes it.
+     * @returns How many extra missiles fly, and what each one hits with.
+     */
+    private volleyOf(unit: GenieUnit): { extraProjectiles: number; secondaryAttacks: ClassAmountRecord[] } {
+        const secondary = this.referenceUnits().get(unit.secondaryProjectileUnit);
+        const attacks = secondary?.attacks ?? [];
+        const extras = Math.max(0, Math.round(unit.totalProjectiles) - 1);
+
+        if (extras === 0 || attacks.length === 0) return { extraProjectiles: 0, secondaryAttacks: [] };
+
+        return { extraProjectiles: extras, secondaryAttacks: this.classList(attacks) };
+    }
+
     private unitRecord(input: {
         id: number;
         key: string;
@@ -1000,6 +1022,7 @@ export class DatasetBuilder {
             hp: unit.hitPoints,
             baseArmour: unit.baseArmour,
             bonusDamageResistance: this.round(unit.bonusDamageResistance),
+            ...this.volleyOf(unit),
             ignoresArmour: (unit.combatAbility & IGNORES_ARMOUR) !== 0,
             resistsArmourIgnore: (unit.combatAbility & RESISTS_ARMOUR_IGNORE) !== 0,
             attacks,

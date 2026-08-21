@@ -13,6 +13,10 @@ export interface UnitStatsConfig {
     bonusDamageResistance: number;
     /** Whether this unit's attacks go through melee and pierce armour. */
     ignoresArmour: boolean;
+    /** Missiles a single shot puts in the air beyond the first. */
+    extraProjectiles: number;
+    /** What each of those hits with, which is not what the shooter hits with. */
+    secondaryAttack: AttackProfile;
     /** Whether this unit's armour holds against attacks that go through it. */
     resistsArmourIgnore: boolean;
     range: number;
@@ -93,6 +97,14 @@ export class UnitStats {
 
     public get bonusDamageResistance(): number {
         return this.config.bonusDamageResistance;
+    }
+
+    public get extraProjectiles(): number {
+        return this.config.extraProjectiles;
+    }
+
+    public get secondaryAttack(): AttackProfile {
+        return this.config.secondaryAttack;
     }
 
     public get ignoresArmour(): boolean {

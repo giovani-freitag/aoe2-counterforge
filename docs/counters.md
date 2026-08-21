@@ -11,7 +11,11 @@ damage formula over the two stat lines and compares what each side destroys per 
    saying a weapon does less against those — and those survive to the sum, as does negative armour,
    which increases the damage taken. A class the defender does not carry falls back to the value
    the game keeps for that case, which almost every unit sets far above any attack. The total is
-   floored at 1: a hit always hurts.
+   floored at 1: a hit always hurts. A shot that puts more than one missile in the air resolves
+   each of them separately, and floors each separately — which is why a weapon with a second arrow
+   keeps hurting a target whose armour cancels the first. Only a weapon whose extra missile carries
+   a damage list of its own counts as a volley; a siege weapon also declares several projectiles,
+   but those are the pieces of one blast.
 
    Two of the game's own exceptions ride on top. A weapon built to go through armour skips the two
    base classes and nothing else, unless the defender is one of the units built to hold against

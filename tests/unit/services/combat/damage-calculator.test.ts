@@ -158,4 +158,38 @@ describe('DamageCalculator', () => {
 
         expect(damage.total).toBe(17);
     });
+    it('lands every missile of a volley, each one answered by the armour on its own', () => {
+        const attacker = makeStats({
+            attacks: { 'base-pierce': 8 },
+            extraProjectiles: 2,
+            secondaryAttacks: { 'base-pierce': 3 },
+        });
+        const defender = makeStats({ armours: { 'base-pierce': 1 } });
+
+        const damage = calculator.between(attacker, defender);
+
+        expect([damage.total, damage.volley]).toEqual([7, { extra: 2, each: 2 }]);
+    });
+
+    it('keeps the later missiles hurting a target the first one barely scratches', () => {
+        const attacker = makeStats({
+            attacks: { 'base-pierce': 8 },
+            extraProjectiles: 2,
+            secondaryAttacks: { 'base-pierce': 3 },
+        });
+        const defender = makeStats({ armours: { 'base-pierce': 20 } });
+
+        const damage = calculator.between(attacker, defender);
+
+        expect([damage.total, damage.volley.each]).toEqual([1, 1]);
+    });
+
+    it('leaves a single-missile weapon with no volley at all', () => {
+        const attacker = makeStats({ attacks: { 'base-pierce': 8 } });
+        const defender = makeStats({ armours: { 'base-pierce': 1 } });
+
+        const damage = calculator.between(attacker, defender);
+
+        expect(damage.volley).toEqual({ extra: 0, each: 0 });
+    });
 });

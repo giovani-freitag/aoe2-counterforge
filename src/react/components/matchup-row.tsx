@@ -153,6 +153,20 @@ export function MatchupRow({ matchup, subjectName, fromOpponent = false }: Match
                                 ))}
                             </tbody>
                             <tfoot>
+                                {matchup.duel.attacker.breakdown.volley.extra === 0 ? null : (
+                                    <tr>
+                                        <td>
+                                            {t('counters.duel.volley', {
+                                                count: matchup.duel.attacker.breakdown.volley.extra,
+                                            })}
+                                        </td>
+                                        <td />
+                                        <td>
+                                            {matchup.duel.attacker.breakdown.volley.extra *
+                                                matchup.duel.attacker.breakdown.volley.each}
+                                        </td>
+                                    </tr>
+                                )}
                                 <tr>
                                     <td>{t('counters.duel.damagePerHit')}</td>
                                     <td />

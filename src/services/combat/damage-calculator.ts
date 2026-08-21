@@ -1,5 +1,6 @@
 import type { ArmourClass } from '../../domain/enums/armour-class.ts';
 import { BASE_MELEE, BASE_PIERCE } from '../../domain/enums/armour-class.ts';
+import type { AttackProfile } from '../../domain/values/attack-profile.ts';
 import type { UnitStats } from '../../domain/values/unit-stats.ts';
 
 /** The classes that carry no bonus: the two base ones, and the one the game left behind. */
@@ -36,6 +37,8 @@ export interface DamageBreakdown {
     total: number;
     components: DamageComponent[];
     baseType: 'melee' | 'pierce';
+    /** The rest of the volley: how many further missiles land, and what each one takes off. */
+    volley: { extra: number; each: number };
 }
 
 /**
@@ -58,7 +61,9 @@ export interface DamageBreakdown {
  * the two base ones and the vestigial thirty-first contributes — which scales those classes down
  * after their armour has already been taken off, because what it resists is damage and not attack.
  *
- * The total is floored at one: a hit always hurts.
+ * The total is floored at one: a hit always hurts. A shot that puts more than one missile in the
+ * air resolves each of them separately and floors each separately, which is why a weapon with a
+ * second arrow keeps hurting a target whose armour cancels the first.
  */
 export class DamageCalculator {
     /**
@@ -69,10 +74,32 @@ export class DamageCalculator {
      * @returns The clamped total plus the per-class breakdown behind it.
      */
     public between(attacker: UnitStats, defender: UnitStats): DamageBreakdown {
+        const volley = this.volley(attacker, defender);
+
+        return { ...this.oneMissile(attacker.attack, attacker, defender), volley };
+    }
+
+    /**
+     * What the rest of the volley takes off, once the first missile has landed.
+     *
+     * @param attacker - Stat line of the unit shooting.
+     * @param defender - Stat line of the unit being shot.
+     * @returns How many further missiles land and what each one deals.
+     */
+    private volley(attacker: UnitStats, defender: UnitStats): { extra: number; each: number } {
+        if (attacker.extraProjectiles === 0) return { extra: 0, each: 0 };
+
+        return {
+            extra: attacker.extraProjectiles,
+            each: this.oneMissile(attacker.secondaryAttack, attacker, defender).total,
+        };
+    }
+
+    private oneMissile(attack: AttackProfile, attacker: UnitStats, defender: UnitStats): DamageBreakdown {
         const components: DamageComponent[] = [];
         const pierces = attacker.ignoresArmour && !defender.resistsArmourIgnore;
 
-        for (const entry of attacker.attack.entries()) {
+        for (const entry of attack.entries()) {
             const matched = defender.armour.belongsTo(entry.armourClass);
             const skipped = pierces && isBase(entry.armourClass);
             const armour = skipped ? 0 : matched ? defender.armour.valueFor(entry.armourClass) : defender.baseArmour;
@@ -94,7 +121,8 @@ export class DamageCalculator {
         return {
             total: Math.max(1, raw),
             components: components.sort((left, right) => right.net - left.net),
-            baseType: attacker.attack.pierce > attacker.attack.melee ? 'pierce' : 'melee',
+            baseType: attack.pierce > attack.melee ? 'pierce' : 'melee',
+            volley: { extra: 0, each: 0 },
         };
     }
 

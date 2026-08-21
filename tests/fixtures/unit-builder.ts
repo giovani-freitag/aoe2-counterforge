@@ -10,6 +10,8 @@ export interface StatsOverrides {
     /** What answers a damage class the unit has no armour entry for. */
     baseArmour?: number;
     bonusDamageResistance?: number;
+    extraProjectiles?: number;
+    secondaryAttacks?: Record<string, number>;
     ignoresArmour?: boolean;
     resistsArmourIgnore?: boolean;
     hp?: number;
@@ -57,6 +59,8 @@ export function makeStats(overrides: StatsOverrides = {}): UnitStats {
         hp: overrides.hp ?? 100,
         baseArmour: overrides.baseArmour ?? 10000,
         bonusDamageResistance: overrides.bonusDamageResistance ?? 0,
+        extraProjectiles: overrides.extraProjectiles ?? 0,
+        secondaryAttack: new AttackProfile({ entries: toEntries(overrides.secondaryAttacks ?? {}) }),
         ignoresArmour: overrides.ignoresArmour ?? false,
         resistsArmourIgnore: overrides.resistsArmourIgnore ?? false,
         attack: new AttackProfile({ entries: toEntries(overrides.attacks ?? { 'base-melee': 10 }) }),

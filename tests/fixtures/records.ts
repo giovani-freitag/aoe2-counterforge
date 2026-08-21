@@ -61,6 +61,8 @@ export function unitRecord(overrides: UnitRecordOverrides): UnitRecord {
         hp: overrides.hp ?? 100,
         baseArmour: 10000,
         bonusDamageResistance: 0,
+        extraProjectiles: 0,
+        secondaryAttacks: [],
         ignoresArmour: false,
         resistsArmourIgnore: false,
         attacks: toClassAmounts(overrides.attacks ?? { 'base-melee': 10 }),

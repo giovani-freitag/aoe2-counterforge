@@ -44,6 +44,8 @@ export class CatalogAssembler {
                 armour: new ArmourProfile({ entries: this.toClassAmounts(record.armours) }),
                 baseArmour: record.baseArmour,
                 bonusDamageResistance: record.bonusDamageResistance,
+                extraProjectiles: record.extraProjectiles,
+                secondaryAttack: new AttackProfile({ entries: this.toClassAmounts(record.secondaryAttacks) }),
                 ignoresArmour: record.ignoresArmour,
                 resistsArmourIgnore: record.resistsArmourIgnore,
                 range: record.range,

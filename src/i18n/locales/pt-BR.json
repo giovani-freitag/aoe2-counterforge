@@ -179,7 +179,9 @@
             "timeToKill": "Tempo para matar",
             "freeHits": "Golpes de graça",
             "breakdown": "Como o dano é calculado",
-            "minimumDamage": "O jogo garante no mínimo 1 de dano por golpe."
+            "minimumDamage": "O jogo garante no mínimo 1 de dano por golpe.",
+            "volley_one": "mais {{count}} projétil",
+            "volley_other": "mais {{count}} projéteis"
         },
         "noAttack": "{{unit}} não tem ataque: ela converte unidades inimigas em vez de lutar.",
         "seconds": "{{value}} s",

@@ -179,7 +179,9 @@
             "timeToKill": "Time to kill",
             "freeHits": "Free hits",
             "breakdown": "How the damage adds up",
-            "minimumDamage": "The game always applies at least 1 damage per hit."
+            "minimumDamage": "The game always applies at least 1 damage per hit.",
+            "volley_one": "{{count}} further missile",
+            "volley_other": "{{count}} further missiles"
         },
         "noAttack": "{{unit}} has no attack: it converts enemy units instead of fighting them.",
         "seconds": "{{value}} s",
