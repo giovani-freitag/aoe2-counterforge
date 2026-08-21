@@ -1,8 +1,10 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { DatasetBuilder, type CivilizationMeta } from '../../../scripts/extract/dataset-builder.ts';
+import type { GenieData } from '../../../scripts/extract/genie-dat.ts';
 import { GameInstall } from '../../../scripts/extract/game-install.ts';
 import {
+    ECONOMY_RECORD,
     CIVILIZATION_RECORDS,
     GAME_STRING_BUNDLES,
     TECHNOLOGY_RECORDS,
@@ -35,16 +37,21 @@ function civilizationList(): CivilizationMeta[] {
 const EXTRACTION_TIMEOUT_MS = 120_000;
 
 let dataset: GeneratedDataset;
+let game: GenieData;
 
 /** Compares against the committed JSON the way the application reads it back. */
 function plain<T>(value: T): T {
     return JSON.parse(JSON.stringify(value)) as T;
 }
 
+beforeAll(() => {
+    if (!GAME_ROOT) return;
+
+    game = new GameInstall({ root: GAME_ROOT }).readGameData();
+}, EXTRACTION_TIMEOUT_MS);
+
 describe.skipIf(!GAME_ROOT)('unit availability against the effect table', () => {
     it('lists a unit for the civilization its enabling technology names', () => {
-        const game = new GameInstall({ root: GAME_ROOT ?? '' }).readGameData();
-
         /** A technology that switches a unit on names the civilization that gets it. */
         const owner = new Map<number, number>();
         for (const tech of game.technologies) {
@@ -83,7 +90,7 @@ describe.skipIf(!GAME_ROOT)('extraction from an installed game', () => {
         ) as { civilization_list: CivilizationMeta[] };
 
         dataset = new DatasetBuilder({
-            game: install.readGameData(),
+            game,
             trees: install.readTechTrees(),
             civilizations: meta.civilization_list,
             strings: new Map([
@@ -96,7 +103,6 @@ describe.skipIf(!GAME_ROOT)('extraction from an installed game', () => {
     }, EXTRACTION_TIMEOUT_MS);
 
     it('reads the file to its last byte', () => {
-        const game = new GameInstall({ root: GAME_ROOT ?? '' }).readGameData();
 
         // Nothing in the file is fixed width: every record is as long as its own contents say. A
         // walk that consumes the file exactly could not have read any field at the wrong width.
@@ -104,7 +110,6 @@ describe.skipIf(!GAME_ROOT)('extraction from an installed game', () => {
     }, EXTRACTION_TIMEOUT_MS);
 
     it('finds the connection table where the tables before it end', () => {
-        const game = new GameInstall({ root: GAME_ROOT ?? '' }).readGameData();
 
         const counts = {
             ages: game.techTree.ages.length,
@@ -117,7 +122,6 @@ describe.skipIf(!GAME_ROOT)('extraction from an installed game', () => {
     }, EXTRACTION_TIMEOUT_MS);
 
     it('reads the pierce armour the game itself displays, at the end of the creatable block', () => {
-        const game = new GameInstall({ root: GAME_ROOT ?? '' }).readGameData();
         const table = game.civilizations[0].units;
 
         // The last field of a long fixed run: it can only agree with the armour list if the whole
@@ -138,6 +142,10 @@ describe.skipIf(!GAME_ROOT)('extraction from an installed game', () => {
 
     it('reproduces every shipped technology record', () => {
         expect(plain(dataset.technologies)).toEqual(TECHNOLOGY_RECORDS);
+    });
+
+    it('reproduces the shipped economy record', () => {
+        expect(plain(dataset.economy)).toEqual(ECONOMY_RECORD);
     });
 
     it('reproduces every shipped civilization record', () => {

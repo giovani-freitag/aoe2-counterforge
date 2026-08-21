@@ -1,3 +1,4 @@
+import { ASSUMPTIONS } from './assumptions.ts';
 import type { ResourceWeights } from './domain/values/resource-cost.ts';
 import {
     CIVILIZATION_RECORDS,
@@ -26,17 +27,22 @@ import { UnitRankingService } from './services/unit-ranking/unit-ranking-service
 import { UpgradeService } from './services/upgrade/upgrade-service.ts';
 
 /**
- * How much one unit of each resource is worth when comparing two trades.
+ * What a resource is worth against food, for weighing one unit's price against another's.
  *
  * Gold and stone are scarce and cannot be farmed, so a gold-heavy unit has to earn its keep.
  */
-export const RESOURCE_WEIGHTS: ResourceWeights = { food: 1, wood: 1, gold: 1.6, stone: 1.6 };
+export const RESOURCE_WEIGHTS: ResourceWeights = {
+    food: ASSUMPTIONS.foodWeight.value,
+    wood: ASSUMPTIONS.woodWeight.value,
+    gold: ASSUMPTIONS.goldWeight.value,
+    stone: ASSUMPTIONS.stoneWeight.value,
+};
 
 export const MATCHUP_THRESHOLDS: MatchupThresholds = {
-    dominant: 2,
-    favourable: 1.25,
-    even: 0.8,
-    unfavourable: 0.5,
+    dominant: ASSUMPTIONS.dominantTrade.value,
+    favourable: ASSUMPTIONS.favourableTrade.value,
+    even: ASSUMPTIONS.evenTrade.value,
+    unfavourable: ASSUMPTIONS.unfavourableTrade.value,
 };
 
 export interface AppServices {
@@ -70,8 +76,8 @@ export function createServices(): AppServices {
 
     const combat = new CombatService({
         damageCalculator: new DamageCalculator(),
-        maxFreeHits: 6,
-        kiteRepeats: 3,
+        maxFreeHits: ASSUMPTIONS.maxFreeHits.value,
+        kiteRepeats: ASSUMPTIONS.kiteRepeats.value,
     });
 
     const upgrades = new UpgradeService({ catalog });
@@ -82,7 +88,7 @@ export function createServices(): AppServices {
         upgrades,
         resourceWeights: RESOURCE_WEIGHTS,
         thresholds: MATCHUP_THRESHOLDS,
-        commonOpponentCivs: 20,
+        commonOpponentCivs: ASSUMPTIONS.commonOpponentCivs.value,
     });
 
     const ranking = new UnitRankingService({ upgrades, resourceWeights: RESOURCE_WEIGHTS });
