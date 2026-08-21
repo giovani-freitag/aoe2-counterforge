@@ -12,6 +12,7 @@ import type {
     TechnologyTextRecord,
     UnitRecord,
     UnitTextRecord,
+    VillagerJobRecord,
 } from '../../src/data/records.ts';
 import type { CivilizationTechTree, TechTreeNode } from './game-install.ts';
 import { cleanText, parseCivilizationHelp, parseUnitHelp, slug } from './game-text.ts';
@@ -664,6 +665,35 @@ export class DatasetBuilder {
      * @param techKeyById - Slug of every technology that reached the guide, by its id in the file.
      * @returns Gather, carrying and farm technologies, with the two figures they act on.
      */
+    /**
+     * What the game says about each kind of villager work.
+     *
+     * One unit record per job carries the rate and the load: the forager gathers at 0.31 a second
+     * and carries ten, the hunter at 0.41 and carries thirty-five. Both are read rather than
+     * assumed, and the walk to the drop-off is the only part of a trip the file is silent about.
+     *
+     * @returns One entry per job the planner knows, in the order the job table declares them.
+     */
+    private villagerJobs(): VillagerJobRecord[] {
+        const byJob = new Map<string, VillagerJobRecord>();
+
+        for (const unit of this.referenceUnits().values()) {
+            const job = VILLAGER_JOBS[unit.internalName.slice(2, 5)];
+            if (!job || !/^V[MF]/.test(unit.internalName) || unit.workRate <= 0) continue;
+
+            const slot = `${job.resource}:${job.foodSource ?? ''}`;
+            if (byJob.has(slot)) continue;
+
+            byJob.set(slot, {
+                ...job,
+                gatherRate: this.round(unit.workRate),
+                carryCapacity: unit.resourceCapacity,
+            });
+        }
+
+        return [...byJob.values()];
+    }
+
     private economyRecord(techKeyById: Map<number, string>): EconomyRecord {
         const gatherUpgrades: GatherUpgradeRecord[] = [];
         const carryUpgrades: CarryUpgradeRecord[] = [];
@@ -719,6 +749,7 @@ export class DatasetBuilder {
         }
 
         return {
+            jobs: this.villagerJobs(),
             villagerWalkSpeed: this.round(this.villager()?.speed ?? 0),
             farmFood: this.config.game.civilizations[1]?.resources[FARM_FOOD_SLOT] ?? 0,
             farmWoodCost: this.cost(this.byInternalName('FARM')?.costs ?? []).wood,

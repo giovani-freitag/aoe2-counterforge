@@ -2,7 +2,6 @@ import type { Unit } from '../../domain/entities/unit.ts';
 import { RESOURCES, type Resource } from '../../domain/enums/resource.ts';
 import { InvalidArgumentError } from '../../domain/errors/domain-error.ts';
 import {
-    VILLAGER_CARRY_CAPACITY,
     type CarryUpgrade,
     type FarmUpgrade,
     type FoodSource,
@@ -107,7 +106,7 @@ export class EconomyService {
         );
 
         const capacity =
-            VILLAGER_CARRY_CAPACITY * (1 + this.sum(carry, (upgrade) => upgrade.carryPercent ?? 0)) +
+            profile.carryCapacity * (1 + this.sum(carry, (upgrade) => upgrade.carryPercent ?? 0)) +
             this.sum(carry, (upgrade) => upgrade.carryFlat ?? 0);
         const walkSpeed = carry.reduce(
             (speed, upgrade) => speed * (upgrade.speedMultiplier ?? 1),
@@ -192,24 +191,20 @@ export class EconomyService {
     }
 
     /**
-     * Splits the base rate into gathering and walking, then rebuilds it with the upgrades applied.
+     * The rate a villager actually delivers, which is a load divided by a round trip.
      *
-     * The published rate already includes the trip to the drop-off, so the gathering speed behind
-     * it is recovered from the trip time rather than assumed.
+     * The game states how fast the villager works at the resource and how much it can carry away.
+     * A trip is therefore the time to fill up plus the time to walk there and back, and the only
+     * part of that the file is silent about is the distance.
      */
     private tripRate(
         profile: GatherProfile,
         modifiers: { capacity: number; walkSpeed: number; workMultiplier: number },
     ): number {
-        const baseTrip = VILLAGER_CARRY_CAPACITY / profile.baseRate;
-        const baseWalk = (2 * profile.dropOffDistance) / this.config.walkSpeed;
-        const baseGathering = baseTrip - baseWalk;
-        if (baseGathering <= MIN_TRIP_SECONDS) return profile.baseRate * modifiers.workMultiplier;
+        const gathering = modifiers.capacity / (profile.gatherRate * modifiers.workMultiplier);
+        const walking = (2 * profile.dropOffDistance) / modifiers.walkSpeed;
 
-        const gatherSpeed = (VILLAGER_CARRY_CAPACITY / baseGathering) * modifiers.workMultiplier;
-        const trip = modifiers.capacity / gatherSpeed + (2 * profile.dropOffDistance) / modifiers.walkSpeed;
-
-        return modifiers.capacity / Math.max(MIN_TRIP_SECONDS, trip);
+        return modifiers.capacity / Math.max(MIN_TRIP_SECONDS, gathering + walking);
     }
 
     private farmUpkeepFor(input: {

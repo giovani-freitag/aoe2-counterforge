@@ -12,8 +12,10 @@ import { CombatService } from './services/combat/combat-service.ts';
 import { DamageCalculator } from './services/combat/damage-calculator.ts';
 import { EconomyService } from './services/economy/economy-service.ts';
 import {
-    DEFAULT_GATHER_RATES,
     type CarryUpgrade,
+    type FoodSource,
+    type GatherProfile,
+    type GatherRateTable,
     type GatherUpgrade,
 } from './services/economy/gather-rates.ts';
 import { CatalogAssembler } from './services/game-catalog/catalog-assembler.ts';
@@ -61,6 +63,44 @@ export interface AppServices {
  *
  * @returns A fully connected service graph, ready for the render layer to adapt.
  */
+/**
+ * How far a villager walks to put its load down, which is the one economy number the game omits.
+ *
+ * @param foodSource - Which way food is being gathered, when it is food.
+ * @returns Tiles between the resource and the drop-off.
+ */
+function dropOffTiles(foodSource?: string): number {
+    if (foodSource === 'farm' || foodSource === 'sheep') return ASSUMPTIONS.dropOffTilesNearby.value;
+    if (foodSource === 'hunt') return ASSUMPTIONS.dropOffTilesHunt.value;
+
+    return ASSUMPTIONS.dropOffTilesOrdinary.value;
+}
+
+/**
+ * Turns what the game says about each kind of work into the table the planner reads.
+ *
+ * @returns One profile per resource, with the food sources kept apart.
+ */
+export function gatherRates(): GatherRateTable {
+    const food = {} as Record<FoodSource, GatherProfile>;
+    const table = { food } as GatherRateTable;
+
+    for (const job of ECONOMY_RECORD.jobs) {
+        const profile: GatherProfile = {
+            gatherRate: job.gatherRate,
+            carryCapacity: job.carryCapacity,
+            dropOffDistance: dropOffTiles(job.foodSource),
+        };
+
+        if (job.foodSource) food[job.foodSource as FoodSource] = profile;
+        else if (job.resource === 'wood') table.wood = profile;
+        else if (job.resource === 'gold') table.gold = profile;
+        else if (job.resource === 'stone') table.stone = profile;
+    }
+
+    return table;
+}
+
 export function createServices(): AppServices {
     const catalog = new GameCatalogService({
         assembler: new CatalogAssembler(),
@@ -94,7 +134,7 @@ export function createServices(): AppServices {
     const ranking = new UnitRankingService({ upgrades, resourceWeights: RESOURCE_WEIGHTS });
 
     const economy = new EconomyService({
-        rates: DEFAULT_GATHER_RATES,
+        rates: gatherRates(),
         gatherUpgrades: ECONOMY_RECORD.gatherUpgrades as GatherUpgrade[],
         carryUpgrades: ECONOMY_RECORD.carryUpgrades as CarryUpgrade[],
         farmUpgrades: ECONOMY_RECORD.farmUpgrades,

@@ -17,6 +17,17 @@ walk included, and the villager's carry capacity of ten.
 
 ## The gather rate is a trip, not a constant
 
+The rate a villager gathers at and the load it carries away are both read from the game's own unit
+records — one record per kind of work, so the forager, the hunter and the lumberjack each state
+their own. The hunter carries a whole boar, thirty-five at a time against everyone else's ten, and
+that is why it walks a third as often.
+
+What the game does not state is how far the walk is. That distance is the only invented number in
+the economy, it lives with the rest of the guide's assumptions under one roof, and each value there
+carries the sentence that justifies it. A trip is therefore the time to fill up plus the time to
+walk there and back, and the rate the guide reports is a load divided by that trip — always lower
+than the rate at the resource, because the walk is real.
+
 The published Definitive Edition rates already include walking to the drop-off point, so the app
 works backwards: knowing the carry capacity (10) and the villager's walking speed (0.8 tiles/s), it
 separates how much of a trip is gathering from how much is walking. That is what lets every upgrade

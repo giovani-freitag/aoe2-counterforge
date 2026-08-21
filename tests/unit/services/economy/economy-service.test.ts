@@ -1,23 +1,35 @@
 import { describe, expect, it } from 'vitest';
 import { InvalidArgumentError } from '../../../../src/domain/errors/domain-error.ts';
 import { EconomyService } from '../../../../src/services/economy/economy-service.ts';
-import { DEFAULT_GATHER_RATES } from '../../../../src/services/economy/gather-rates.ts';
+import { gatherRates } from '../../../../src/composition-root.ts';
 import { economyConfig } from '../../../fixtures/economy.ts';
 import { makeUnit } from '../../../fixtures/unit-builder.ts';
 
 const economy = new EconomyService(economyConfig());
+const stated = gatherRates();
 
 describe('EconomyService gather rates', () => {
-    it('returns the published base rate when nothing is researched', () => {
+    it('delivers less than the rate at the tree, because the walk home costs time', () => {
         const rate = economy.gatherRate({ resource: 'wood' });
 
-        expect(rate).toBeCloseTo(DEFAULT_GATHER_RATES.wood.baseRate, 4);
+        expect(rate).toBeLessThan(stated.wood.gatherRate);
+    });
+
+    it('would deliver the stated rate if the drop-off were underfoot', () => {
+        const instant = new EconomyService({
+            ...economyConfig(),
+            rates: { ...stated, wood: { ...stated.wood, dropOffDistance: 0 } },
+        });
+
+        const rate = instant.gatherRate({ resource: 'wood' });
+
+        expect(rate).toBeCloseTo(stated.wood.gatherRate, 4);
     });
 
     it('applies a gathering technology as a percentage of the work itself', () => {
         const rate = economy.gatherRate({ resource: 'gold', techs: ['gold-mining'] });
 
-        expect(rate).toBeGreaterThan(DEFAULT_GATHER_RATES.gold.baseRate * 1.1);
+        expect(rate).toBeGreaterThan(economy.gatherRate({ resource: 'gold' }));
     });
 
     it('stacks the two mining technologies', () => {
@@ -46,15 +58,23 @@ describe('EconomyService gather rates', () => {
         const onSheep = economy.gatherRate({ resource: 'food', foodSource: 'sheep', techs: ['heavy-plow'] });
 
         expect([
-            onFarm > DEFAULT_GATHER_RATES.food.farm.baseRate,
-            onSheep === DEFAULT_GATHER_RATES.food.sheep.baseRate,
+            onFarm > economy.gatherRate({ resource: 'food', foodSource: 'farm' }),
+            onSheep === economy.gatherRate({ resource: 'food', foodSource: 'sheep' }),
         ]).toEqual([true, true]);
     });
 
     it('switches the food rate with the chosen food source', () => {
         const onHunt = economy.gatherRate({ resource: 'food', foodSource: 'hunt' });
 
-        expect(onHunt).toBeCloseTo(DEFAULT_GATHER_RATES.food.hunt.baseRate, 4);
+        expect(onHunt).not.toBeCloseTo(economy.gatherRate({ resource: 'food', foodSource: 'berries' }), 2);
+    });
+
+    it('carries a whole boar back at once, the way the game says', () => {
+        const hunt = economy.gatherRate({ resource: 'food', foodSource: 'hunt' });
+        const berries = economy.gatherRate({ resource: 'food', foodSource: 'berries' });
+
+        // Thirty-five a trip against ten: the hunter walks a third as often for the same load.
+        expect(hunt / stated.food.hunt.gatherRate).toBeGreaterThan(berries / stated.food.berries.gatherRate);
     });
 });
 
@@ -65,8 +85,8 @@ describe('EconomyService production plan', () => {
         const plan = economy.plan({ unit, buildings: 1 });
 
         expect(plan.demands.map((demand) => [demand.resource, Number(demand.villagers.toFixed(2))])).toEqual([
-            ['wood', 1.83],
-            ['gold', 3.38],
+            ['wood', 2.37],
+            ['gold', 4.35],
         ]);
     });
 
@@ -140,7 +160,7 @@ describe('EconomyService production plan', () => {
 
         const buildings = economy.sustainableBuildings({ unit }, 20);
 
-        expect(buildings).toBe(3);
+        expect(buildings).toBe(2);
     });
 
     it('refuses to plan a unit with no training time', () => {

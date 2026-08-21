@@ -22,13 +22,10 @@ const NUMBER_HOMES = ['src/assumptions.ts', 'src/domain/enums'];
 /**
  * Bindings that still carry hand-written game numbers, on their way out.
  *
- * The list is asserted by equality in both directions: a new one fails the test, and so does a
- * fixed one whose line was not removed. It can only ever shrink.
+ * Empty, and it is asserted by equality in both directions: a new one fails the test, and so does
+ * a fixed one whose line was not removed. It can only ever shrink.
  */
-const QUARANTINE = [
-    'src/services/economy/gather-rates.ts:DEFAULT_GATHER_RATES',
-    'src/services/economy/gather-rates.ts:VILLAGER_CARRY_CAPACITY',
-];
+const QUARANTINE: readonly string[] = [];
 
 /** Data a build step generates, and the translations, which are text rather than measurements. */
 const DATA_HOMES = ['src/data/generated', 'src/i18n/locales'];

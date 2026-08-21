@@ -1,10 +1,7 @@
 import { ECONOMY_RECORD } from '../../src/data/dataset.ts';
 import type { EconomyServiceConfig } from '../../src/services/economy/economy-service.ts';
-import {
-    DEFAULT_GATHER_RATES,
-    type CarryUpgrade,
-    type GatherUpgrade,
-} from '../../src/services/economy/gather-rates.ts';
+import { gatherRates } from '../../src/composition-root.ts';
+import type { CarryUpgrade, GatherUpgrade } from '../../src/services/economy/gather-rates.ts';
 
 /**
  * The planner wired the way the application wires it.
@@ -16,7 +13,7 @@ import {
  */
 export function economyConfig(): EconomyServiceConfig {
     return {
-        rates: DEFAULT_GATHER_RATES,
+        rates: gatherRates(),
         gatherUpgrades: ECONOMY_RECORD.gatherUpgrades as GatherUpgrade[],
         carryUpgrades: ECONOMY_RECORD.carryUpgrades as CarryUpgrade[],
         farmUpgrades: ECONOMY_RECORD.farmUpgrades,

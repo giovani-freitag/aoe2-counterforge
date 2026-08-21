@@ -83,8 +83,8 @@ describe('unit guidance', () => {
         const plan = services.economy.plan({ unit: archer, buildings: 2 });
 
         expect(plan.demands.map((demand) => [demand.resource, Math.ceil(demand.villagers)])).toEqual([
-            ['wood', 4],
-            ['gold', 7],
+            ['wood', 5],
+            ['gold', 9],
         ]);
     });
 
@@ -94,8 +94,8 @@ describe('unit guidance', () => {
         const plan = services.economy.plan({ unit: knight, buildings: 1 });
 
         expect([plan.wholeVillagers, plan.demands.map((demand) => Math.ceil(demand.villagers))]).toEqual([
-            16,
-            [7, 2, 7],
+            17,
+            [5, 3, 9],
         ]);
     });
 

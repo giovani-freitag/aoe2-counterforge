@@ -109,7 +109,18 @@ export interface FarmUpgradeRecord {
 }
 
 /** The numbers behind the villager planner, read from the game rather than written by hand. */
+/** One kind of villager work, with the two numbers the game states about it. */
+export interface VillagerJobRecord {
+    resource: string;
+    foodSource?: string;
+    /** Resources per second at the resource itself, before any walking. */
+    gatherRate: number;
+    /** How much the villager carries before walking back. */
+    carryCapacity: number;
+}
+
 export interface EconomyRecord {
+    jobs: VillagerJobRecord[];
     villagerWalkSpeed: number;
     farmFood: number;
     farmWoodCost: number;
