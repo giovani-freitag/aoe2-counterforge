@@ -236,7 +236,9 @@
             "accuracyFloor": "Precisão elevada a {{value}}%",
             "bonusResistance": "Recebe {{value}}% menos dano bônus",
             "ignoresArmour": "Ataques ignoram armadura",
-            "minRange": "Alcance mínimo cai para {{value}}"
+            "minRange": "Alcance mínimo cai para {{value}}",
+            "population": "{{value}} de população",
+            "damageReflection": "Devolve {{value}}% do dano corpo a corpo"
         },
         "uniqueHint": "Bônus que a civilização já ganha, e as tecnologias de castelo que alcançam a unidade.",
         "noUnique": "Nenhuma civilização muda esta unidade por conta própria.",
@@ -423,7 +425,8 @@
         "civCount_one": "{{count}} civilização",
         "civCount_other": "{{count}} civilizações",
         "uniqueTo": "Exclusiva de {{civ}}",
-        "trainsFaster": "As unidades treinam {{value}}% mais rápido onde ela é pesquisada."
+        "trainsFaster": "As unidades treinam {{value}}% mais rápido onde ela é pesquisada.",
+        "changesNoUnit": "Esta tecnologia não muda o número de nenhuma unidade. O que ela faz — uma taxa de mercado, um tributo, o trabalho de um monge, a melhoria para outra unidade — está na descrição acima."
     },
     "techs": {
         "count_one": "{{count}} tecnologia",

@@ -34,6 +34,10 @@ export interface StatDelta {
      * target is going instead of where it stands, which is worth saying even though no stat moves.
      */
     ballistics?: boolean;
+    /** Population the unit takes up, which a technology can lower to nothing. */
+    population?: number;
+    /** Fraction of a melee hit the unit sends back to whoever landed it. */
+    damageReflection?: number;
     /** Value the minimum range is brought down to, for an effect that sets it outright. */
     minRangeCeiling?: number;
     /** True once a technology has taught the unit's attacks to go through armour. */

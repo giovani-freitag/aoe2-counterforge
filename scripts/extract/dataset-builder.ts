@@ -172,10 +172,25 @@ const ATTRIBUTES: Record<number, string> = {
     105: 'costGold',
     106: 'costStone',
     109: 'regeneration',
+    110: 'population',
+    118: 'damageReflection',
 };
 
 /** Commands that change a number; the rest enable units, swap graphics or rename things. */
-const MODES: Record<number, TechEffectRecord['mode']> = { 0: 'set', 4: 'add', 5: 'multiply' };
+/**
+ * Commands that change a number, and the same three again for a change the whole team receives.
+ *
+ * The file writes a team-wide change as the ordinary command plus ten. What it does to a unit is
+ * identical; the difference is who else gets it, which the technology's own description says.
+ */
+const MODES: Record<number, TechEffectRecord['mode']> = {
+    0: 'set',
+    4: 'add',
+    5: 'multiply',
+    10: 'set',
+    14: 'add',
+    15: 'multiply',
+};
 
 /** Bits of the combat ability field: whether a unit's attacks skip armour, and whether they can be. */
 const IGNORES_ARMOUR = 1;

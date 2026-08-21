@@ -236,7 +236,9 @@
             "accuracyFloor": "Accuracy raised to {{value}}%",
             "bonusResistance": "Takes {{value}}% less bonus damage",
             "ignoresArmour": "Attacks ignore armour",
-            "minRange": "Minimum range down to {{value}}"
+            "minRange": "Minimum range down to {{value}}",
+            "population": "{{value}} population",
+            "damageReflection": "Sends {{value}}% of melee damage back"
         },
         "uniqueHint": "Bonuses a civilization is given, and the castle technologies that reach this unit.",
         "noUnique": "No civilization changes this unit on its own.",
@@ -423,7 +425,8 @@
         "civCount_one": "{{count}} civilization",
         "civCount_other": "{{count}} civilizations",
         "uniqueTo": "Unique to the {{civ}}",
-        "trainsFaster": "Units train {{value}}% faster where it is researched."
+        "trainsFaster": "Units train {{value}}% faster where it is researched.",
+        "changesNoUnit": "This technology changes no unit’s numbers. What it does — a market fee, a tribute, how a monk works, an upgrade to another unit — is in its description above."
     },
     "techs": {
         "count_one": "{{count}} technology",

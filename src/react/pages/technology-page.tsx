@@ -95,14 +95,15 @@ export function TechnologyPage() {
                 />
             </header>
 
-            {changed.length === 0 && faster === 1 ? null : (
-                <section className="card">
-                    <div className="card__title">
-                        <h2>{t('tech.changes')}</h2>
-                        {changed.length === 0 ? null : (
-                            <span className="card__hint">{t('tech.changesCount', { count: changed.length })}</span>
-                        )}
-                    </div>
+            <section className="card">
+                <div className="card__title">
+                    <h2>{t('tech.changes')}</h2>
+                    {changed.length === 0 ? null : (
+                        <span className="card__hint">{t('tech.changesCount', { count: changed.length })}</span>
+                    )}
+                </div>
+
+                {changed.length === 0 && faster === 1 ? <p className="prose">{t('tech.changesNoUnit')}</p> : null}
 
                     {faster === 1 ? null : (
                         <p className="card__hint">
@@ -137,8 +138,7 @@ export function TechnologyPage() {
                             </div>
                         </div>
                     ))}
-                </section>
-            )}
+            </section>
 
             <section className="card">
                 <div className="card__title">

@@ -63,6 +63,12 @@ export function describeEffect(change: StatDelta, t: TFunction): string[] {
     }
     if (change.ballistics) labels.push(t('upgrades.effect.ballistics'));
     if (change.ignoresArmour) labels.push(t('upgrades.effect.ignoresArmour'));
+    if (change.population !== undefined) {
+        labels.push(t('upgrades.effect.population', { value: delta(change.population) }));
+    }
+    if (change.damageReflection !== undefined) {
+        labels.push(t('upgrades.effect.damageReflection', { value: short(change.damageReflection * 100) }));
+    }
     if (change.minRangeCeiling !== undefined) {
         labels.push(t('upgrades.effect.minRange', { value: short(change.minRangeCeiling) }));
     }

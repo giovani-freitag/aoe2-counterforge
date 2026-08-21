@@ -71,6 +71,8 @@ const MODELLED = new Set([
     'bonusDamageResistance',
     'minRange',
     'combatAbility',
+    'population',
+    'damageReflection',
     'cost',
     'costFood',
     'costWood',
@@ -106,6 +108,8 @@ function canonical(delta: StatDelta): string {
         delta.bonusDamageResistance,
         delta.minRangeCeiling,
         delta.ignoresArmour,
+        delta.population,
+        delta.damageReflection,
     ].map((value) => String(value ?? ''));
 
     const costs = Object.entries(delta.costMultipliers ?? {})
@@ -382,6 +386,10 @@ export class UpgradeService {
             if (effect.attribute === 'blastWidth') delta.blastWidth = (delta.blastWidth ?? 0) + effect.value;
             if (effect.attribute === 'projectiles') delta.projectiles = (delta.projectiles ?? 0) + effect.value;
             if (effect.attribute === 'regeneration') delta.regeneration = (delta.regeneration ?? 0) + effect.value;
+            if (effect.attribute === 'population') delta.population = (delta.population ?? 0) + effect.value;
+            if (effect.attribute === 'damageReflection') {
+                delta.damageReflection = (delta.damageReflection ?? 0) + effect.value;
+            }
             // The combat ability is a bit field; only the lowest bit is the one that pierces armour.
             if (effect.attribute === 'combatAbility' && effect.value === 1) delta.ignoresArmour = true;
         }
