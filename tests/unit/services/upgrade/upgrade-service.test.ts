@@ -19,7 +19,15 @@ function buildService() {
         assembler: new CatalogAssembler(),
         units: [
             unitRecord({ key: 'champion', id: 1, classId: INFANTRY, category: 'infantry', hp: 70, speed: 1 }),
-            unitRecord({ key: 'knight', id: 2, classId: CAVALRY, category: 'cavalry', hp: 100, civs: ['franks'] }),
+            unitRecord({
+                key: 'knight',
+                id: 2,
+                classId: CAVALRY,
+                category: 'cavalry',
+                hp: 100,
+                // A civilization only upgrades what it can train, so the roster has to say who trains it.
+                civs: ['franks', 'britons', 'gurjaras', 'khitans'],
+            }),
         ],
         technologies: [
             technologyRecord({
@@ -222,5 +230,12 @@ describe('UpgradeService', () => {
         const outcome = upgrades.apply({ unit: catalog.unit('knight'), techs: [], civ: 'britons' });
 
         expect(outcome.stats.hp).toBe(100);
+    });
+    it('leaves a unit alone when the chosen civilization could never field it', () => {
+        const { catalog, upgrades } = buildService();
+
+        const outcome = upgrades.fullyUpgraded(catalog.unit('champion'), 'franks');
+
+        expect(outcome.stats.hp).toBe(upgrades.fullyUpgraded(catalog.unit('champion')).stats.hp);
     });
 });

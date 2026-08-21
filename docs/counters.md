@@ -37,7 +37,10 @@ damage formula over the two stat lines and compares what each side destroys per 
    number — the runaway end simply stops drowning out the matchups worth thinking about.
 
 Both sides are rated fully upgraded by default — you can face any civilization — and the subject
-takes the technologies and bonuses of the civilization you picked, if you picked one.
+takes the technologies and bonuses of the civilization you picked, if you picked one and if it can
+train the unit. On a unit it cannot train, the civilization is ignored rather than applied: the
+Paladin a Mesoamerican player meets belongs to whoever fielded it, and stripping it of every
+upgrade that reader's own civilization happens to lack would invent a unit nobody can build.
 
 The opposition can be narrowed to what that civilization trains, and then it is rated with that
 civilization's upgrades and bonuses rather than generically. On a unit your civilization cannot

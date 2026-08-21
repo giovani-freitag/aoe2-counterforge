@@ -156,9 +156,11 @@ export class UpgradeService {
      * @returns Upgrades ordered by age and then by research building.
      */
     public affecting(unit: Unit, civ: string | null = null): AppliedUpgrade[] {
+        const owner = this.ownerOf(unit, civ);
+
         return this.catalog
             .technologies()
-            .filter((technology) => technology.availableTo(civ))
+            .filter((technology) => technology.availableTo(owner))
             .map((technology) => this.upgradeFor(unit, technology))
             .filter((upgrade): upgrade is AppliedUpgrade => upgrade !== null)
             .sort(
@@ -230,13 +232,15 @@ export class UpgradeService {
      * @returns The fully upgraded outcome.
      */
     public fullyUpgraded(unit: Unit, civ: string | null = null): UpgradeOutcome {
-        // With no civilization chosen, two civilizations' unique technologies would stack on the
-        // same soldier, which no game ever allows.
-        const techs = this.affecting(unit, civ)
-            .filter(({ technology }) => civ !== null || !technology.isUnique)
+        const owner = this.ownerOf(unit, civ);
+
+        // Without an owner, two civilizations' unique technologies would stack on the same
+        // soldier, which no game ever allows.
+        const techs = this.affecting(unit, owner)
+            .filter(({ technology }) => owner !== null || !technology.isUnique)
             .map(({ technology }) => technology.key);
 
-        return this.apply({ unit, techs, civ });
+        return this.apply({ unit, techs, civ: owner });
     }
 
     /**
@@ -262,9 +266,25 @@ export class UpgradeService {
 
     /** What the chosen civilization hands the unit before anyone researches anything. */
     private bonusDelta(selection: UpgradeSelection): StatDelta {
-        const civ = selection.civ ?? null;
+        const civ = this.ownerOf(selection.unit, selection.civ ?? null);
 
         return civ === null ? {} : this.bonusFor(selection.unit, civ);
+    }
+
+    /**
+     * Whose unit this is, for the purpose of upgrading it.
+     *
+     * A reader who picks a civilization is saying "show me my army", and for a unit that
+     * civilization trains, that is exactly right. For a unit it cannot train, it is nonsense: the
+     * Paladin a Mesoamerican player meets belongs to whoever fielded it, and stripping it of every
+     * technology that player's own civilization happens to lack invents a unit nobody can build.
+     *
+     * @param unit - Unit being upgraded.
+     * @param civ - Civilization the reader picked, or null.
+     * @returns The civilization, or null when it could never field this unit.
+     */
+    private ownerOf(unit: Unit, civ: string | null): string | null {
+        return civ !== null && unit.availableTo(civ) ? civ : null;
     }
 
     private bonusFor(unit: Unit, civ: string): StatDelta {
