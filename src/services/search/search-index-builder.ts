@@ -28,7 +28,6 @@ export interface SearchIndexBuilderConfig {
 const UNIT_WEIGHT = 1;
 const CIVILIZATION_WEIGHT = 0.95;
 const TECHNOLOGY_WEIGHT = 0.75;
-const ROSTER_SIZE = 53;
 
 /** Flattens the catalog into the documents the command palette ranks. */
 export class SearchIndexBuilder {
@@ -49,6 +48,9 @@ export class SearchIndexBuilder {
     }
 
     private unitDocuments(locale: string): SearchDocument[] {
+        // How many civilizations there are is a fact about the roster, so it is counted, not typed.
+        const roster = this.config.catalog.civilizations().length;
+
         return this.config.catalog.units().map((unit) => {
             const text = this.config.text.unit(locale, unit.key);
             const english = this.config.text.unit(this.config.fallbackLocale, unit.key);
@@ -65,7 +67,7 @@ export class SearchIndexBuilder {
                 keywords: this.keywords([english.name, unit.key, unit.category, ...unit.buildings, owner, ...unit.tags]),
                 icon: unit.icon === null ? null : `Unit/${unit.icon}.png`,
                 civs: unit.civs,
-                weight: UNIT_WEIGHT + (unit.civs.length / ROSTER_SIZE) * 0.25,
+                weight: UNIT_WEIGHT + (unit.civs.length / roster) * 0.25,
             } satisfies SearchDocument;
         });
     }

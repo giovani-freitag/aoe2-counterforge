@@ -5,6 +5,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import ts from 'typescript';
 import { describe, expect, it } from 'vitest';
+import { CIVILIZATION_RECORDS, TECHNOLOGY_RECORDS, UNIT_RECORDS } from '../../src/data/dataset.ts';
 
 const SOURCE_ROOT = 'src';
 
@@ -85,6 +86,41 @@ function exportedNumbers(path: string): string[] {
     return found;
 }
 
+/**
+ * How many of each thing the game has, which the source must never state.
+ *
+ * A count is the easiest game number to write down by accident: it looks like a harmless bound
+ * rather than a measurement, and it goes stale the first time the game ships another civilization.
+ * Only counts big enough to be distinctive are checked, so that a four or a five in the source is
+ * still allowed to be a four.
+ */
+const CENSUS_FLOOR = 15;
+
+const MODELLED_ROOTS = ['src/services', 'src/domain', 'src/composition-root.ts'];
+
+function census(): Map<number, string> {
+    const counts = new Map<number, string>([
+        [UNIT_RECORDS.length, 'units'],
+        [TECHNOLOGY_RECORDS.length, 'technologies'],
+        [CIVILIZATION_RECORDS.length, 'civilizations'],
+        [new Set(UNIT_RECORDS.map((unit) => unit.line)).size, 'upgrade lines'],
+        [UNIT_RECORDS.filter((unit) => unit.uniqueTo !== null).length, 'unique units'],
+    ]);
+
+    return new Map([...counts].filter(([value]) => value >= CENSUS_FLOOR));
+}
+
+function numbersIn(path: string): number[] {
+    const found: number[] = [];
+    const walk = (node: ts.Node): void => {
+        if (ts.isNumericLiteral(node)) found.push(Number(node.getText()));
+        ts.forEachChild(node, walk);
+    };
+    walk(parse(path));
+
+    return found;
+}
+
 describe('numbers in the source tree', () => {
     it('lets no file publish a number the game could have told us', () => {
         const offenders = sourceFiles(SOURCE_ROOT, ['.ts', '.tsx'])
@@ -93,6 +129,19 @@ describe('numbers in the source tree', () => {
             .sort();
 
         expect(offenders).toEqual([...QUARANTINE].sort());
+    });
+
+    it('never writes down how many of anything the game has', () => {
+        const known = census();
+        const stated = sourceFiles(SOURCE_ROOT, ['.ts', '.tsx'])
+            .filter((path) => MODELLED_ROOTS.some((root) => posix(path).startsWith(root)))
+            .flatMap((path) =>
+                numbersIn(path)
+                    .filter((value) => known.has(value))
+                    .map((value) => `${posix(path)}: ${String(value)} is how many ${known.get(value) ?? ''} there are`),
+            );
+
+        expect(stated).toEqual([]);
     });
 
     it('keeps data out of the source tree, so a table cannot move house', () => {
