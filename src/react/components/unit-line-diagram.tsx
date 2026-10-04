@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router';
 import type { Unit } from '../../domain/entities/unit.ts';
 import { iconUrl } from '../format.ts';
 import { useGameText } from '../hooks/use-game-text.ts';
@@ -223,7 +224,7 @@ export function UnitLineDiagram({ steps, current }: UnitLineDiagramProps) {
                 ))}
 
                 {[...placed.values()].map((node) => (
-                    <a key={node.unit.key} href={`#/unit/${node.unit.key}`}>
+                    <Link key={node.unit.key} to={`/unit/${node.unit.key}`}>
                         <g
                             className="line-diagram__node"
                             data-current={node.unit.key === current.key || undefined}
@@ -273,7 +274,7 @@ export function UnitLineDiagram({ steps, current }: UnitLineDiagramProps) {
                                     : t(`ages.${String(node.unit.age)}`)}
                             </text>
                         </g>
-                    </a>
+                    </Link>
                 ))}
             </svg>
         </div>
