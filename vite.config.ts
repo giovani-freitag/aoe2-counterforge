@@ -3,12 +3,17 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import manifest from './package.json' with { type: 'json' };
 
+// Every canonical address, the sitemap and the folder the bundle is served from follow from where the
+// site is published, so moving it to another host or a custom domain is a matter of setting SITE_URL.
+const site = new URL(process.env.SITE_URL ?? manifest.homepage);
+
 export default defineConfig({
-    base: './',
+    base: site.pathname,
     // The footer of the interface names the running version and links back to where it came from.
     define: {
         __APP_VERSION__: JSON.stringify(manifest.version),
         __APP_REPOSITORY__: JSON.stringify(manifest.repository.url),
+        __SITE_URL__: JSON.stringify(site.href),
     },
     plugins: [react()],
     server: {

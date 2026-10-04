@@ -7,6 +7,7 @@ export default defineConfig({
     define: {
         __APP_VERSION__: JSON.stringify(manifest.version),
         __APP_REPOSITORY__: JSON.stringify(manifest.repository.url),
+        __SITE_URL__: JSON.stringify(manifest.homepage),
     },
     resolve: {
         alias: {
