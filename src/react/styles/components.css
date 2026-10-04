@@ -955,6 +955,26 @@
     background: var(--surface);
 }
 
+/*
+ * The opaque column only has a job once the values slide underneath it; before that it would
+ * block the plate's specular light, so it is drawn in by the scroll itself.
+ */
+@supports (animation-timeline: scroll()) {
+    .compare-table tbody th,
+    .compare-table thead th:first-child {
+        background: transparent;
+        animation: cover-scrolled linear both;
+        animation-timeline: scroll(nearest inline);
+        animation-range: 0 0.5rem;
+    }
+}
+
+@keyframes cover-scrolled {
+    to {
+        background-color: var(--surface);
+    }
+}
+
 .compare-table td[data-best='true'] {
     color: var(--gold-soft);
     font-weight: 700;
