@@ -118,7 +118,7 @@ describe.skipIf(!GAME_ROOT)('extraction from an installed game', () => {
             researches: game.techTree.researches.length,
         };
 
-        expect(counts).toEqual({ ages: 4, buildings: 37, units: 255, researches: 233 });
+        expect(counts).toEqual({ ages: 4, buildings: 37, units: 266, researches: 241 });
     }, EXTRACTION_TIMEOUT_MS);
 
     it('reads the pierce armour the game itself displays, at the end of the creatable block', () => {

@@ -9,7 +9,7 @@ const woodVillagers = (plan: ProductionPlan) =>
 
 describe('shipped dataset', () => {
     it('exposes every civilization of the tech tree', () => {
-        expect(services.catalog.civilizations()).toHaveLength(53);
+        expect(services.catalog.civilizations()).toHaveLength(56);
     });
 
     it('gives every unit a localized Brazilian Portuguese name', () => {

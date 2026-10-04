@@ -62,13 +62,13 @@ are only re-encoded.
 
 ## What the dataset ends up holding
 
-- Attributes and costs for 226 units and 192 technologies.
-- Availability per civilization, derived from all 53 tech trees.
+- Attributes and costs for 237 units and 199 technologies.
+- Availability per civilization, derived from all 56 tech trees.
 - Official names and descriptions in **English and Portuguese**, including the "Strong vs…" and
   "Weak vs…" lines written by the game's designers.
 - Upgrade lines rebuilt from the upgrade links.
-- The game's effect table: 121 of the 192 technologies carry a modelled effect, plus 1,229
-  civilization bonus effects across 44 civilizations.
+- The game's effect table: 160 of the 199 technologies carry a modelled effect, plus 1,702
+  civilization bonus effects across 55 civilizations.
 - Duplicate entries merged: several units exist twice in the game because a second building can
   train them (Donjon, Krepost, Stable), and the guide shows one entry listing both places.
 
@@ -82,8 +82,9 @@ answered by reading a file instead of by opening the binary again.
 Every table comes over: units with every field of every block, the tasks that say what a unit knows
 how to do, technologies, effects, the connection table that draws the tech tree, terrain
 restrictions, graphics, sounds, colours, the string tables, and the files the game keeps beside the
-binary. The sixty civilization tables each carry the whole roster and all but a few thousand entries
-are byte-identical, so the reference table is written once and only the differences beside it.
+binary. The sixty-three civilization tables each carry the whole roster and all but a few thousand
+entries are byte-identical, so the reference table is written once and only the differences beside
+it.
 
 **Nothing in the binary is fixed width.** Every record is as long as its own contents say, so the
 only way to reach the last table is to have read every field of every record before it correctly.
@@ -103,8 +104,8 @@ turn out to be listed that way, and the reader who opens the Crossbowman is aski
 
 Two statements in the same install, and they agree. The civilization's tech tree lists the node,
 which is the menu a player clicks; and the technology that switches the unit on carries the number
-of the civilization it belongs to, which is the switch behind that menu. Seventy units carry both,
-and `tests/feature/extract/game-install.test.ts` checks that all seventy match — joining a renamed
+of the civilization it belongs to, which is the switch behind that menu. Seventy-one units carry both,
+and `tests/feature/extract/game-install.test.ts` checks that all seventy-one match — joining a renamed
 civilization back to the file through its emblem, which keeps the old name: Hindustanis to Indians,
 Maya to Mayans.
 
