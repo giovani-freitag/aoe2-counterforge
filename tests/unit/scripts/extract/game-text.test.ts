@@ -135,7 +135,9 @@ describe('parseCivilizationHelp', () => {
             '• Town Watch, Town Patrol free',
         ].join('\n');
 
-        expect(parseCivilizationHelp(help).bonuses).toEqual([
+        const { bonuses } = parseCivilizationHelp(help);
+
+        expect(bonuses).toEqual([
             'Buildings +10/20/30/40% HP in Dark/Feudal/Castle/Imperial Age',
             'Town Watch, Town Patrol free',
         ]);
@@ -150,7 +152,9 @@ describe('parseCivilizationHelp', () => {
             'Recrutamento Forçado (o custo em ouro de Milícias é substituído por comida)',
         ].join('\n');
 
-        expect(parseCivilizationHelp(help).sections[0].items).toEqual([
+        const { sections } = parseCivilizationHelp(help);
+
+        expect(sections[0].items).toEqual([
             'Talassocracia (aprimora Docas para Portos)',
             'Recrutamento Forçado (o custo em ouro de Milícias é substituído por comida)',
         ]);
