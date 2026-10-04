@@ -1078,6 +1078,15 @@ details[open] > summary::after {
     inset: 0 0 auto;
 }
 
+.virtual--static {
+    display: grid;
+    gap: 8px;
+}
+
+.virtual--static .virtual__row {
+    position: static;
+}
+
 /* ---------- the tokens the game draws for each resource ---------- */
 
 .resource-icon {
