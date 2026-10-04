@@ -22,13 +22,17 @@ jobs:
         outputs:
             released: ${{ steps.release-please.outputs.release_created }}
         steps:
+            # A pull request opened with the workflow token holds its checks until someone approves
+            # them, and they expire as failures. A token of its own lets CI run on the release pull
+            # request like on any other; the workflow token is only the fallback until it is set.
             - uses: googleapis/release-please-action@v4
               id: release-please
               with:
                   release-type: node
+                  token: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
 
-    # A release created with the workflow token raises no event of its own, so the site is built
-    # here rather than in a workflow listening for one.
+    # The site is built here, in the run that cut the release, rather than in a workflow listening
+    # for one: a release cut with the workflow token raises no event of its own.
     deploy:
         needs: release
         if: needs.release.outputs.released == 'true' || github.event_name == 'workflow_dispatch'
