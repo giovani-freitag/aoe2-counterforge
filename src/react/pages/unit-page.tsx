@@ -14,6 +14,7 @@ import { useUnit } from '../hooks/use-unit.ts';
 import { useUnitUpgrades } from '../hooks/use-unit-upgrades.ts';
 import { NotFoundPage } from './not-found-page.tsx';
 import { BackLink } from '../components/back-link.tsx';
+import { PageMeta } from '../components/page-meta.tsx';
 
 const TABS = ['overview', 'counters', 'upgrades', 'economy'] as const;
 
@@ -42,6 +43,15 @@ export function UnitPage() {
 
     return (
         <div className="stack">
+            <PageMeta
+                title={t('seo.unit.title', { name: unitText.name })}
+                description={
+                    [unitText.role, unitText.strongVs, unitText.weakVs].filter(Boolean).join(' ') ||
+                    t('seo.unit.description', { name: unitText.name })
+                }
+                name={unitText.name}
+                section="units"
+            />
             <BackLink to="/units" label={t('nav.units')} />
             <header className="card">
                 <UnitForge

@@ -445,5 +445,38 @@
         "filter": "Filter by name",
         "filterHint": "e.g. britons",
         "empty": "No civilization matches."
+    },
+    "seo": {
+        "home": {
+            "title": "Age of Empires II counters and unit guide",
+            "description": "What beats each Age of Empires II unit, calculated from the game's own damage formula, plus costs, stats, upgrades and the villagers to keep it coming."
+        },
+        "units": {
+            "title": "Every Age of Empires II unit",
+            "description": "Every Age of Empires II unit, filtered by category, age and civilization and ranked by damage, hit points, range, speed or value for its cost."
+        },
+        "technologies": {
+            "title": "Every Age of Empires II technology",
+            "description": "Every Age of Empires II technology with its cost, the units it changes and by how much, and which civilizations get to research it."
+        },
+        "civilizations": {
+            "title": "Every Age of Empires II civilization",
+            "description": "Every Age of Empires II civilization with its bonuses, unique units and unique technologies, and the units it can train."
+        },
+        "compare": {
+            "title": "Compare Age of Empires II units",
+            "description": "Up to {{max}} Age of Empires II units side by side, with the best value on every row and a head to head table of who beats whom."
+        },
+        "unit": {
+            "title": "{{name}} counters, stats and cost",
+            "description": "What beats the {{name}} in Age of Empires II, what it costs, which upgrades change it and how many villagers keep it in production."
+        },
+        "technology": {
+            "title": "{{name}}: effect, cost and civilizations",
+            "description": "Cost, every unit it changes and which civilizations research it."
+        },
+        "civilization": {
+            "title": "{{name}}: bonuses, unique units and technologies"
+        }
     }
 }
