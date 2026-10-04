@@ -126,6 +126,36 @@ describe('parseCivilizationHelp', () => {
         ]);
     });
 
+    it('keeps a bullet the game wrapped onto a second line as one bonus', () => {
+        const help = [
+            'Defensive civilization',
+            '',
+            '• Buildings +10/20/30/40% HP in Dark/Feudal/',
+            'Castle/Imperial Age',
+            '• Town Watch, Town Patrol free',
+        ].join('\n');
+
+        expect(parseCivilizationHelp(help).bonuses).toEqual([
+            'Buildings +10/20/30/40% HP in Dark/Feudal/Castle/Imperial Age',
+            'Town Watch, Town Patrol free',
+        ]);
+    });
+
+    it('keeps an entry apart when a translation forgot its bullet', () => {
+        const help = [
+            'Civilização naval',
+            '',
+            '<b>Tecnologias exclusivas:<b>',
+            '• Talassocracia (aprimora Docas para Portos)',
+            'Recrutamento Forçado (o custo em ouro de Milícias é substituído por comida)',
+        ].join('\n');
+
+        expect(parseCivilizationHelp(help).sections[0].items).toEqual([
+            'Talassocracia (aprimora Docas para Portos)',
+            'Recrutamento Forçado (o custo em ouro de Milícias é substituído por comida)',
+        ]);
+    });
+
     it('groups the entries under the heading that introduces them', () => {
         const sections = parseCivilizationHelp(BRITONS_HELP).sections;
 

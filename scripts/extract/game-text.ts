@@ -1,5 +1,6 @@
 const COMBINING_MARKS = /[\u0300-\u036f]/g;
 const MARKUP = /<[^>]*>/g;
+const BULLET = /^[\u2022\u00b7-]\s*/;
 
 /**
  * A sentence ends at a period followed by a capital letter, unless that period closes "vs.".
@@ -150,8 +151,18 @@ export function parseCivilizationHelp(raw: string): CivilizationHelp {
             continue;
         }
 
-        const item = text.replace(/^[•·-]\s*/, '').trim();
+        const bulleted = BULLET.test(text);
+        const item = text.replace(BULLET, '').trim();
         if (!item) continue;
+
+        // The game wraps a long age list by hand, mid-list. A bullet can never end on the slash,
+        // which tells that wrap apart from a translation that merely forgot the next bullet.
+        const list = current ? current.items : result.bonuses;
+        const previous = list.at(-1);
+        if (!bulleted && previous?.endsWith('/')) {
+            list[list.length - 1] = `${previous}${item}`;
+            continue;
+        }
 
         if (current) current.items.push(item);
         else if (!result.intro) result.intro = item;
