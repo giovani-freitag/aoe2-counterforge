@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.3.0](https://github.com/giovani-freitag/aoe2-counterforge/compare/v0.2.0...v0.3.0) (2026-10-04)
+
+
+### Features
+
+* add the Saxons, Varangians and Danes with the latest game patch ([a380cd5](https://github.com/giovani-freitag/aoe2-counterforge/commit/a380cd5601b3ea09aad97650a9af62333708a4e9))
+
+
+### Bug Fixes
+
+* keep a civilization bonus the game wraps onto two lines in one piece ([dd5c4ad](https://github.com/giovani-freitag/aoe2-counterforge/commit/dd5c4adbf8a4e75f81c1f551ce5199e117d168f0))
+* let the specular light through the compare table's fixed column ([07693c7](https://github.com/giovani-freitag/aoe2-counterforge/commit/07693c729afa36e7bf767bfa76635eb0ac33656c))
+
 ## [0.2.0](https://github.com/giovani-freitag/aoe2-counterforge/compare/v0.1.0...v0.2.0) (2026-10-04)
 
 
