@@ -1,6 +1,6 @@
 # 0006 — Static hosting with a hash router
 
-**Status:** Accepted
+**Status:** Superseded by [0009](0009-a-page-for-every-address.md)
 
 ## Context
 

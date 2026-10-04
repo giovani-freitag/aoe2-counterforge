@@ -20,7 +20,7 @@
 </p>
 
 <p align="center">
-  <a href="https://giovani-freitag.github.io/aoe2-counterforge/"><strong>Open the guide →</strong></a>
+  <a href="https://giovani-freitag.github.io/aoe2-counterforge/en/"><strong>Open the guide →</strong></a>
 </p>
 
 <p align="center">
@@ -42,6 +42,7 @@ you have, and whether you plan to stand and fight or shoot on the move.
 - 👥 **Villagers per resource** to keep a building producing non-stop, with the bottleneck called out.
 - ⚖️ **Four units side by side**, best value crowned on every row, plus a head-to-head matrix.
 - 🔎 **`Ctrl`/`Cmd` + `K`** across units, civilizations and technologies — fuzzy, accent-blind, in English and Portuguese.
+- 🌐 **A real page for every unit, technology and civilization**, in English and Portuguese, written ahead of time so it reads without JavaScript and can be found from a search.
 - 📴 **Works offline.** The whole dataset ships with the page; nothing is fetched at runtime.
 
 <table>
@@ -74,7 +75,11 @@ npm install
 npm run dev
 ```
 
-No game install, no API key, no network — the data is in the repository.
+Then open <http://localhost:5173/aoe2-counterforge/>. No game install, no API key, no network — the data is in
+the repository.
+
+`npm run build` writes a page for every address into `dist/`, for the address in `homepage`. To publish
+somewhere else, set `SITE_URL` to the full address first, such as `SITE_URL=https://example.com/ npm run build`.
 
 ## 📚 Docs
 
