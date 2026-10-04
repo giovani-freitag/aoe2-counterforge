@@ -3,18 +3,22 @@
  */
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { createI18n } from '../../src/i18n/index.ts';
 import { App } from '../../src/react/app.tsx';
 
-beforeAll(async () => {
+beforeAll(() => {
     window.localStorage.clear();
-    await createI18n().changeLanguage('pt-BR');
+    createI18n('pt-BR');
+});
+
+beforeEach(() => {
+    window.history.pushState(null, '', '/');
 });
 
 describe('App', () => {
     it('lands on the counter finder with an answer already on screen', async () => {
-        render(<App />);
+        render(<App locale="pt-BR" />);
 
         expect(screen.getByRole('heading', { level: 1, name: 'O que você está enfrentando?' })).toBeDefined();
         expect(await screen.findByRole('heading', { name: /Responda um Cavaleiro com/ })).toBeDefined();
@@ -22,7 +26,7 @@ describe('App', () => {
 
     it('opens the command palette from the header button', async () => {
         const user = userEvent.setup();
-        render(<App />);
+        render(<App locale="pt-BR" />);
 
         await user.click(screen.getAllByRole('button', { name: /Buscar unidade/ })[0]);
 
@@ -31,7 +35,7 @@ describe('App', () => {
 
     it('navigates to a unit page from a search result', async () => {
         const user = userEvent.setup();
-        render(<App />);
+        render(<App locale="pt-BR" />);
 
         await user.click(screen.getAllByRole('button', { name: /Buscar unidade/ })[0]);
         await user.type(screen.getByRole('searchbox'), 'milicia');
@@ -43,10 +47,21 @@ describe('App', () => {
         });
     });
 
+    it('follows the upgrade line to the next unit', async () => {
+        const user = userEvent.setup();
+        window.history.pushState(null, '', '/unit/knight');
+        const { container } = render(<App locale="pt-BR" />);
+        await screen.findByRole('heading', { level: 1, name: 'Cavaleiro' });
+
+        await user.click(container.querySelector('.line-diagram a[href="/unit/cavalier"]')!);
+
+        expect(await screen.findByRole('heading', { level: 1, name: 'Fidalgo' })).toBeDefined();
+    });
+
     it('shows the computed counters for a unit', async () => {
         const user = userEvent.setup();
-        window.location.hash = '#/unit/knight';
-        render(<App />);
+        window.history.pushState(null, '', '/unit/knight');
+        render(<App locale="pt-BR" />);
 
         await user.click(await screen.findByRole('tab', { name: 'Counters' }));
 
@@ -55,8 +70,8 @@ describe('App', () => {
 
     it('reaches the complete ranking without leaving the card', async () => {
         const user = userEvent.setup();
-        window.location.hash = '#/unit/knight?tab=counters';
-        render(<App />);
+        window.history.pushState(null, '', '/unit/knight?tab=counters');
+        render(<App locale="pt-BR" />);
 
         const complete = await screen.findByRole('button', { name: /^Todos/ });
         await user.click(complete);
@@ -67,8 +82,8 @@ describe('App', () => {
 
     it('counts what the opponent filter leaves on each end of the ranking', async () => {
         const user = userEvent.setup();
-        window.location.hash = '#/unit/knight?tab=counters';
-        render(<App />);
+        window.history.pushState(null, '', '/unit/knight?tab=counters');
+        render(<App locale="pt-BR" />);
 
         await user.type(await screen.findByRole('searchbox', { name: /Filtrar advers/ }), 'alabard');
 
@@ -79,16 +94,16 @@ describe('App', () => {
     });
 
     it('puts two units side by side with a head to head table', async () => {
-        window.location.hash = '#/compare?units=knight,champion';
-        render(<App />);
+        window.history.pushState(null, '', '/compare?units=knight,champion');
+        render(<App locale="pt-BR" />);
 
         expect(await screen.findByRole('heading', { name: 'Confronto direto' })).toBeDefined();
     });
 
     it('adds a unit to the comparison from the picker', async () => {
         const user = userEvent.setup();
-        window.location.hash = '#/compare?units=knight';
-        render(<App />);
+        window.history.pushState(null, '', '/compare?units=knight');
+        render(<App locale="pt-BR" />);
 
         await user.type(await screen.findByRole('searchbox', { name: /Adicionar unidade/ }), 'campeao');
         const [suggestion] = await screen.findAllByRole('button', { name: /^Campeão/ });
@@ -100,8 +115,8 @@ describe('App', () => {
     });
 
     it('links a unit to every civilization that trains it', async () => {
-        window.location.hash = '#/unit/paladin';
-        render(<App />);
+        window.history.pushState(null, '', '/unit/paladin');
+        render(<App locale="pt-BR" />);
 
         const card = await screen.findByRole('heading', { name: 'Civilizações que treinam' });
 
@@ -110,20 +125,20 @@ describe('App', () => {
 
     it('reorders the roster by the chosen metric', async () => {
         const user = userEvent.setup();
-        window.location.hash = '#/units?category=infantry&lines=1';
-        render(<App />);
+        window.history.pushState(null, '', '/units?category=infantry&lines=1');
+        render(<App locale="pt-BR" />);
 
         await user.click(await screen.findByRole('button', { name: /^Ordenar por/ }));
         await user.click(screen.getByRole('option', { name: 'Mais rápido de treinar' }));
 
         await waitFor(() => {
-            expect(window.location.hash).toContain('sort=train-time');
+            expect(window.location.search).toContain('sort=train-time');
         });
     });
 
     it('narrows a long picker list as you type', async () => {
         const user = userEvent.setup();
-        render(<App />);
+        render(<App locale="pt-BR" />);
 
         await user.click(screen.getAllByRole('button', { name: /Todas as civilizações/ })[0]);
         await user.type(screen.getByRole('searchbox', { name: 'Usar esta civilização' }), 'bret');
@@ -133,8 +148,8 @@ describe('App', () => {
 
     it('filters the roster by name', async () => {
         const user = userEvent.setup();
-        window.location.hash = '#/units';
-        render(<App />);
+        window.history.pushState(null, '', '/units');
+        render(<App locale="pt-BR" />);
 
         await user.type(await screen.findByRole('searchbox', { name: /Filtrar por nome/ }), 'paladino');
 
@@ -145,8 +160,8 @@ describe('App', () => {
 
     it('unfolds a matchup in place with a shortcut to the opponent', async () => {
         const user = userEvent.setup();
-        window.location.hash = '#/unit/knight?tab=counters';
-        render(<App />);
+        window.history.pushState(null, '', '/unit/knight?tab=counters');
+        render(<App locale="pt-BR" />);
 
         await user.click(await screen.findByRole('button', { name: /^Fracos/ }));
         const [row] = await screen.findAllByRole('button', { name: /Alabardeiro/ });
@@ -157,8 +172,8 @@ describe('App', () => {
 
     it('shows the villager plan for a unit', async () => {
         const user = userEvent.setup();
-        window.location.hash = '#/unit/archer';
-        render(<App />);
+        window.history.pushState(null, '', '/unit/archer');
+        render(<App locale="pt-BR" />);
 
         await user.click(await screen.findByRole('tab', { name: 'Economia' }));
 

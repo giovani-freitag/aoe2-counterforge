@@ -58,16 +58,14 @@ export function efficiency(value: number): string {
 /**
  * Address of a shipped file, honouring the deployment base path.
  *
- * The result is absolute on purpose. The base path is relative so the site can be served from any
- * folder, and a relative address inside a stylesheet — a custom property holding a url(), say — is
- * resolved against the stylesheet rather than the page, which lands somewhere else entirely once
- * the bundle is written to its own folder.
+ * The base path is absolute, so the result holds from any page depth and from inside a stylesheet,
+ * where a relative url() would resolve against the stylesheet rather than the page.
  *
  * @param relativePath - Path inside the public folder, such as "brand.svg".
- * @returns A URL the browser can request from anywhere.
+ * @returns A path the browser can request from anywhere on the site.
  */
 export function assetUrl(relativePath: string): string {
-    return new URL(`${import.meta.env.BASE_URL}${relativePath}`, document.baseURI).href;
+    return `${import.meta.env.BASE_URL}${relativePath}`;
 }
 
 /**

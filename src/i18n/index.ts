@@ -1,5 +1,4 @@
 import i18next, { type i18n } from 'i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 import { DEFAULT_LOCALE, FALLBACK_LOCALE } from '../data/dataset.ts';
 import en from './locales/en.json';
@@ -15,27 +14,23 @@ const RESOURCES: Record<SupportedLocale, { translation: Record<string, unknown> 
 };
 
 /**
- * Boots i18next with the two locales the dataset ships strings for.
+ * Boots i18next in the language the address is served in.
  *
+ * @param locale - Language of the page being shown.
  * @returns The initialised i18next instance the React provider consumes.
  */
-export function createI18n(): i18n {
-    void i18next
-        .use(LanguageDetector)
-        .use(initReactI18next)
-        .init({
-            resources: RESOURCES,
-            fallbackLng: DEFAULT_LOCALE,
-            supportedLngs: [...SUPPORTED_LOCALES],
-            load: 'currentOnly',
-            interpolation: { escapeValue: false },
-            detection: {
-                order: ['localStorage', 'navigator'],
-                lookupLocalStorage: 'aoe2-guide.locale',
-                caches: ['localStorage'],
-                convertDetectedLanguage: toSupportedLocale,
-            },
-        });
+export function createI18n(locale: SupportedLocale): i18n {
+    void i18next.use(initReactI18next).init({
+        resources: RESOURCES,
+        lng: locale,
+        fallbackLng: DEFAULT_LOCALE,
+        supportedLngs: [...SUPPORTED_LOCALES],
+        load: 'currentOnly',
+        // The strings ship inside the bundle, and a page written ahead of time is rendered in one
+        // synchronous pass that cannot wait for a deferred start.
+        initAsync: false,
+        interpolation: { escapeValue: false },
+    });
 
     return i18next;
 }

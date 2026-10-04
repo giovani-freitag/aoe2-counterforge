@@ -1,6 +1,9 @@
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SUPPORTED_LOCALES } from '../../i18n/index.ts';
+import { useLocation } from 'react-router';
+import { SUPPORTED_LOCALES, toSupportedLocale } from '../../i18n/index.ts';
+import { localizedPath } from '../../i18n/locale-path.ts';
+import { rememberLocale } from '../../i18n/locale-preference.ts';
 import { useGameText } from '../hooks/use-game-text.ts';
 import { useLocale } from '../hooks/use-locale.ts';
 import { usePreferences } from '../hooks/use-preferences.ts';
@@ -24,7 +27,8 @@ export interface SettingsBarProps {
 
 /** The three choices that follow the reader everywhere: civilization, language and theme. */
 export function SettingsBar({ stacked = false }: SettingsBarProps) {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
+    const { pathname, search } = useLocation();
     const locale = useLocale();
     const theme = useTheme();
     const text = useGameText();
@@ -98,7 +102,10 @@ export function SettingsBar({ stacked = false }: SettingsBarProps) {
                         visual: <Flag locale={tag} />,
                     }))}
                     onChange={(value) => {
-                        void i18n.changeLanguage(value);
+                        const next = toSupportedLocale(value);
+                        rememberLocale(next);
+                        // Each language is a page of its own, so switching is going to that page.
+                        window.location.assign(localizedPath(`${pathname}${search}`, next));
                     }}
                 />,
             )}
