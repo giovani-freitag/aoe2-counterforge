@@ -26,6 +26,20 @@ export function VirtualList<T>({ items, estimate, keyOf, children }: VirtualList
         gap: 8,
     });
 
+    // Without a window there is no viewport to measure, and a page written ahead of time is read by
+    // search engines that follow every row's link; the browser replaces it with the windowed list.
+    if (typeof window === 'undefined') {
+        return (
+            <div className="virtual virtual--static">
+                {items.map((item) => (
+                    <div className="virtual__row" key={keyOf(item)}>
+                        {children(item)}
+                    </div>
+                ))}
+            </div>
+        );
+    }
+
     return (
         <div className="virtual" ref={scroller}>
             <div className="virtual__runway" style={{ height: `${String(virtual.getTotalSize())}px` }}>
