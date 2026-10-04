@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { Directory } from '../components/directory.tsx';
+import { PageMeta } from '../components/page-meta.tsx';
 import { GameIcon } from '../components/game-icon.tsx';
 import { SearchField } from '../components/search-field.tsx';
 import { useGameText } from '../hooks/use-game-text.ts';
@@ -27,32 +28,40 @@ export function CivilizationsPage() {
     );
 
     return (
-        <Directory
-            title={t('nav.civilizations')}
-            summary={t('civs.count', { count: civilizations.length })}
-            items={civilizations}
-            keyOf={(entry) => entry.civilization.key}
-            estimate={72}
-            empty={t('civs.empty')}
-            search={
-                <SearchField
-                    id="civ-filter"
-                    label={t('civs.filter')}
-                    placeholder={t('civs.filterHint')}
-                    value={term}
-                    onChange={setTerm}
-                />
-            }
-        >
-            {(entry) => (
-                <Link className="list-item" to={`/civ/${entry.civilization.key}`}>
-                    <GameIcon path={`Civs/${entry.civilization.icon}.png`} alt="" className="icon--civ" />
-                    <span className="list-item__body">
-                        <span className="list-item__title">{entry.text.name}</span>
-                        <span className="list-item__subtitle">{entry.text.intro}</span>
-                    </span>
-                </Link>
-            )}
-        </Directory>
+        <>
+            <PageMeta
+                title={t('seo.civilizations.title')}
+                description={t('seo.civilizations.description')}
+                name={t('nav.civilizations')}
+                section="civilizations"
+            />
+            <Directory
+                title={t('nav.civilizations')}
+                summary={t('civs.count', { count: civilizations.length })}
+                items={civilizations}
+                keyOf={(entry) => entry.civilization.key}
+                estimate={72}
+                empty={t('civs.empty')}
+                search={
+                    <SearchField
+                        id="civ-filter"
+                        label={t('civs.filter')}
+                        placeholder={t('civs.filterHint')}
+                        value={term}
+                        onChange={setTerm}
+                    />
+                }
+            >
+                {(entry) => (
+                    <Link className="list-item" to={`/civ/${entry.civilization.key}`}>
+                        <GameIcon path={`Civs/${entry.civilization.icon}.png`} alt="" className="icon--civ" />
+                        <span className="list-item__body">
+                            <span className="list-item__title">{entry.text.name}</span>
+                            <span className="list-item__subtitle">{entry.text.intro}</span>
+                        </span>
+                    </Link>
+                )}
+            </Directory>
+        </>
     );
 }

@@ -6,6 +6,7 @@ import { EntityNotFoundError } from '../../domain/errors/domain-error.ts';
 import { BackLink } from '../components/back-link.tsx';
 import { Forge } from '../components/forge.tsx';
 import { GameIcon } from '../components/game-icon.tsx';
+import { PageMeta } from '../components/page-meta.tsx';
 import { ResourceCostRow } from '../components/resource-cost-row.tsx';
 import { describeEffect } from '../effect-description.ts';
 import { iconUrl, short } from '../format.ts';
@@ -65,6 +66,12 @@ export function TechnologyPage() {
 
     return (
         <div className="stack">
+            <PageMeta
+                title={t('seo.technology.title', { name: technologyText.name })}
+                description={`${technologyText.description} ${t('seo.technology.description')}`}
+                name={technologyText.name}
+                section="technologies"
+            />
             <BackLink to="/techs" label={t('nav.technologies')} />
             <header className="card">
                 <Forge

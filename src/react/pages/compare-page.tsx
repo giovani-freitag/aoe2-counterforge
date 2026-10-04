@@ -7,6 +7,7 @@ import type { UnitStatsRecord } from '../../domain/values/unit-stats.ts';
 import { BackLink } from '../components/back-link.tsx';
 import { GameIcon } from '../components/game-icon.tsx';
 import { Icon } from '../components/icon.tsx';
+import { PageMeta } from '../components/page-meta.tsx';
 import { SegmentedControl } from '../components/segmented-control.tsx';
 import { UnitPicker } from '../components/unit-picker.tsx';
 import { buildingNames } from '../building-names.ts';
@@ -175,6 +176,12 @@ export function ComparePage() {
 
     return (
         <div className="stack">
+            <PageMeta
+                title={t('seo.compare.title')}
+                description={t('seo.compare.description', { max: MAX_UNITS })}
+                name={t('compare.title')}
+                section="units"
+            />
             <BackLink to="/units" label={t('nav.units')} />
             <header className="stack stack--tight">
                 <h1>{t('compare.title')}</h1>

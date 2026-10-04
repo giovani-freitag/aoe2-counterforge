@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import { LAND_CATEGORIES } from '../../domain/enums/unit-category.ts';
 import { Icon } from '../components/icon.tsx';
 import { MatchupRow } from '../components/matchup-row.tsx';
+import { PageMeta } from '../components/page-meta.tsx';
 import { PickerField } from '../components/picker-field.tsx';
 import { iconUrl } from '../format.ts';
 import { useGameText } from '../hooks/use-game-text.ts';
@@ -60,6 +61,7 @@ export function HomePage() {
 
     return (
         <div className="stack">
+            <PageMeta title={t('seo.home.title')} description={t('seo.home.description')} name={t('nav.home')} />
             <header className="stack stack--tight">
                 <h1>{t('home.facing')}</h1>
                 <p className="card__hint">{t('home.facingHint')}</p>

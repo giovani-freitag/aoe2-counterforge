@@ -5,6 +5,7 @@ import { LAND_CATEGORIES } from '../../domain/enums/unit-category.ts';
 import { EntityNotFoundError } from '../../domain/errors/domain-error.ts';
 import { Forge } from '../components/forge.tsx';
 import { GameIcon } from '../components/game-icon.tsx';
+import { PageMeta } from '../components/page-meta.tsx';
 import { UnitListItem } from '../components/unit-list-item.tsx';
 import { useGameText } from '../hooks/use-game-text.ts';
 import { usePreferences } from '../hooks/use-preferences.ts';
@@ -72,6 +73,12 @@ export function CivilizationPage() {
 
     return (
         <div className="stack">
+            <PageMeta
+                title={t('seo.civilization.title', { name: civText.name })}
+                description={[civText.intro, ...civText.bonuses].filter(Boolean).join('. ')}
+                name={civText.name}
+                section="civilizations"
+            />
             <BackLink to="/civs" label={t('nav.civilizations')} />
             <header className="card">
                 <Forge

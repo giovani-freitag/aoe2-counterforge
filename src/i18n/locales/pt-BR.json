@@ -445,5 +445,38 @@
         "filter": "Filtrar por nome",
         "filterHint": "ex.: bretões",
         "empty": "Nenhuma civilização corresponde."
+    },
+    "seo": {
+        "home": {
+            "title": "Counters e guia de unidades de Age of Empires II",
+            "description": "O que vence cada unidade de Age of Empires II, calculado pela fórmula de dano do jogo, com custos, atributos, melhorias e aldeões para produzir sem parar."
+        },
+        "units": {
+            "title": "Todas as unidades de Age of Empires II",
+            "description": "Todas as unidades de Age of Empires II, filtradas por categoria, era e civilização e ordenadas por dano, vida, alcance, velocidade ou custo-benefício."
+        },
+        "technologies": {
+            "title": "Todas as tecnologias de Age of Empires II",
+            "description": "Todas as tecnologias de Age of Empires II com custo, as unidades que cada uma altera e em quanto, e quais civilizações podem pesquisá-las."
+        },
+        "civilizations": {
+            "title": "Todas as civilizações de Age of Empires II",
+            "description": "Todas as civilizações de Age of Empires II com seus bônus, unidades e tecnologias únicas, e as unidades que cada uma treina."
+        },
+        "compare": {
+            "title": "Comparar unidades de Age of Empires II",
+            "description": "Até {{max}} unidades de Age of Empires II lado a lado, com o melhor valor destacado em cada linha e uma tabela de confronto direto."
+        },
+        "unit": {
+            "title": "{{name}}: counters, atributos e custo",
+            "description": "O que vence {{name}} em Age of Empires II, quanto custa, quais melhorias o alteram e quantos aldeões o mantêm em produção."
+        },
+        "technology": {
+            "title": "{{name}}: efeito, custo e civilizações",
+            "description": "Custo, todas as unidades que altera e quais civilizações a pesquisam."
+        },
+        "civilization": {
+            "title": "{{name}}: bônus, unidades e tecnologias únicas"
+        }
     }
 }

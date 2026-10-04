@@ -8,6 +8,7 @@ import { UNIT_SORT_KEYS, type UnitSortKey } from '../../services/unit-ranking/un
 import { UnitListItem } from '../components/unit-list-item.tsx';
 import { Link } from 'react-router';
 import { Directory } from '../components/directory.tsx';
+import { PageMeta } from '../components/page-meta.tsx';
 import { Icon } from '../components/icon.tsx';
 import { FilterPicker } from '../components/filter-picker.tsx';
 import { FilterToggle } from '../components/filter-toggle.tsx';
@@ -123,84 +124,92 @@ export function UnitsPage() {
     );
 
     return (
-        <Directory
-            title={t('nav.units')}
-            summary={t('civ.count', { count: rows.length })}
-            action={
-                <Link className="chip" to="/compare">
-                    <Icon name="compare" />
-                    {t('nav.compare')}
-                </Link>
-            }
-            items={rows}
-            keyOf={(row) => row.unit.key}
-            empty={t('units.empty')}
-            search={
-                <SearchField
-                    id="unit-filter"
-                    label={t('units.filterPlaceholder')}
-                    placeholder={t('units.filterHint')}
-                    value={term}
-                    onChange={(value) => {
-                        setFilter('q', value || null);
-                    }}
-                />
-            }
-            filters={
-                <>
-                    <FilterPicker
-                        label={t('units.sortBy')}
-                        value={sort}
-                        options={SORT_OPTIONS.map((option) => ({
-                            value: option,
-                            label: t(`units.sorts.${option}`),
-                        }))}
+        <>
+            <PageMeta
+                title={t('seo.units.title')}
+                description={t('seo.units.description')}
+                name={t('nav.units')}
+                section="units"
+            />
+            <Directory
+                title={t('nav.units')}
+                summary={t('civ.count', { count: rows.length })}
+                action={
+                    <Link className="chip" to="/compare">
+                        <Icon name="compare" />
+                        {t('nav.compare')}
+                    </Link>
+                }
+                items={rows}
+                keyOf={(row) => row.unit.key}
+                empty={t('units.empty')}
+                search={
+                    <SearchField
+                        id="unit-filter"
+                        label={t('units.filterPlaceholder')}
+                        placeholder={t('units.filterHint')}
+                        value={term}
                         onChange={(value) => {
-                            setFilter('sort', value);
+                            setFilter('q', value || null);
                         }}
                     />
-                    <FilterPicker
-                        label={t('units.category')}
-                        value={category ?? ''}
-                        options={[
-                            { value: '', label: t('common.all') },
-                            ...UNIT_CATEGORIES.filter((entry) => entry !== 'civilian').map((entry) => ({
-                                value: entry,
-                                label: t(`categories.${entry}`),
-                            })),
-                        ]}
-                        onChange={(value) => {
-                            setFilter('category', value || null);
-                        }}
+                }
+                filters={
+                    <>
+                        <FilterPicker
+                            label={t('units.sortBy')}
+                            value={sort}
+                            options={SORT_OPTIONS.map((option) => ({
+                                value: option,
+                                label: t(`units.sorts.${option}`),
+                            }))}
+                            onChange={(value) => {
+                                setFilter('sort', value);
+                            }}
+                        />
+                        <FilterPicker
+                            label={t('units.category')}
+                            value={category ?? ''}
+                            options={[
+                                { value: '', label: t('common.all') },
+                                ...UNIT_CATEGORIES.filter((entry) => entry !== 'civilian').map((entry) => ({
+                                    value: entry,
+                                    label: t(`categories.${entry}`),
+                                })),
+                            ]}
+                            onChange={(value) => {
+                                setFilter('category', value || null);
+                            }}
+                        />
+                        <FilterPicker
+                            label={t('unit.age')}
+                            value={age === null ? '' : String(age)}
+                            options={[
+                                { value: '', label: t('common.all') },
+                                ...AGE_IDS.map((entry) => ({ value: String(entry), label: t(`ages.${entry}`) })),
+                            ]}
+                            onChange={(value) => {
+                                setFilter('age', value || null);
+                            }}
+                        />
+                        {toggle('lines', t('units.onePerLine'), linesOnly)}
+                        {toggle('unique', t('units.uniqueOnly'), uniqueOnly)}
+                        {toggle('upgraded', t('units.withUpgrades'), upgraded)}
+                    </>
+                }
+            >
+                {(row) => (
+                    <UnitListItem
+                        unit={row.unit}
+                        subtitle={`${t(`ages.${row.unit.age}`)} · ${buildingNames(row.unit.buildings, t)}`}
+                        trailing={
+                            <span className="badge">
+                                {metricLabel(row.metric) ?? t('common.seconds', { value: short(row.unit.trainTime) })}
+                            </span>
+                        }
                     />
-                    <FilterPicker
-                        label={t('unit.age')}
-                        value={age === null ? '' : String(age)}
-                        options={[
-                            { value: '', label: t('common.all') },
-                            ...AGE_IDS.map((entry) => ({ value: String(entry), label: t(`ages.${entry}`) })),
-                        ]}
-                        onChange={(value) => {
-                            setFilter('age', value || null);
-                        }}
-                    />
-                    {toggle('lines', t('units.onePerLine'), linesOnly)}
-                    {toggle('unique', t('units.uniqueOnly'), uniqueOnly)}
-                    {toggle('upgraded', t('units.withUpgrades'), upgraded)}
-                </>
-            }
-        >
-            {(row) => (
-                <UnitListItem
-                    unit={row.unit}
-                    subtitle={`${t(`ages.${row.unit.age}`)} · ${buildingNames(row.unit.buildings, t)}`}
-                    trailing={
-                        <span className="badge">
-                            {metricLabel(row.metric) ?? t('common.seconds', { value: short(row.unit.trainTime) })}
-                        </span>
-                    }
-                />
-            )}
-        </Directory>
+                )}
+            </Directory>
+        </>
     );
 }
