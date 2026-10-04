@@ -11,9 +11,10 @@ argue with the reasoning instead of guessing at it.
 | [0003](0003-one-service-per-capability.md) | One service per capability, one entrypoint each | Accepted |
 | [0004](0004-ship-the-dataset.md) | The dataset is extracted once and committed | Accepted |
 | [0005](0005-numbers-from-the-game.md) | Every number comes from the game, never from a hand-written table | Accepted |
-| [0006](0006-static-hosting.md) | Static hosting with a hash router | Accepted |
+| [0006](0006-static-hosting.md) | Static hosting with a hash router | Superseded by 0009 |
 | [0007](0007-three-layers-of-tests.md) | Three layers of tests, one of them structural | Accepted |
 | [0008](0008-one-shape-for-every-filter.md) | One shape for every filter row, and every field keeps its label | Accepted |
+| [0009](0009-a-page-for-every-address.md) | A prerendered page for every address, in every language | Accepted |
 
 Two of these are enforced by tooling rather than by review: `eslint.config.js` fails the build when
 `domain/` or `services/` reach for React or the DOM, and `tests/arch/layering.test.ts` reads the
