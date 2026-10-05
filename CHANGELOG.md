@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/giovani-freitag/aoe2-counterforge/compare/v0.4.0...v0.4.1) (2026-10-05)
+
+
+### Bug Fixes
+
+* list the languages in alphabetical order ([90951aa](https://github.com/giovani-freitag/aoe2-counterforge/commit/90951aa4c9768dec0a8a82e604d13884e8a18636))
+
 ## [0.4.0](https://github.com/giovani-freitag/aoe2-counterforge/compare/v0.3.0...v0.4.0) (2026-10-05)
 
 
