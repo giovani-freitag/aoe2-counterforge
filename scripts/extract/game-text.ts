@@ -12,8 +12,8 @@ const SENTENCE_BREAK = /(?<=\.)(?<!\bvs\.)\s+(?=[A-ZÀ-Þ])/;
 
 /** Sentence openers the game uses to introduce a matchup verdict, per shipped locale. */
 const MATCHUP_MARKERS = {
-    strong: /^(strong|forte|forts?)\b/i,
-    weak: /^(weak|fraco|fraca)\b/i,
+    strong: /^(strong|forte|forts?|fuerte)\b/i,
+    weak: /^(weak|fraco|fraca|d[eé]bil|debole)\b/i,
 };
 
 export interface UnitHelp {

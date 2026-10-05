@@ -1,0 +1,484 @@
+{
+    "app": {
+        "title": "AoE2 Counterforge",
+        "tagline": "Counters, costes y economía de cada unidad",
+        "skipToContent": "Saltar al contenido",
+        "source": "Código en GitHub"
+    },
+    "nav": {
+        "home": "Inicio",
+        "units": "Unidades",
+        "civilizations": "Civilizaciones",
+        "about": "Acerca de",
+        "compare": "Comparar",
+        "backTo": "Volver a {{section}}",
+        "technologies": "Tecnologías"
+    },
+    "search": {
+        "open": "Buscar una unidad o civilización",
+        "placeholder": "Buscar una unidad, civilización o tecnología...",
+        "hint": "Consejo: escribe \"britanos arquero\" para limitar los resultados a una civilización",
+        "empty": "Nada encontrado para \"{{query}}\"",
+        "clearCiv": "Quitar el filtro de civilización",
+        "groups": {
+            "unit": "Unidades",
+            "civilization": "Civilizaciones",
+            "technology": "Tecnologías"
+        },
+        "keys": {
+            "navigate": "navegar",
+            "select": "abrir",
+            "close": "cerrar"
+        },
+        "short": "Buscar"
+    },
+    "home": {
+        "browseByCategory": "Explorar por tipo",
+        "pickCiv": "¿Juegas con una civilización concreta?",
+        "pickCivHelp": "Elige una para ver solo lo que puedes entrenar e investigar.",
+        "allCivs": "Todas las civilizaciones",
+        "facing": "¿A qué te enfrentas?",
+        "facingHint": "Elige lo que se te viene encima y la guía responde con lo que lo vence.",
+        "enemy": "Unidad enemiga",
+        "answerWith": "Responde a {{unit}} con",
+        "seeAll": "Todos los enfrentamientos →"
+    },
+    "unit": {
+        "trainedAt": "Se entrena en",
+        "trainTime": "Tiempo de entrenamiento",
+        "age": "Edad",
+        "uniqueTo": "Exclusiva de {{civ}}",
+        "notAvailable": "{{civ}} no pueden entrenar esta unidad.",
+        "tabs": {
+            "overview": "Resumen",
+            "counters": "Counters",
+            "upgrades": "Mejoras",
+            "economy": "Economía"
+        },
+        "officialSummary": "Resumen oficial del juego",
+        "strongVs": "Fuerte contra",
+        "weakVs": "Débil contra",
+        "stats": "Atributos",
+        "statsBase": "Base",
+        "statsUpgraded": "Con todas las mejoras",
+        "statsWithCiv": "Todo lo que {{civ}} pueden investigar, más las bonificaciones que la civilización recibe de entrada.",
+        "bonusDamage": "Daño adicional",
+        "armourClasses": "Clases de armadura",
+        "line": "Línea de mejora",
+        "lineCurrent": "actual",
+        "lineOr": "o",
+        "noBonusDamage": "Sin daño adicional.",
+        "availableIn_other": "{{count}} civilizaciones",
+        "availableIn_one": "{{count}} civilización",
+        "trainedBy": "La entrenan"
+    },
+    "stats": {
+        "hp": "PR",
+        "attack": "Ataque",
+        "meleeArmour": "Armadura cuerpo a cuerpo",
+        "pierceArmour": "Armadura antiproyectiles",
+        "range": "Alcance",
+        "minRange": "Alcance mínimo",
+        "reloadTime": "Recarga",
+        "accuracy": "Precisión",
+        "speed": "Velocidad",
+        "lineOfSight": "Línea de visión",
+        "blastWidth": "Radio de explosión",
+        "dps": "Daño por segundo"
+    },
+    "resources": {
+        "food": "Comida",
+        "wood": "Madera",
+        "gold": "Oro",
+        "stone": "Piedra"
+    },
+    "ages": {
+        "1": "Alta Edad Media",
+        "2": "Edad Feudal",
+        "3": "Edad de los Castillos",
+        "4": "Edad Imperial"
+    },
+    "categories": {
+        "infantry": "Infantería",
+        "archer": "Arqueros",
+        "cavalry": "Caballería",
+        "cavalry-archer": "Arqueros a caballo",
+        "camel": "Camellos",
+        "elephant": "Elefantes",
+        "siege": "Asedio",
+        "monk": "Monjes",
+        "naval": "Naval",
+        "civilian": "Civiles"
+    },
+    "buildings": {
+        "barracks": "Cuartel",
+        "archery-range": "Galería de tiro con arco",
+        "stable": "Establo",
+        "siege-workshop": "Taller de asedio",
+        "castle": "Castillo",
+        "monastery": "Monasterio",
+        "dock": "Muelle",
+        "town-center": "Centro urbano",
+        "market": "Mercado",
+        "university": "Universidad",
+        "blacksmith": "Herrería",
+        "mill": "Molino",
+        "lumber-camp": "Campamento maderero",
+        "mining-camp": "Campamento minero",
+        "krepost": "Krepost",
+        "donjon": "Torre del homenaje",
+        "folwark": "Folwark",
+        "fortified-church": "Iglesia fortificada",
+        "mule-cart": "Carro de mulas",
+        "caravanserai": "Caravasar",
+        "feitoria": "Factoría",
+        "settlement": "Asentamiento",
+        "pasture": "Pastura"
+    },
+    "counters": {
+        "title": "Enfrentamientos de {{unit}}",
+        "empty": "Ningún enfrentamiento relevante en este rango.",
+        "model": "Combate",
+        "models": {
+            "stand": "Cara a cara",
+            "skirmish": "Con alcance"
+        },
+        "pool": "Oponentes",
+        "pools": {
+            "common": "Comunes",
+            "all": "Con únicas",
+            "every": "Todas las versiones"
+        },
+        "upgradeLevel": "Mejoras",
+        "upgradeLevels": {
+            "base": "Ninguna",
+            "full": "Todas"
+        },
+        "efficiency": "Eficiencia de intercambio",
+        "verdicts": {
+            "dominant": "Domina",
+            "favourable": "Favorable",
+            "even": "Equilibrado",
+            "unfavourable": "Desfavorable",
+            "countered": "Contrarrestada"
+        },
+        "notes": {
+            "outranges": "Más alcance",
+            "outranged": "Menos alcance",
+            "faster": "Más rápida",
+            "slower": "Más lenta",
+            "blast": "Daño en área",
+            "deals-bonus": "Causa daño adicional",
+            "takes-bonus": "Recibe daño adicional",
+            "min-range": "Alcance mínimo"
+        },
+        "duel": {
+            "title": "Desglose del combate",
+            "damagePerHit": "Daño por golpe",
+            "hitsToKill": "Golpes para matar",
+            "timeToKill": "Tiempo para matar",
+            "freeHits": "Golpes gratis",
+            "breakdown": "Cómo se suma el daño",
+            "minimumDamage": "El juego aplica siempre al menos 1 de daño por golpe.",
+            "volley_one": "{{count}} proyectil más",
+            "volley_other": "{{count}} proyectiles más"
+        },
+        "noAttack": "{{unit}} no tiene ataque: convierte unidades enemigas en lugar de luchar.",
+        "seconds": "{{value}} s",
+        "filterPlaceholder": "Filtrar oponente",
+        "filterHint": "p. ej. piquero",
+        "demolition": "{{unit}} queda fuera de la simulación: se gasta en un solo golpe o solo sirve contra edificios, así que no hay daño sostenido que comparar.",
+        "openUnit": "Abrir {{unit}}",
+        "side": "Qué enfrentamientos mostrar",
+        "sides": {
+            "strong": "Fuertes",
+            "weak": "Débiles",
+            "all": "Todos"
+        },
+        "widen": "Buscar en todas las versiones",
+        "columns": {
+            "opponent": "Oponente",
+            "trade": "Intercambio de {{unit}}",
+            "answer": "Respuesta",
+            "tradeAgainst": "Intercambio contra {{unit}}"
+        },
+        "ownRoster": "Entrenables por {{civ}}"
+    },
+    "upgrades": {
+        "lineTitle": "Mejoras de la línea",
+        "genericTitle": "Tecnologías que cambian esta unidad",
+        "uniqueTitle": "Lo que cambia cada civilización",
+        "officialHint": "Lo que dice el juego",
+        "researchTime": "{{value}} s de investigación",
+        "qualitative": "Efecto sin número en el simulador",
+        "empty": "Ninguna tecnología genérica cambia esta unidad.",
+        "effect": {
+            "hp": "{{value}} PR",
+            "range": "{{value}} de alcance",
+            "accuracy": "{{value}}% de precisión",
+            "lineOfSight": "{{value}} de línea de visión",
+            "speed": "{{value}}% de velocidad",
+            "attackSpeed": "{{value}}% de cadencia",
+            "trainSpeed": "{{value}}% más rápido de entrenar",
+            "attack": "{{value}} de ataque{{against}}",
+            "armour": "{{value}} de armadura{{against}}",
+            "against": " contra {{class}}",
+            "speedFlat": "{{value}} de velocidad",
+            "reload": "{{value}} s de recarga",
+            "hpPercent": "{{value}}% de PR",
+            "attackPercent": "{{value}}% de ataque{{against}}",
+            "armourPercent": "{{value}}% de armadura{{against}}",
+            "perAge": "{{effect}} por edad",
+            "projectiles": "{{value}} proyectil",
+            "blast": "{{value}} de radio de explosión",
+            "regeneration": "regenera {{value}} PR por minuto",
+            "ballistics": "Los disparos apuntan por delante del objetivo",
+            "cost": "{{value}}% de coste",
+            "costResource": "{{value}}% de coste en {{resource}}",
+            "accuracyFloor": "Precisión elevada al {{value}}%",
+            "bonusResistance": "Recibe {{value}}% menos daño adicional",
+            "ignoresArmour": "Los ataques ignoran la armadura",
+            "minRange": "Alcance mínimo reducido a {{value}}",
+            "population": "{{value}} de población",
+            "damageReflection": "Devuelve el {{value}}% del daño cuerpo a cuerpo"
+        },
+        "uniqueHint": "Bonificaciones que la civilización recibe de entrada, y las tecnologías de castillo que alcanzan a esta unidad.",
+        "noUnique": "Ninguna civilización cambia esta unidad por su cuenta.",
+        "civBonus": "Bonificación de civilización",
+        "civBonusHint": "Se recibe al empezar la partida, sin nada que investigar.",
+        "teamBonus": "Bonificación de equipo",
+        "teamBonusHint": "La recibe todo el equipo, así que cuenta cuando esta civilización es aliada."
+    },
+    "economy": {
+        "title": "Aldeanos necesarios para producir sin parar",
+        "explain": "Calculado a partir del coste de la unidad, su tiempo de entrenamiento y las tasas de recolección de Definitive Edition.",
+        "buildings": "Edificios de producción",
+        "foodSource": "Fuente de comida",
+        "foodSources": {
+            "farm": "Granja",
+            "sheep": "Oveja",
+            "berries": "Bayas",
+            "hunt": "Caza",
+            "shore-fish": "Peces de orilla"
+        },
+        "trainingSpeed": "Velocidad de entrenamiento",
+        "withConscription": "Con Leva (+33%)",
+        "totalVillagers": "Aldeanos en total",
+        "perMinute": "{{value}}/min",
+        "unitsPerMinute": "{{value}} unidades por minuto",
+        "bottleneck": "Cuello de botella: {{resource}}",
+        "gatherRate": "{{value}}/s por aldeano",
+        "demand": "Consumo",
+        "free": "Esta unidad no cuesta recursos.",
+        "note": "Las tasas base ya incluyen el camino hasta el punto de entrega. Las mejoras de carga y la carga extra del arado pasan por el modelo de viajes: aumentan la capacidad y la velocidad, así que rinden menos que una mejora directa de recolección.",
+        "villagers_other": "{{count}} aldeanos",
+        "villagers_one": "{{count}} aldeano",
+        "sustain_other": "{{villagers}} aldeanos mantienen {{buildings}} edificios en marcha",
+        "sustain_one": "{{villagers}} aldeanos mantienen {{buildings}} edificio en marcha",
+        "countFarmUpkeep": "Contar la madera de reponer granjas",
+        "researchAll": "Investigar todo",
+        "researchNone": "Limpiar",
+        "ofWhichUpkeep": "De los cuales {{value}} para reponer granjas",
+        "farmSummary": "{{farms}} granjas con {{food}} de comida cada una, consumiendo {{wood}} de madera por minuto.",
+        "techGroups": {
+            "gathering": "Velocidad de recolección",
+            "carrying": "Carga",
+            "farming": "Granjas"
+        },
+        "onlyUpkeep": "Solo para reponer granjas",
+        "exactTotal": "{{value}} exactos"
+    },
+    "civ": {
+        "bonuses": "Bonificaciones",
+        "uniqueUnits": "Unidades únicas",
+        "uniqueTechs": "Tecnologías únicas",
+        "roster": "Unidades disponibles",
+        "teamBonus": "Bonificación de equipo",
+        "select": "Usar esta civilización",
+        "selected": "Civilización activa",
+        "clear": "Mostrar todas las civilizaciones",
+        "count_other": "{{count}} unidades",
+        "count_one": "{{count}} unidad"
+    },
+    "about": {
+        "title": "Acerca de esta guía",
+        "whatIsIt": "Qué es",
+        "whatIsItBody": "Una guía rápida de las unidades de Age of Empires II: cuánto cuestan, a quién vencen, qué mejoras cambian sus números y cuántos aldeanos hacen falta para producirlas sin parar.",
+        "howCounters": "Cómo se calculan los counters",
+        "howCountersBody": "Cada enfrentamiento aplica la fórmula de daño del juego: por cada clase de armadura compartida, el ataque del atacante menos la armadura del defensor, todo sumado, con un mínimo de 1 de daño. De ahí salen los golpes para matar, el tiempo para matar y el daño por segundo. La eficiencia de intercambio compara cuánto valor destruye cada bando por segundo.",
+        "limitations": "Limitaciones",
+        "limitationsBody": "La simulación es de una unidad contra otra. No modela batallas masivas, fuego concentrado, daño en área sobre grupos, conversiones ni un micro perfecto. Léela junto al resumen oficial del juego.",
+        "dataSource": "Datos",
+        "dataSourceBody": "Los atributos, textos e iconos se extraen de los datos del propio juego y se versionan junto con la aplicación, que funciona por completo sin conexión.",
+        "credits": "Créditos",
+        "creditsBody": "Age of Empires II y todos sus iconos pertenecen a Microsoft, Forgotten Empires, Ensemble Studios y SkyBox Labs. Este es un proyecto de aficionados sin afiliación oficial.",
+        "language": "Idioma"
+    },
+    "common": {
+        "back": "Volver",
+        "close": "Cerrar",
+        "seconds": "{{value}} s",
+        "tiles": "{{value}} casillas",
+        "perSecond": "{{value}}/s",
+        "loading": "Cargando...",
+        "notFound": "No encontramos esa página.",
+        "goHome": "Volver al inicio",
+        "all": "Todas",
+        "filter": "Filtrar…",
+        "noMatch": "Nada coincide"
+    },
+    "armourClasses": {
+        "infantry": "Infantería",
+        "archer": "Arqueros",
+        "skirmisher": "Guerrilleros",
+        "spearman": "Lanceros",
+        "eagle-warrior": "Infantería de choque",
+        "cavalry": "Caballería",
+        "cavalry-archer": "Arqueros a caballo",
+        "camel": "Camellos",
+        "mameluke": "Mamelucos",
+        "war-elephant": "Elefantes de guerra",
+        "monk": "Monjes",
+        "siege-weapon": "Armas de asedio",
+        "ram": "Arietes",
+        "gunpowder": "Pólvora",
+        "unique-unit": "Unidades únicas",
+        "ship": "Barcos",
+        "ship-secondary": "Barcos",
+        "fire-ship": "Barcos incendiarios",
+        "standard-building": "Edificios",
+        "all-buildings": "Todos los edificios",
+        "stone-defense": "Defensas de piedra",
+        "castle": "Castillos",
+        "wall-gate": "Murallas y puertas",
+        "tree": "Árboles",
+        "base-melee": "Cuerpo a cuerpo",
+        "base-pierce": "Perforante",
+        "unused-0": "Armadura sin uso 0",
+        "capital-ship": "Barcos capitales",
+        "predator-animal": "Depredadores",
+        "boar": "Jabalíes",
+        "unused-31": "Armadura sin uso 31",
+        "condottiero": "Condotieros",
+        "fishing-ship": "Barcos pesqueros",
+        "hero-king": "Héroes y reyes",
+        "heavy-siege": "Asedio pesado",
+        "royal-heir": "Herederos reales",
+        "unused-40": "Armadura sin uso 40"
+    },
+    "compare": {
+        "title": "Comparar unidades",
+        "help": "Pon hasta {{max}} unidades lado a lado y mira quién vence a quién.",
+        "add": "Añadir una unidad",
+        "pickPlaceholder": "Escribe el nombre de una unidad...",
+        "remove": "Quitar {{unit}}",
+        "empty": "Añade al menos una unidad para comparar.",
+        "attribute": "Atributo",
+        "villagers": "Aldeanos por edificio",
+        "best": "Mejor valor",
+        "headToHead": "Cara a cara",
+        "headToHeadHelp": "Eficiencia de intercambio de la unidad de la fila contra la de la columna. Por encima de 1, la fila gana el intercambio.",
+        "rowVersusColumn": "Fila vs columna",
+        "addToCompare": "Comparar"
+    },
+    "units": {
+        "filterPlaceholder": "Filtrar por nombre",
+        "sortBy": "Ordenar por",
+        "onePerLine": "Una por línea",
+        "uniqueOnly": "Solo únicas",
+        "withUpgrades": "Con mejoras",
+        "sorts": {
+            "name": "Nombre (A-Z)",
+            "age": "Edad",
+            "train-time": "Más rápida de entrenar",
+            "cost": "Más barata",
+            "hp": "Más PR",
+            "attack": "Mayor ataque",
+            "dps": "Mayor daño por segundo",
+            "speed": "Más rápida",
+            "range": "Mayor alcance",
+            "value": "Mejor valor por su coste"
+        },
+        "filterHint": "p. ej. caballero",
+        "category": "Tipo",
+        "empty": "Ninguna unidad coincide con estos filtros.",
+        "offTreeBadge": "Fuera del árbol"
+    },
+    "settings": {
+        "language": "Idioma",
+        "theme": "Tema",
+        "title": "Ajustes"
+    },
+    "languages": {
+        "pt-BR": "Portugués",
+        "en": "Inglés",
+        "es": "Español",
+        "it": "Italiano"
+    },
+    "themes": {
+        "system": "Del sistema",
+        "light": "Claro",
+        "dark": "Oscuro"
+    },
+    "tech": {
+        "changes": "Qué cambia",
+        "changesCount_one": "{{count}} unidad",
+        "changesCount_other": "{{count}} unidades",
+        "changesNothing": "No alcanza a ninguna unidad a la que esta guía ponga un número.",
+        "researchedBy": "Quién la investiga",
+        "civCount_one": "{{count}} civilización",
+        "civCount_other": "{{count}} civilizaciones",
+        "uniqueTo": "Exclusiva de {{civ}}",
+        "trainsFaster": "Las unidades se entrenan un {{value}}% más rápido donde se investiga.",
+        "changesNoUnit": "Esta tecnología no cambia los números de ninguna unidad. Lo que hace — una tasa de mercado, un tributo, cómo trabaja un monje, una mejora a otra unidad — está en su descripción, arriba."
+    },
+    "techs": {
+        "count_one": "{{count}} tecnología",
+        "count_other": "{{count}} tecnologías",
+        "filter": "Filtrar por nombre",
+        "filterHint": "p. ej. pureza de sangre",
+        "building": "Se investiga en",
+        "unique": "Única",
+        "empty": "Ninguna tecnología coincide."
+    },
+    "civs": {
+        "count_one": "{{count}} civilización",
+        "count_other": "{{count}} civilizaciones",
+        "filter": "Filtrar por nombre",
+        "filterHint": "p. ej. britanos",
+        "empty": "Ninguna civilización coincide."
+    },
+    "seo": {
+        "home": {
+            "title": "Counters y guía de unidades de Age of Empires II",
+            "description": "Qué vence a cada unidad de Age of Empires II, calculado con la fórmula de daño del propio juego, más costes, atributos, mejoras y los aldeanos para producirla sin parar."
+        },
+        "units": {
+            "title": "Todas las unidades de Age of Empires II",
+            "description": "Todas las unidades de Age of Empires II, filtradas por categoría, edad y civilización y ordenadas por daño, puntos de resistencia, alcance, velocidad o valor por su coste."
+        },
+        "technologies": {
+            "title": "Todas las tecnologías de Age of Empires II",
+            "description": "Todas las tecnologías de Age of Empires II con su coste, las unidades que cambian y en cuánto, y qué civilizaciones pueden investigarlas."
+        },
+        "civilizations": {
+            "title": "Todas las civilizaciones de Age of Empires II",
+            "description": "Todas las civilizaciones de Age of Empires II con sus bonificaciones, unidades y tecnologías únicas, y las unidades que pueden entrenar."
+        },
+        "compare": {
+            "title": "Comparar unidades de Age of Empires II",
+            "description": "Hasta {{max}} unidades de Age of Empires II lado a lado, con el mejor valor en cada fila y una tabla cara a cara de quién vence a quién."
+        },
+        "unit": {
+            "title": "{{name}}: counters, atributos y coste",
+            "description": "Qué vence a {{name}} en Age of Empires II, cuánto cuesta, qué mejoras lo cambian y cuántos aldeanos lo mantienen en producción."
+        },
+        "technology": {
+            "title": "{{name}}: efecto, coste y civilizaciones",
+            "description": "Coste, cada unidad que cambia y qué civilizaciones la investigan."
+        },
+        "civilization": {
+            "title": "{{name}}: bonificaciones, unidades y tecnologías únicas"
+        }
+    }
+}

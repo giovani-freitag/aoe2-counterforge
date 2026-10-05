@@ -16,7 +16,7 @@
   <img src="https://img.shields.io/badge/React-19-C79A45?style=flat-square&logo=react&logoColor=white&labelColor=16222D" alt="React 19">
   <img src="https://img.shields.io/badge/Vite-8-C79A45?style=flat-square&logo=vite&logoColor=white&labelColor=16222D" alt="Vite 8">
   <img src="https://img.shields.io/badge/TypeScript-strict-C79A45?style=flat-square&logo=typescript&logoColor=white&labelColor=16222D" alt="TypeScript strict">
-  <img src="https://img.shields.io/badge/i18n-en%20%C2%B7%20pt--BR-C79A45?style=flat-square&logo=i18next&logoColor=white&labelColor=16222D" alt="English and Portuguese">
+  <img src="https://img.shields.io/badge/i18n-en%20%C2%B7%20pt--BR%20%C2%B7%20es%20%C2%B7%20it-C79A45?style=flat-square&logo=i18next&logoColor=white&labelColor=16222D" alt="English, Portuguese, Spanish and Italian">
 </p>
 
 <p align="center">
@@ -41,8 +41,8 @@ you have, and whether you plan to stand and fight or shoot on the move.
 - 🏰 **Civilization-aware** — pick one and every stat, counter and ranking follows what it can research *and* the bonuses it is simply given.
 - 👥 **Villagers per resource** to keep a building producing non-stop, with the bottleneck called out.
 - ⚖️ **Four units side by side**, best value crowned on every row, plus a head-to-head matrix.
-- 🔎 **`Ctrl`/`Cmd` + `K`** across units, civilizations and technologies — fuzzy, accent-blind, in English and Portuguese.
-- 🌐 **A real page for every unit, technology and civilization**, in English and Portuguese, written ahead of time so it reads without JavaScript and can be found from a search.
+- 🔎 **`Ctrl`/`Cmd` + `K`** across units, civilizations and technologies — fuzzy, accent-blind, in English, Portuguese, Spanish and Italian.
+- 🌐 **A real page for every unit, technology and civilization**, in English, Portuguese, Spanish and Italian, written ahead of time so it reads without JavaScript and can be found from a search.
 - 📴 **Works offline.** The whole dataset ships with the page; nothing is fetched at runtime.
 
 <table>

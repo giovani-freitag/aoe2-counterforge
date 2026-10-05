@@ -17,8 +17,6 @@ if (existsSync('.env')) process.loadEnvFile('.env');
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'src', 'data', 'generated');
 
-/** Locale tags the application ships, mapped to the language folder inside the install. */
-const LOCALES: Record<string, string> = { en: 'en', 'pt-BR': 'br' };
 const FALLBACK_LOCALE = 'en';
 
 /** The guide covers the main game; the separate campaign mode ships its own unrelated roster. */
@@ -36,9 +34,7 @@ const meta = JSON.parse(
     readFileSync(install.path('resources', '_common', 'dat', 'civilizations.json'), 'utf8'),
 ) as { civilization_list: CivilizationMeta[] };
 
-const strings = new Map(
-    Object.entries(LOCALES).map(([locale, language]) => [locale, install.readStrings(language)]),
-);
+const strings = install.readStrings();
 
 const game = install.readGameData();
 

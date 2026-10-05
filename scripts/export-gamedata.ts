@@ -17,9 +17,6 @@ if (existsSync('.env')) process.loadEnvFile('.env');
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, process.argv[2] ?? 'exports');
 
-/** Locale tags to write, mapped to the language folder inside the install. */
-const LOCALES: Record<string, string> = { en: 'en', 'pt-BR': 'br' };
-
 /** Files the game keeps beside the binary, which carry data rather than assets. */
 const SIBLINGS: Record<string, string[]> = {
     'unit-lines.json': ['resources', '_common', 'dat', 'unitlines.json'],
@@ -131,11 +128,8 @@ written['civilizations.json'] = write(
     })),
 );
 
-for (const [locale, language] of Object.entries(LOCALES)) {
-    written[`strings.${locale}.json`] = write(
-        `strings.${locale}.json`,
-        Object.fromEntries(install.readStrings(language)),
-    );
+for (const [locale, table] of install.readStrings()) {
+    written[`strings.${locale}.json`] = write(`strings.${locale}.json`, Object.fromEntries(table));
 }
 
 for (const [name, parts] of Object.entries(SIBLINGS)) {

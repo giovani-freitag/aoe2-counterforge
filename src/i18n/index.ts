@@ -2,15 +2,19 @@ import i18next, { type i18n } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { DEFAULT_LOCALE, FALLBACK_LOCALE } from '../data/dataset.ts';
 import en from './locales/en.json';
+import es from './locales/es.json';
+import it from './locales/it.json';
 import ptBr from './locales/pt-BR.json';
 
-export const SUPPORTED_LOCALES = [DEFAULT_LOCALE, FALLBACK_LOCALE] as const;
+export const SUPPORTED_LOCALES = [DEFAULT_LOCALE, FALLBACK_LOCALE, 'es', 'it'] as const;
 
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
 const RESOURCES: Record<SupportedLocale, { translation: Record<string, unknown> }> = {
     'pt-BR': { translation: ptBr },
     en: { translation: en },
+    es: { translation: es },
+    it: { translation: it },
 };
 
 /**
@@ -42,8 +46,12 @@ export function createI18n(locale: SupportedLocale): i18n {
  * @returns The closest supported locale.
  */
 export function toSupportedLocale(language: string): SupportedLocale {
-    const exact = SUPPORTED_LOCALES.find((locale) => locale.toLowerCase() === language.toLowerCase());
+    const tag = language.toLowerCase();
+    const exact = SUPPORTED_LOCALES.find((locale) => locale.toLowerCase() === tag);
     if (exact) return exact;
 
-    return language.toLowerCase().startsWith('pt') ? DEFAULT_LOCALE : FALLBACK_LOCALE;
+    // A regional variant the dataset has no strings for still reads best in its own language.
+    const [base] = tag.split('-');
+
+    return SUPPORTED_LOCALES.find((locale) => locale.toLowerCase().split('-')[0] === base) ?? FALLBACK_LOCALE;
 }

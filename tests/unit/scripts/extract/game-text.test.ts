@@ -87,6 +87,28 @@ describe('splitMatchupSentences', () => {
 
         expect([result.strongVs, result.weakVs]).toEqual(['', '']);
     });
+
+    it('recognises the Spanish verdict openers', () => {
+        const result = splitMatchupSentences(
+            'Arquero a pie polivalente. Fuerte contra unidades a distancia. Débil contra guerrilleros.',
+        );
+
+        expect([result.strongVs, result.weakVs]).toEqual([
+            'Fuerte contra unidades a distancia.',
+            'Débil contra guerrilleros.',
+        ]);
+    });
+
+    it('recognises the Italian verdict openers', () => {
+        const result = splitMatchupSentences(
+            'Arciere a piedi polivalente. Forte contro le unità distanti. Debole contro fanteria leggera.',
+        );
+
+        expect([result.strongVs, result.weakVs]).toEqual([
+            'Forte contro le unità distanti.',
+            'Debole contro fanteria leggera.',
+        ]);
+    });
 });
 
 describe('parseUnitHelp', () => {

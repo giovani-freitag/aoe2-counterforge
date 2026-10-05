@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createServices } from '../../src/composition-root.ts';
+import { SUPPORTED_LOCALES } from '../../src/i18n/index.ts';
 import type { ProductionPlan } from '../../src/services/economy/economy-service.ts';
 
 const services = createServices();
@@ -12,10 +13,10 @@ describe('shipped dataset', () => {
         expect(services.catalog.civilizations()).toHaveLength(56);
     });
 
-    it('gives every unit a localized Brazilian Portuguese name', () => {
+    it.each(SUPPORTED_LOCALES)('gives every unit a localized name in %s', (locale) => {
         const missing = services.catalog
             .units()
-            .filter((unit) => services.text.unit('pt-BR', unit.key).name === unit.key);
+            .filter((unit) => services.text.unit(locale, unit.key).name === unit.key);
 
         expect(missing).toEqual([]);
     });

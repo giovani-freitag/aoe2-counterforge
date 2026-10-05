@@ -411,7 +411,9 @@
     },
     "languages": {
         "pt-BR": "Português",
-        "en": "Inglês"
+        "en": "Inglês",
+        "es": "Espanhol",
+        "it": "Italiano"
     },
     "themes": {
         "system": "Do sistema",

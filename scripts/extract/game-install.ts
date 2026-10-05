@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { inflateRawSync } from 'node:zlib';
+import type { SupportedLocale } from '../../src/i18n/index.ts';
 import { GenieDatReader, type GenieData } from './genie-dat.ts';
 
 /** Node in a civilization tech tree, as the game writes it. */
@@ -41,6 +42,9 @@ const MAX_INFLATED_BYTES = 1 << 30;
 /** A string line is an id, whitespace, then the text in double quotes. */
 const STRING_LINE = /^(\d+)\s+"(.*)"\s*$/;
 
+/** The folder inside resources/ holding each shipped locale; the game names Brazilian Portuguese "br". */
+const LANGUAGE_FOLDERS: Record<SupportedLocale, string> = { 'pt-BR': 'br', en: 'en', es: 'es', it: 'it' };
+
 /** Reads the three things the guide needs out of an installed copy of the game. */
 export class GameInstall {
     private readonly root: string;
@@ -79,13 +83,18 @@ export class GameInstall {
     }
 
     /**
-     * Reads one localized string table.
+     * Reads the string table of every language the guide ships.
      *
-     * @param language - Folder name of the language inside resources, such as "br" or "en".
-     * @returns Every numbered string, with the escape sequences resolved.
+     * @returns Each locale's numbered strings, with the escape sequences resolved.
      */
-    public readStrings(language: string): Map<number, string> {
-        const file = join(this.root, 'resources', language, STRING_FILE);
+    public readStrings(): Map<SupportedLocale, Map<number, string>> {
+        const locales = Object.keys(LANGUAGE_FOLDERS) as SupportedLocale[];
+
+        return new Map(locales.map((locale) => [locale, this.readStringTable(LANGUAGE_FOLDERS[locale])]));
+    }
+
+    private readStringTable(folder: string): Map<number, string> {
+        const file = join(this.root, 'resources', folder, STRING_FILE);
         const strings = new Map<number, string>();
 
         for (const line of readFileSync(file, 'utf8').split(/\r?\n/)) {

@@ -93,10 +93,7 @@ describe.skipIf(!GAME_ROOT)('extraction from an installed game', () => {
             game,
             trees: install.readTechTrees(),
             civilizations: meta.civilization_list,
-            strings: new Map([
-                ['en', install.readStrings('en')],
-                ['pt-BR', install.readStrings('br')],
-            ]),
+            strings: install.readStrings(),
             fallbackLocale: 'en',
             era: 'base',
         }).build();
