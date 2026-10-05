@@ -146,6 +146,20 @@ describe('App', () => {
         expect(screen.getAllByRole('option').map((option) => option.textContent)).toEqual(['Bretões']);
     });
 
+    it('lists the languages in alphabetical order of their names', async () => {
+        const user = userEvent.setup();
+        render(<App locale="pt-BR" />);
+
+        await user.click(screen.getAllByRole('button', { name: /^Idioma:/ })[0]);
+
+        expect(screen.getAllByRole('option').map((option) => option.textContent)).toEqual([
+            'Espanhol',
+            'Inglês',
+            'Italiano',
+            'Português',
+        ]);
+    });
+
     it('filters the roster by name', async () => {
         const user = userEvent.setup();
         window.history.pushState(null, '', '/units');

@@ -54,6 +54,12 @@ export function SettingsBar({ stacked = false }: SettingsBarProps) {
             .sort((left, right) => left.label.localeCompare(right.label)),
     ];
 
+    const languages = SUPPORTED_LOCALES.map((tag) => ({
+        value: tag,
+        label: t(`languages.${tag}`),
+        visual: <Flag locale={tag} />,
+    })).sort((left, right) => left.label.localeCompare(right.label));
+
     /**
      * Wraps a control in its own labelled row, or leaves it bare in the header.
      *
@@ -96,11 +102,7 @@ export function SettingsBar({ stacked = false }: SettingsBarProps) {
                     value={locale}
                     compact={!stacked}
                     block={stacked}
-                    options={SUPPORTED_LOCALES.map((tag) => ({
-                        value: tag,
-                        label: t(`languages.${tag}`),
-                        visual: <Flag locale={tag} />,
-                    }))}
+                    options={languages}
                     onChange={(value) => {
                         const next = toSupportedLocale(value);
                         rememberLocale(next);
