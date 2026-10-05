@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.0](https://github.com/giovani-freitag/aoe2-counterforge/compare/v0.3.0...v0.4.0) (2026-10-05)
+
+
+### Features
+
+* add Spanish and Italian ([49d13fb](https://github.com/giovani-freitag/aoe2-counterforge/commit/49d13fb5078e19ee2239ccbfe4c251f613824731))
+
+
+### Reverts
+
+* open the release pull request with the workflow token again ([18b8596](https://github.com/giovani-freitag/aoe2-counterforge/commit/18b859635e5a9fcff21c6cdbd0504fd5094bb42e))
+
 ## [0.3.0](https://github.com/giovani-freitag/aoe2-counterforge/compare/v0.2.0...v0.3.0) (2026-10-04)
 
 
