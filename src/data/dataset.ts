@@ -26,5 +26,5 @@ export const GAME_STRING_BUNDLES: Record<string, GameStringBundle> = {
     it: stringsItJson,
 };
 
-export const DEFAULT_LOCALE = 'pt-BR' as const;
+export const DEFAULT_LOCALE = 'en' as const;
 export const FALLBACK_LOCALE = 'en' as const;

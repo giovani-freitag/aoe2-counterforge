@@ -10,8 +10,8 @@ describe('sitemapXml', () => {
         const sitemap = sitemapXml([buildPageHead(pageHeadInput())]);
 
         expect(sitemap).toContain(`<loc>${SITE}en/unit/knight</loc>`);
-        expect(sitemap).toContain(`<xhtml:link rel="alternate" hreflang="pt-BR" href="${SITE}unit/knight"/>`);
-        expect(sitemap).toContain(`<xhtml:link rel="alternate" hreflang="x-default" href="${SITE}unit/knight"/>`);
+        expect(sitemap).toContain(`<xhtml:link rel="alternate" hreflang="pt-BR" href="${SITE}pt-br/unit/knight"/>`);
+        expect(sitemap).toContain(`<xhtml:link rel="alternate" hreflang="x-default" href="${SITE}en/unit/knight"/>`);
     });
 
     it('leaves out a page that asks not to be indexed', () => {

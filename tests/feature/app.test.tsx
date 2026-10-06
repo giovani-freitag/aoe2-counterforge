@@ -13,7 +13,7 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-    window.history.pushState(null, '', '/');
+    window.history.pushState(null, '', '/pt-br/');
 });
 
 describe('App', () => {
@@ -49,18 +49,18 @@ describe('App', () => {
 
     it('follows the upgrade line to the next unit', async () => {
         const user = userEvent.setup();
-        window.history.pushState(null, '', '/unit/knight');
+        window.history.pushState(null, '', '/pt-br/unit/knight');
         const { container } = render(<App locale="pt-BR" />);
         await screen.findByRole('heading', { level: 1, name: 'Cavaleiro' });
 
-        await user.click(container.querySelector('.line-diagram a[href="/unit/cavalier"]')!);
+        await user.click(container.querySelector('.line-diagram a[href="/pt-br/unit/cavalier"]')!);
 
         expect(await screen.findByRole('heading', { level: 1, name: 'Fidalgo' })).toBeDefined();
     });
 
     it('shows the computed counters for a unit', async () => {
         const user = userEvent.setup();
-        window.history.pushState(null, '', '/unit/knight');
+        window.history.pushState(null, '', '/pt-br/unit/knight');
         render(<App locale="pt-BR" />);
 
         await user.click(await screen.findByRole('tab', { name: 'Counters' }));
@@ -70,7 +70,7 @@ describe('App', () => {
 
     it('reaches the complete ranking without leaving the card', async () => {
         const user = userEvent.setup();
-        window.history.pushState(null, '', '/unit/knight?tab=counters');
+        window.history.pushState(null, '', '/pt-br/unit/knight?tab=counters');
         render(<App locale="pt-BR" />);
 
         const complete = await screen.findByRole('button', { name: /^Todos/ });
@@ -82,7 +82,7 @@ describe('App', () => {
 
     it('counts what the opponent filter leaves on each end of the ranking', async () => {
         const user = userEvent.setup();
-        window.history.pushState(null, '', '/unit/knight?tab=counters');
+        window.history.pushState(null, '', '/pt-br/unit/knight?tab=counters');
         render(<App locale="pt-BR" />);
 
         await user.type(await screen.findByRole('searchbox', { name: /Filtrar advers/ }), 'alabard');
@@ -94,7 +94,7 @@ describe('App', () => {
     });
 
     it('puts two units side by side with a head to head table', async () => {
-        window.history.pushState(null, '', '/compare?units=knight,champion');
+        window.history.pushState(null, '', '/pt-br/compare?units=knight,champion');
         render(<App locale="pt-BR" />);
 
         expect(await screen.findByRole('heading', { name: 'Confronto direto' })).toBeDefined();
@@ -102,7 +102,7 @@ describe('App', () => {
 
     it('adds a unit to the comparison from the picker', async () => {
         const user = userEvent.setup();
-        window.history.pushState(null, '', '/compare?units=knight');
+        window.history.pushState(null, '', '/pt-br/compare?units=knight');
         render(<App locale="pt-BR" />);
 
         await user.type(await screen.findByRole('searchbox', { name: /Adicionar unidade/ }), 'campeao');
@@ -115,7 +115,7 @@ describe('App', () => {
     });
 
     it('links a unit to every civilization that trains it', async () => {
-        window.history.pushState(null, '', '/unit/paladin');
+        window.history.pushState(null, '', '/pt-br/unit/paladin');
         render(<App locale="pt-BR" />);
 
         const card = await screen.findByRole('heading', { name: 'Civilizações que treinam' });
@@ -125,7 +125,7 @@ describe('App', () => {
 
     it('reorders the roster by the chosen metric', async () => {
         const user = userEvent.setup();
-        window.history.pushState(null, '', '/units?category=infantry&lines=1');
+        window.history.pushState(null, '', '/pt-br/units?category=infantry&lines=1');
         render(<App locale="pt-BR" />);
 
         await user.click(await screen.findByRole('button', { name: /^Ordenar por/ }));
@@ -162,7 +162,7 @@ describe('App', () => {
 
     it('filters the roster by name', async () => {
         const user = userEvent.setup();
-        window.history.pushState(null, '', '/units');
+        window.history.pushState(null, '', '/pt-br/units');
         render(<App locale="pt-BR" />);
 
         await user.type(await screen.findByRole('searchbox', { name: /Filtrar por nome/ }), 'paladino');
@@ -174,7 +174,7 @@ describe('App', () => {
 
     it('unfolds a matchup in place with a shortcut to the opponent', async () => {
         const user = userEvent.setup();
-        window.history.pushState(null, '', '/unit/knight?tab=counters');
+        window.history.pushState(null, '', '/pt-br/unit/knight?tab=counters');
         render(<App locale="pt-BR" />);
 
         await user.click(await screen.findByRole('button', { name: /^Fracos/ }));
@@ -186,7 +186,7 @@ describe('App', () => {
 
     it('shows the villager plan for a unit', async () => {
         const user = userEvent.setup();
-        window.history.pushState(null, '', '/unit/archer');
+        window.history.pushState(null, '', '/pt-br/unit/archer');
         render(<App locale="pt-BR" />);
 
         await user.click(await screen.findByRole('tab', { name: 'Economia' }));

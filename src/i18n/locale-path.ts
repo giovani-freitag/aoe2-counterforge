@@ -1,14 +1,9 @@
 import { DEFAULT_LOCALE } from '../data/dataset.ts';
 import { SUPPORTED_LOCALES, type SupportedLocale } from './index.ts';
 
-/**
- * Folder a language is served from, relative to the site root.
- *
- * The default language owns the bare address, so every link shared before the languages had
- * addresses of their own still lands on a page.
- */
+/** Folder a language is served from, relative to the site root. */
 function folderOf(locale: SupportedLocale): string {
-    return locale === DEFAULT_LOCALE ? '' : `${locale.toLowerCase()}/`;
+    return `${locale.toLowerCase()}/`;
 }
 
 /** The part of a browser path below the folder the site is deployed in. */
@@ -54,12 +49,12 @@ export function routerBasename(locale: SupportedLocale): string {
  * Language a browser path is served in.
  *
  * @param pathname - Path from the address bar, deployment folder included.
- * @returns The language whose folder the path sits in, or the default language.
+ * @returns The language whose folder the path sits in, or null when it sits in none.
  */
-export function localeFromPath(pathname: string): SupportedLocale {
+export function localeFromPath(pathname: string): SupportedLocale | null {
     const relative = `${belowBase(pathname)}/`;
 
-    return SUPPORTED_LOCALES.find((locale) => folderOf(locale) !== '' && relative.startsWith(folderOf(locale))) ?? DEFAULT_LOCALE;
+    return SUPPORTED_LOCALES.find((locale) => relative.startsWith(folderOf(locale))) ?? null;
 }
 
 /**
@@ -70,7 +65,8 @@ export function localeFromPath(pathname: string): SupportedLocale {
  */
 export function appPathOf(pathname: string): string {
     const relative = belowBase(pathname);
-    const folder = folderOf(localeFromPath(pathname));
+    const locale = localeFromPath(pathname);
+    const folder = locale ? folderOf(locale) : '';
 
     return `/${relative.slice(Math.min(folder.length, relative.length))}`;
 }
@@ -90,7 +86,8 @@ export interface BrowserAddress {
  */
 export function correctedPath(address: BrowserAddress, preferred: SupportedLocale | null): string | null {
     const locale = localeFromPath(address.pathname);
-    const target = preferred ?? locale;
+    // An address without a language predates every language having a folder, or is the site root.
+    const target = preferred ?? locale ?? DEFAULT_LOCALE;
 
     // Links shared while every route lived behind a hash still circulate.
     if (address.hash.startsWith('#/')) return localizedPath(address.hash.slice(1), target);

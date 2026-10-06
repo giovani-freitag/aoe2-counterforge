@@ -9,16 +9,16 @@ import {
 } from '../../../src/i18n/locale-path.ts';
 
 describe('sitePath', () => {
-    it('serves the default language from the bare address', () => {
-        const path = sitePath('/unit/knight', 'pt-BR');
-
-        expect(path).toBe('unit/knight');
-    });
-
-    it('serves another language from a folder named after it', () => {
+    it('serves the default language from a folder named after it', () => {
         const path = sitePath('/unit/knight', 'en');
 
         expect(path).toBe('en/unit/knight');
+    });
+
+    it('serves another language from a folder named after it', () => {
+        const path = sitePath('/unit/knight', 'pt-BR');
+
+        expect(path).toBe('pt-br/unit/knight');
     });
 
     it('keeps the folder of a home page as a folder', () => {
@@ -37,24 +37,24 @@ describe('localizedPath', () => {
 });
 
 describe('routerBasename', () => {
-    it('mounts the default language at the site root', () => {
-        const basename = routerBasename('pt-BR');
-
-        expect(basename).toBe('/');
-    });
-
-    it('mounts another language in its folder', () => {
+    it('mounts the default language in its folder', () => {
         const basename = routerBasename('en');
 
         expect(basename).toBe('/en/');
+    });
+
+    it('mounts another language in its folder', () => {
+        const basename = routerBasename('pt-BR');
+
+        expect(basename).toBe('/pt-br/');
     });
 });
 
 describe('localeFromPath', () => {
     it('reads the language from its folder', () => {
-        const locale = localeFromPath('/en/civ/britons');
+        const locale = localeFromPath('/pt-br/civ/britons');
 
-        expect(locale).toBe('en');
+        expect(locale).toBe('pt-BR');
     });
 
     it('reads a folder without its trailing slash', () => {
@@ -66,13 +66,13 @@ describe('localeFromPath', () => {
     it('does not mistake a route starting with the same letters for a folder', () => {
         const locale = localeFromPath('/english');
 
-        expect(locale).toBe('pt-BR');
+        expect(locale).toBeNull();
     });
 
-    it('falls back to the default language', () => {
+    it('finds no language in an address without a folder', () => {
         const locale = localeFromPath('/unit/knight');
 
-        expect(locale).toBe('pt-BR');
+        expect(locale).toBeNull();
     });
 });
 
@@ -89,7 +89,7 @@ describe('appPathOf', () => {
         expect(path).toBe('/');
     });
 
-    it('leaves a default language path as it is', () => {
+    it('leaves an address without a language as it is', () => {
         const path = appPathOf('/units');
 
         expect(path).toBe('/units');
@@ -98,31 +98,49 @@ describe('appPathOf', () => {
 
 describe('correctedPath', () => {
     it('leaves an address in the reader language alone', () => {
-        const path = correctedPath({ pathname: '/en/units', search: '', hash: '' }, 'en');
+        const path = correctedPath({ pathname: '/pt-br/units', search: '', hash: '' }, 'pt-BR');
 
         expect(path).toBeNull();
     });
 
     it('leaves an address alone when the reader never chose a language', () => {
-        const path = correctedPath({ pathname: '/en/units', search: '', hash: '' }, null);
+        const path = correctedPath({ pathname: '/pt-br/units', search: '', hash: '' }, null);
 
         expect(path).toBeNull();
     });
 
     it('moves the reader to the same page in the language they chose', () => {
-        const path = correctedPath({ pathname: '/unit/knight', search: '?tab=counters', hash: '' }, 'en');
+        const path = correctedPath({ pathname: '/en/unit/knight', search: '?tab=counters', hash: '' }, 'pt-BR');
 
-        expect(path).toBe('/en/unit/knight?tab=counters');
+        expect(path).toBe('/pt-br/unit/knight?tab=counters');
+    });
+
+    it('gives an address without a language the one the reader chose', () => {
+        const path = correctedPath({ pathname: '/unit/knight', search: '?tab=counters', hash: '' }, 'pt-BR');
+
+        expect(path).toBe('/pt-br/unit/knight?tab=counters');
+    });
+
+    it('gives an address without a language the default one when the reader never chose', () => {
+        const path = correctedPath({ pathname: '/unit/knight', search: '', hash: '' }, null);
+
+        expect(path).toBe('/en/unit/knight');
+    });
+
+    it('moves the site root to the home page in the default language', () => {
+        const path = correctedPath({ pathname: '/', search: '', hash: '' }, null);
+
+        expect(path).toBe('/en/');
     });
 
     it('turns a hash route into the address it now has', () => {
         const path = correctedPath({ pathname: '/', search: '', hash: '#/unit/paladin?tab=counters' }, null);
 
-        expect(path).toBe('/unit/paladin?tab=counters');
+        expect(path).toBe('/en/unit/paladin?tab=counters');
     });
 
     it('keeps an in-page anchor where it is', () => {
-        const path = correctedPath({ pathname: '/units', search: '', hash: '#main' }, null);
+        const path = correctedPath({ pathname: '/en/units', search: '', hash: '#main' }, null);
 
         expect(path).toBeNull();
     });

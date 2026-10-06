@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { DEFAULT_LOCALE } from './data/dataset.ts';
 import { createI18n } from './i18n/index.ts';
 import { correctedPath, localeFromPath } from './i18n/locale-path.ts';
 import { preferredLocale } from './i18n/locale-preference.ts';
@@ -9,7 +10,7 @@ import './index.css';
 const corrected = correctedPath(window.location, preferredLocale());
 if (corrected) window.history.replaceState(null, '', corrected);
 
-const locale = localeFromPath(window.location.pathname);
+const locale = localeFromPath(window.location.pathname) ?? DEFAULT_LOCALE;
 createI18n(locale);
 
 const container = document.getElementById('root');

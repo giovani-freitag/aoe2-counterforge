@@ -40,8 +40,13 @@ for (const locale of SUPPORTED_LOCALES) {
     }
 }
 
+// The site root names no language, so it carries the default language's home page, canonical address
+// included, and the bundle moves the reader to the language they chose or to the default one.
+write('index.html', fillTemplate(template, await prerenderPage({ path: '/', locale: DEFAULT_LOCALE })));
+
 // GitHub Pages answers every unknown address with this file and a 404 status; the bundle then reads
-// the address and shows the missing page in whichever language it asked for.
+// the address and shows the missing page in whichever language it asked for, or moves an address
+// that asked for none to the reader's language.
 write('404.html', fillTemplate(template, await prerenderPage({ path: MISSING_PAGE, locale: DEFAULT_LOCALE })));
 
 write('sitemap.xml', sitemapXml(heads));

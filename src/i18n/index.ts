@@ -6,7 +6,7 @@ import es from './locales/es.json';
 import it from './locales/it.json';
 import ptBr from './locales/pt-BR.json';
 
-export const SUPPORTED_LOCALES = [DEFAULT_LOCALE, FALLBACK_LOCALE, 'es', 'it'] as const;
+export const SUPPORTED_LOCALES = ['en', 'es', 'it', 'pt-BR'] as const;
 
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 

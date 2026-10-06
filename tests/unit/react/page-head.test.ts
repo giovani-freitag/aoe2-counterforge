@@ -24,11 +24,11 @@ describe('buildPageHead', () => {
         const head = buildPageHead(pageHeadInput());
 
         expect(head.alternates).toEqual([
-            { hreflang: 'pt-BR', href: `${SITE}unit/knight` },
             { hreflang: 'en', href: `${SITE}en/unit/knight` },
             { hreflang: 'es', href: `${SITE}es/unit/knight` },
             { hreflang: 'it', href: `${SITE}it/unit/knight` },
-            { hreflang: 'x-default', href: `${SITE}unit/knight` },
+            { hreflang: 'pt-BR', href: `${SITE}pt-br/unit/knight` },
+            { hreflang: 'x-default', href: `${SITE}en/unit/knight` },
         ]);
     });
 
