@@ -14,7 +14,8 @@ argue with the reasoning instead of guessing at it.
 | [0006](0006-static-hosting.md) | Static hosting with a hash router | Superseded by 0009 |
 | [0007](0007-three-layers-of-tests.md) | Three layers of tests, one of them structural | Accepted |
 | [0008](0008-one-shape-for-every-filter.md) | One shape for every filter row, and every field keeps its label | Accepted |
-| [0009](0009-a-page-for-every-address.md) | A prerendered page for every address, in every language | Accepted |
+| [0009](0009-a-page-for-every-address.md) | A prerendered page for every address, in every language | Accepted, amended by 0010 |
+| [0010](0010-every-address-names-its-language.md) | Every address names its language, English by default | Accepted |
 
 Two of these are enforced by tooling rather than by review: `eslint.config.js` fails the build when
 `domain/` or `services/` reach for React or the DOM, and `tests/arch/layering.test.ts` reads the

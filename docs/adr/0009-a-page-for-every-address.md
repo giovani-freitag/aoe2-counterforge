@@ -1,6 +1,6 @@
 # 0009 — A prerendered page for every address, in every language
 
-**Status:** Accepted — supersedes [0006](0006-static-hosting.md)
+**Status:** Accepted — supersedes [0006](0006-static-hosting.md); amended by [0010](0010-every-address-names-its-language.md)
 
 ## Context
 
