@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/giovani-freitag/aoe2-counterforge/compare/v0.4.1...v0.4.2) (2026-10-06)
+
+
+### Bug Fixes
+
+* serve every language from its own folder with English as default ([ecc6807](https://github.com/giovani-freitag/aoe2-counterforge/commit/ecc6807e3d87833d126bea0905a50f8e322c9795))
+
 ## [0.4.1](https://github.com/giovani-freitag/aoe2-counterforge/compare/v0.4.0...v0.4.1) (2026-10-05)
 
 
