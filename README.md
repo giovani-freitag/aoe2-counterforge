@@ -40,7 +40,7 @@ you have, and whether you plan to stand and fight or shoot on the move.
 - 🔨 **A page per technology** — what it costs, every unit it changes and by how much, and which civilizations get to research it.
 - 🏰 **Civilization-aware** — pick one and every stat, counter and ranking follows what it can research *and* the bonuses it is simply given.
 - 👥 **Villagers per resource** to keep a building producing non-stop, with the bottleneck called out.
-- ⚖️ **Four units side by side**, best value crowned on every row, plus a head-to-head matrix.
+- ⚖️ **Four units side by side**, best value crowned on every row, plus who beats whom as duels, standings or a matrix.
 - 🔎 **`Ctrl`/`Cmd` + `K`** across units, civilizations and technologies — fuzzy, accent-blind, in English, Portuguese, Spanish and Italian.
 - 🌐 **A real page for every unit, technology and civilization**, in English, Portuguese, Spanish and Italian, written ahead of time so it reads without JavaScript and can be found from a search.
 - 📴 **Works offline.** The whole dataset ships with the page; nothing is fetched at runtime.

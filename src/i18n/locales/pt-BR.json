@@ -377,8 +377,28 @@
         "villagers": "Aldeões por construção",
         "best": "Melhor valor",
         "headToHead": "Confronto direto",
-        "headToHeadHelp": "Eficiência de troca da unidade da linha contra a unidade da coluna. Acima de 1 significa que a linha leva vantagem.",
+        "views": {
+            "duels": "Duelos",
+            "standings": "Classificação",
+            "grid": "Matriz"
+        },
+        "hints": {
+            "duels": "Cada par luta uma vez. O vencedor fica à esquerda e a barra pende para o lado dele: a linha do meio é uma troca equilibrada, a ponta oposta uma troca de dez para um. Toque num duelo para ver a conta.",
+            "standings": "Como cada unidade se sai contra o resto do grupo: duelos vencidos, equilibrados e perdidos, e a troca média contra todos eles.",
+            "grid": "Leia pela linha: cada número é como a unidade da linha troca contra a unidade da coluna. Acima de 1, a unidade da linha leva vantagem."
+        },
+        "duels": {
+            "beats": "{{winner}} vence {{loser}}: {{value}}, {{verdict}}",
+            "trades": "{{winner}} troca de igual para igual com {{loser}}: {{value}}, {{verdict}}"
+        },
+        "standings": {
+            "unit": "Unidade",
+            "average": "Troca média",
+            "record": "V–E–D",
+            "recordLong": "Vitórias–empates–derrotas"
+        },
         "rowVersusColumn": "Linha vs coluna",
+        "cell": "{{row}} contra {{column}}: {{value}}",
         "addToCompare": "Comparar"
     },
     "units": {

@@ -100,6 +100,40 @@ describe('App', () => {
         expect(await screen.findByRole('heading', { name: 'Confronto direto' })).toBeDefined();
     });
 
+    it('names the winner of each duel instead of leaving the direction to the reader', async () => {
+        window.history.pushState(null, '', '/pt-br/compare?units=halberdier,champion');
+        render(<App locale="pt-BR" />);
+
+        expect(await screen.findByRole('button', { name: /^Campeão vence Alabardeiro: 3,19x/ })).toBeDefined();
+    });
+
+    it('keeps the standings out of a comparison with a single duel', async () => {
+        window.history.pushState(null, '', '/pt-br/compare?units=halberdier,champion&view=standings');
+        render(<App locale="pt-BR" />);
+
+        await screen.findByRole('heading', { name: 'Confronto direto' });
+
+        expect(screen.queryByRole('button', { name: 'Classificação' })).toBeNull();
+    });
+
+    it('opens the standings the address asks for once the group has three units', async () => {
+        window.history.pushState(null, '', '/pt-br/compare?units=halberdier,champion,arbalester&view=standings');
+        render(<App locale="pt-BR" />);
+
+        expect(await screen.findByRole('columnheader', { name: 'Troca média' })).toBeDefined();
+    });
+
+    it('switches the head to head to the grid', async () => {
+        const user = userEvent.setup();
+        window.history.pushState(null, '', '/pt-br/compare?units=halberdier,champion');
+        render(<App locale="pt-BR" />);
+
+        await user.click(await screen.findByRole('button', { name: 'Matriz' }));
+
+        expect(screen.getByRole('columnheader', { name: 'Linha vs coluna' })).toBeDefined();
+        expect(window.location.search).toContain('view=grid');
+    });
+
     it('adds a unit to the comparison from the picker', async () => {
         const user = userEvent.setup();
         window.history.pushState(null, '', '/pt-br/compare?units=knight');

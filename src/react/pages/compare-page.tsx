@@ -6,12 +6,13 @@ import { EntityNotFoundError } from '../../domain/errors/domain-error.ts';
 import type { UnitStatsRecord } from '../../domain/values/unit-stats.ts';
 import { BackLink } from '../components/back-link.tsx';
 import { GameIcon } from '../components/game-icon.tsx';
+import { HeadToHeadCard } from '../components/head-to-head-card.tsx';
 import { Icon } from '../components/icon.tsx';
 import { PageMeta } from '../components/page-meta.tsx';
 import { SegmentedControl } from '../components/segmented-control.tsx';
 import { UnitPicker } from '../components/unit-picker.tsx';
 import { buildingNames } from '../building-names.ts';
-import { efficiency, short } from '../format.ts';
+import { short } from '../format.ts';
 import { useGameText } from '../hooks/use-game-text.ts';
 import { usePreferences } from '../hooks/use-preferences.ts';
 import { useServices } from '../hooks/use-services.ts';
@@ -113,23 +114,14 @@ export function ComparePage() {
         [units, text, mode, upgrades, preferences.civ, economy],
     );
 
-    const grid = useMemo(
+    const headToHead = useMemo(
         () =>
-            units.map((attacker) =>
-                units.map((defender) =>
-                    attacker.key === defender.key
-                        ? null
-                        : matchups.against(
-                              {
-                                  unit: attacker,
-                                  civ: preferences.civ,
-                                  model: preferences.model,
-                                  upgradeLevel: mode === 'base' ? 'base' : 'full',
-                              },
-                              defender,
-                          ),
-                ),
-            ),
+            matchups.headToHead({
+                units,
+                civ: preferences.civ,
+                model: preferences.model,
+                upgradeLevel: mode === 'base' ? 'base' : 'full',
+            }),
         [units, matchups, preferences.civ, preferences.model, mode],
     );
 
@@ -170,9 +162,11 @@ export function ComparePage() {
 
     const setUnits = (next: readonly string[]) => {
         const unique = [...new Set(next)].slice(0, MAX_UNITS);
-        setParams(unique.length > 0 ? { units: unique.join(',') } : {}, { replace: true });
+        const merged = new URLSearchParams(params);
+        if (unique.length > 0) merged.set('units', unique.join(','));
+        else merged.delete('units');
+        setParams(merged, { replace: true });
     };
-
 
     return (
         <div className="stack">
@@ -301,56 +295,7 @@ export function ComparePage() {
                         </div>
                     </section>
 
-                    {units.length > 1 ? (
-                        <section className="card">
-                            <div className="card__title">
-                                <h2>{t('compare.headToHead')}</h2>
-                            </div>
-                            <p className="card__hint">{t('compare.headToHeadHelp')}</p>
-                            <div className="scroll-x scroll-x--hint" style={{ marginTop: 'var(--space-3)' }}>
-                                <table className="compare-table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">{t('compare.rowVersusColumn')}</th>
-                                            {columns.map((column) => (
-                                                <th scope="col" key={column.unit.key}>
-                                                    {column.name}
-                                                </th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {columns.map((row, rowIndex) => (
-                                            <tr key={row.unit.key}>
-                                                <th scope="row">{row.name}</th>
-                                                {grid[rowIndex].map((matchup, columnIndex) => (
-                                                    <td key={columns[columnIndex].unit.key}>
-                                                        {matchup ? (
-                                                            <span
-                                                                style={{
-                                                                    color:
-                                                                        matchup.efficiency >= 1.25
-                                                                            ? 'var(--good)'
-                                                                            : matchup.efficiency <= 0.8
-                                                                              ? 'var(--bad)'
-                                                                              : 'var(--text-muted)',
-                                                                    fontWeight: 700,
-                                                                }}
-                                                            >
-                                                                {efficiency(matchup.efficiency)}
-                                                            </span>
-                                                        ) : (
-                                                            '—'
-                                                        )}
-                                                    </td>
-                                                ))}
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </section>
-                    ) : null}
+                    {units.length > 1 ? <HeadToHeadCard headToHead={headToHead} /> : null}
                 </>
             )}
         </div>

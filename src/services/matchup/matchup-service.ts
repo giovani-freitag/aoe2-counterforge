@@ -89,6 +89,43 @@ export interface MatchupReport {
     all: Matchup[];
 }
 
+export interface HeadToHeadQuery {
+    units: readonly Unit[];
+    /** The civilization fielding every unit of the group, or null for anyone's. */
+    civ?: string | null;
+    model?: EngagementModel;
+    upgradeLevel?: UpgradeLevel;
+}
+
+/** One pair of the group, told from the side that comes out ahead. */
+export interface Duel {
+    winner: Unit;
+    loser: Unit;
+    /** The fight from the winner's side, so its efficiency never drops below one. */
+    matchup: Matchup;
+}
+
+/** How one unit fares against the rest of its group. */
+export interface Standing {
+    unit: Unit;
+    won: number;
+    even: number;
+    lost: number;
+    /** Geometric mean of its trade efficiency against every other unit of the group. */
+    average: number;
+    verdict: MatchupVerdict;
+}
+
+export interface HeadToHead {
+    units: readonly Unit[];
+    /** Every pair once, the most lopsided first. */
+    duels: Duel[];
+    /** Every unit once, the best average first. */
+    standings: Standing[];
+    /** Each unit against each other one, in group order; null where a unit would meet itself. */
+    grid: (Matchup | null)[][];
+}
+
 const DEFAULT_LIMIT = 6;
 const MIN_DPS = 0.05;
 
@@ -167,6 +204,80 @@ export class MatchupService {
         const stats = this.statsFor(query.unit, query.civ ?? null, query.upgradeLevel ?? 'full');
 
         return this.compare(query, stats, opponent);
+    }
+
+    /**
+     * Pits every unit of a group against every other one.
+     *
+     * @param query - The group plus the civilization, engagement and upgrade assumptions.
+     * @returns The same fights as a list of duels, a standings table and a grid.
+     */
+    public headToHead(query: HeadToHeadQuery): HeadToHead {
+        const civ = query.civ ?? null;
+        const upgradeLevel = query.upgradeLevel ?? 'full';
+
+        // Both sides answer to the same civilization, so a pair reads the same from either end and
+        // each fight is one fact rather than two numbers that could disagree.
+        const grid = query.units.map((subject, row) => {
+            const subjectQuery = { unit: subject, civ, opponentCiv: civ, model: query.model, upgradeLevel };
+            const subjectStats = this.statsFor(subject, civ, upgradeLevel);
+
+            return query.units.map((opponent, column) =>
+                row === column ? null : this.compare(subjectQuery, subjectStats, opponent),
+            );
+        });
+
+        return {
+            units: query.units,
+            duels: this.duelsOf(query.units, grid),
+            standings: this.standingsOf(query.units, grid),
+            grid,
+        };
+    }
+
+    private duelsOf(units: readonly Unit[], grid: (Matchup | null)[][]): Duel[] {
+        const duels: Duel[] = [];
+        for (let row = 0; row < units.length; row++) {
+            for (let column = row + 1; column < units.length; column++) {
+                const forward = grid[row][column];
+                const backward = grid[column][row];
+                if (!forward || !backward) continue;
+
+                duels.push(
+                    forward.efficiency >= 1
+                        ? { winner: units[row], loser: units[column], matchup: forward }
+                        : { winner: units[column], loser: units[row], matchup: backward },
+                );
+            }
+        }
+
+        return duels.sort((left, right) => right.matchup.efficiency - left.matchup.efficiency);
+    }
+
+    /**
+     * Ranks the group by its average trade.
+     *
+     * The mean is geometric because the ratios are: losing at 0.5x and winning at 2x is an even
+     * record, which an arithmetic mean would score as a quarter ahead.
+     */
+    private standingsOf(units: readonly Unit[], grid: (Matchup | null)[][]): Standing[] {
+        return units
+            .map((unit, row) => {
+                const fights = grid[row].filter((matchup) => matchup !== null);
+                const verdicts = fights.map((matchup) => matchup.verdict);
+                const logSum = fights.reduce((sum, matchup) => sum + Math.log(matchup.efficiency), 0);
+                const average = fights.length === 0 ? 1 : Math.exp(logSum / fights.length);
+
+                return {
+                    unit,
+                    won: verdicts.filter((verdict) => verdict === 'dominant' || verdict === 'favourable').length,
+                    even: verdicts.filter((verdict) => verdict === 'even').length,
+                    lost: verdicts.filter((verdict) => verdict === 'unfavourable' || verdict === 'countered').length,
+                    average,
+                    verdict: this.verdictFor(average),
+                };
+            })
+            .sort((left, right) => right.average - left.average);
     }
 
     private compare(query: MatchupQuery, subjectStats: UnitStats, opponent: Unit): Matchup {

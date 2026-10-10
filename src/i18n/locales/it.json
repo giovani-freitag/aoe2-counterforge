@@ -377,8 +377,28 @@
         "villagers": "Abitanti per edificio",
         "best": "Valore migliore",
         "headToHead": "Testa a testa",
-        "headToHeadHelp": "Efficienza dello scambio dell'unità di riga contro quella di colonna. Sopra 1, la riga vince lo scambio.",
+        "views": {
+            "duels": "Duelli",
+            "standings": "Classifica",
+            "grid": "Matrice"
+        },
+        "hints": {
+            "duels": "Ogni coppia si scontra una volta. Il vincitore sta a sinistra e la barra pende dalla sua parte: la linea centrale è uno scambio alla pari, l'estremità opposta uno di dieci a uno. Tocca un duello per vedere il calcolo.",
+            "standings": "Come se la cava ogni unità contro il resto del gruppo: duelli vinti, pari e persi, e il suo scambio medio contro tutti.",
+            "grid": "Leggi lungo la riga: ogni numero indica come l'unità della riga scambia contro l'unità della colonna. Sopra 1 vince l'unità della riga."
+        },
+        "duels": {
+            "beats": "{{winner}} batte {{loser}}: {{value}}, {{verdict}}",
+            "trades": "{{winner}} scambia alla pari con {{loser}}: {{value}}, {{verdict}}"
+        },
+        "standings": {
+            "unit": "Unità",
+            "average": "Scambio medio",
+            "record": "V–N–P",
+            "recordLong": "Vinti–nulli–persi"
+        },
         "rowVersusColumn": "Riga vs colonna",
+        "cell": "{{row}} contro {{column}}: {{value}}",
         "addToCompare": "Confronta"
     },
     "units": {

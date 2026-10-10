@@ -142,6 +142,80 @@ describe('MatchupService', () => {
     });
 });
 
+describe('MatchupService head to head', () => {
+    const group = (catalog: GameCatalogService) => ['knight', 'pikeman', 'longbowman'].map((key) => catalog.unit(key));
+
+    it('tells every pair of the group once', () => {
+        const { catalog, matchups } = buildService();
+
+        const { duels } = matchups.headToHead({ units: group(catalog) });
+
+        expect(duels.map((duel) => [duel.winner.key, duel.loser.key].sort().join(':')).sort()).toEqual([
+            'knight:longbowman',
+            'knight:pikeman',
+            'longbowman:pikeman',
+        ]);
+    });
+
+    it('tells each duel from the side that comes out ahead', () => {
+        const { catalog, matchups } = buildService();
+
+        const { duels } = matchups.headToHead({ units: group(catalog) });
+
+        expect(duels.find((duel) => duel.loser.key === 'knight' && duel.winner.key === 'pikeman')).toBeDefined();
+        expect(duels.every((duel) => duel.matchup.efficiency >= 1 && duel.matchup.opponent === duel.loser)).toBe(true);
+    });
+
+    it('puts the most lopsided duel first', () => {
+        const { catalog, matchups } = buildService();
+
+        const { duels } = matchups.headToHead({ units: group(catalog) });
+
+        expect(duels.map((duel) => duel.matchup.efficiency)).toEqual(
+            duels.map((duel) => duel.matchup.efficiency).sort((left, right) => right - left),
+        );
+    });
+
+    it('reads a pair the same from either end of the grid', () => {
+        const { catalog, matchups } = buildService();
+
+        const { grid } = matchups.headToHead({ units: group(catalog) });
+
+        expect(grid[0][1]?.efficiency).toBeCloseTo(1 / (grid[1][0]?.efficiency ?? 0), 10);
+        expect(grid[1][2]?.efficiency).toBeCloseTo(1 / (grid[2][1]?.efficiency ?? 0), 10);
+    });
+
+    it('leaves a unit out of a fight with itself', () => {
+        const { catalog, matchups } = buildService();
+
+        const { grid } = matchups.headToHead({ units: group(catalog) });
+
+        expect(grid.map((row, index) => row[index])).toEqual([null, null, null]);
+    });
+
+    it('averages each unit geometrically across its fights', () => {
+        const { catalog, matchups } = buildService();
+
+        const { grid, standings } = matchups.headToHead({ units: group(catalog) });
+
+        expect(standings.find((standing) => standing.unit.key === 'knight')?.average).toBeCloseTo(
+            Math.sqrt((grid[0][1]?.efficiency ?? 0) * (grid[0][2]?.efficiency ?? 0)),
+            10,
+        );
+    });
+
+    it('ranks the standings by average and counts every fight once', () => {
+        const { catalog, matchups } = buildService();
+
+        const { standings } = matchups.headToHead({ units: group(catalog) });
+
+        expect(standings.map((standing) => standing.average)).toEqual(
+            standings.map((standing) => standing.average).sort((left, right) => right - left),
+        );
+        expect(standings.every((standing) => standing.won + standing.even + standing.lost === 2)).toBe(true);
+    });
+});
+
 describe('MatchupService opponent pools', () => {
     it('groups an upgrade line into a single representative outside the widest pool', () => {
         const units = [

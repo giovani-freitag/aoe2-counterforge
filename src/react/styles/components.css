@@ -17,6 +17,7 @@
 
 .card__title {
     display: flex;
+    flex-wrap: wrap;
     align-items: baseline;
     justify-content: space-between;
     gap: var(--space-3);
@@ -891,6 +892,124 @@
     display: flex;
     justify-content: flex-end;
     margin-top: var(--space-3);
+}
+
+/*
+ * A duel is a tug of war: the two names face each other across the rope, and the rope sits under
+ * both so the reader sees which way it leans before reading a number.
+ */
+.duel__summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas:
+        'names names caret'
+        'track score caret';
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    text-align: left;
+    border-radius: var(--radius);
+}
+
+.duel__names {
+    grid-area: names;
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.duel__side {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-width: 0;
+}
+
+.duel__side--winner {
+    font-weight: 700;
+}
+
+.duel__side--loser {
+    color: var(--text-muted);
+}
+
+.duel__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.duel__track {
+    grid-area: track;
+    position: relative;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--surface-3);
+}
+
+/* The centre line is where an even trade sits, so a short pull still reads as a pull. */
+.duel__track::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: 50%;
+    width: 2px;
+    height: 12px;
+    border-radius: 1px;
+    background: var(--border-strong);
+    transform: translateX(-50%);
+}
+
+.duel__fill {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+}
+
+/* On a phone the names need the whole first line, so the score rides beside the rope instead. */
+.duel__score {
+    grid-area: score;
+    flex-direction: row;
+    align-items: baseline;
+    gap: var(--space-2);
+}
+
+.duel__caret {
+    grid-area: caret;
+}
+
+@media (min-width: 40rem) {
+    .duel__summary {
+        grid-template-areas:
+            'names score caret'
+            'track score caret';
+    }
+
+    .duel__score {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 2px;
+        min-width: 4.5rem;
+    }
+}
+
+.standing {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.standing__rank {
+    min-width: 1.25em;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-faint);
+}
+
+/* A record split across lines stops reading as one score. */
+.standing__record {
+    white-space: nowrap;
 }
 
 .picker {

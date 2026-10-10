@@ -377,8 +377,28 @@
         "villagers": "Villagers per building",
         "best": "Best value",
         "headToHead": "Head to head",
-        "headToHeadHelp": "Trade efficiency of the row unit against the column unit. Above 1 means the row wins the trade.",
+        "views": {
+            "duels": "Duels",
+            "standings": "Standings",
+            "grid": "Grid"
+        },
+        "hints": {
+            "duels": "Every pair fights once. The winner stands on the left and the bar leans its way: the centre line is an even trade, the far end a tenfold one. Tap a duel to see the arithmetic.",
+            "standings": "How each unit fares against the rest of the group: duels won, even and lost, and its average trade across all of them.",
+            "grid": "Read along the row: each number is how the unit naming the row trades against the unit heading the column. Above 1 the row unit wins the trade."
+        },
+        "duels": {
+            "beats": "{{winner}} beats {{loser}}: {{value}}, {{verdict}}",
+            "trades": "{{winner}} trades evenly with {{loser}}: {{value}}, {{verdict}}"
+        },
+        "standings": {
+            "unit": "Unit",
+            "average": "Average trade",
+            "record": "W–D–L",
+            "recordLong": "Won–drawn–lost"
+        },
         "rowVersusColumn": "Row vs column",
+        "cell": "{{row}} vs {{column}}: {{value}}",
         "addToCompare": "Compare"
     },
     "units": {

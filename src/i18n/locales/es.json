@@ -377,8 +377,28 @@
         "villagers": "Aldeanos por edificio",
         "best": "Mejor valor",
         "headToHead": "Cara a cara",
-        "headToHeadHelp": "Eficiencia de intercambio de la unidad de la fila contra la de la columna. Por encima de 1, la fila gana el intercambio.",
+        "views": {
+            "duels": "Duelos",
+            "standings": "Clasificación",
+            "grid": "Matriz"
+        },
+        "hints": {
+            "duels": "Cada pareja lucha una vez. El ganador queda a la izquierda y la barra se inclina hacia él: la línea central es un intercambio parejo, el extremo opuesto uno de diez a uno. Toca un duelo para ver el cálculo.",
+            "standings": "Cómo le va a cada unidad contra el resto del grupo: duelos ganados, parejos y perdidos, y su intercambio medio contra todos ellos.",
+            "grid": "Lee a lo largo de la fila: cada número es cómo intercambia la unidad de la fila contra la unidad de la columna. Por encima de 1, gana la unidad de la fila."
+        },
+        "duels": {
+            "beats": "{{winner}} vence a {{loser}}: {{value}}, {{verdict}}",
+            "trades": "{{winner}} intercambia parejo con {{loser}}: {{value}}, {{verdict}}"
+        },
+        "standings": {
+            "unit": "Unidad",
+            "average": "Intercambio medio",
+            "record": "G–E–P",
+            "recordLong": "Ganados–empatados–perdidos"
+        },
         "rowVersusColumn": "Fila vs columna",
+        "cell": "{{row}} contra {{column}}: {{value}}",
         "addToCompare": "Comparar"
     },
     "units": {
