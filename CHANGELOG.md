@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/giovani-freitag/aoe2-counterforge/compare/v0.4.2...v0.5.0) (2026-10-10)
+
+
+### Features
+
+* show the head to head as duels, standings and a grid ([b3970db](https://github.com/giovani-freitag/aoe2-counterforge/commit/b3970db04d9d303478b56a5af6ea714d9da8f3cc))
+
 ## [0.4.2](https://github.com/giovani-freitag/aoe2-counterforge/compare/v0.4.1...v0.4.2) (2026-10-06)
 
 
