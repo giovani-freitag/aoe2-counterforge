@@ -104,7 +104,7 @@ describe('App', () => {
         window.history.pushState(null, '', '/pt-br/compare?units=halberdier,champion');
         render(<App locale="pt-BR" />);
 
-        expect(await screen.findByRole('button', { name: /^Campeão vence Alabardeiro: 3,19x/ })).toBeDefined();
+        expect(await screen.findByRole('button', { name: /^Campeão vence Alabardeiro: 3[.,]19x/ })).toBeDefined();
     });
 
     it('keeps the standings out of a comparison with a single duel', async () => {
