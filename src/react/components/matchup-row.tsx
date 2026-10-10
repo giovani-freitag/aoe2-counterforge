@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
-import type { DuelSide } from '../../services/combat/combat-service.ts';
 import type { Matchup } from '../../services/matchup/matchup-service.ts';
-import { efficiency, precise, short } from '../format.ts';
+import { efficiency } from '../format.ts';
 import { useGameText } from '../hooks/use-game-text.ts';
+import { VERDICT_COLOUR } from '../verdict-colour.ts';
+import { DuelBreakdown } from './duel-breakdown.tsx';
 import { GameIcon } from './game-icon.tsx';
 import { Icon } from './icon.tsx';
 
@@ -20,14 +21,6 @@ export interface MatchupRowProps {
     fromOpponent?: boolean;
 }
 
-const VERDICT_COLOUR = {
-    dominant: 'var(--good)',
-    favourable: 'var(--good)',
-    even: 'var(--even)',
-    unfavourable: 'var(--bad)',
-    countered: 'var(--bad)',
-} as const;
-
 /** The same verdict said by the other side of the fight. */
 const MIRRORED = {
     dominant: 'countered',
@@ -40,42 +33,6 @@ const MIRRORED = {
 /** Maps a ratio that spans two orders of magnitude onto a readable bar. */
 function barWidth(efficiency: number): number {
     return Math.min(100, Math.max(4, 50 + 25 * Math.log10(Math.max(0.01, efficiency))));
-}
-
-function DuelColumn({ title, side }: { title: string; side: DuelSide }) {
-    const { t } = useTranslation();
-
-    return (
-        <div>
-            <div className="section-label">{title}</div>
-            <table className="damage-table">
-                <tbody>
-                    <tr>
-                        <td>{t('counters.duel.damagePerHit')}</td>
-                        <td>{short(side.damagePerHit)}</td>
-                    </tr>
-                    <tr>
-                        <td>{t('stats.dps')}</td>
-                        <td>{precise(side.dps)}</td>
-                    </tr>
-                    <tr>
-                        <td>{t('counters.duel.hitsToKill')}</td>
-                        <td>{side.hitsToKill}</td>
-                    </tr>
-                    <tr>
-                        <td>{t('counters.duel.timeToKill')}</td>
-                        <td>{t('counters.seconds', { value: short(side.timeToKill) })}</td>
-                    </tr>
-                    {side.freeHits > 0 ? (
-                        <tr>
-                            <td>{t('counters.duel.freeHits')}</td>
-                            <td>{side.freeHits}</td>
-                        </tr>
-                    ) : null}
-                </tbody>
-            </table>
-        </div>
-    );
 }
 
 /** One opponent row that unfolds in place to show the full arithmetic behind its verdict. */
@@ -130,55 +87,7 @@ export function MatchupRow({ matchup, subjectName, fromOpponent = false }: Match
 
             {isOpen ? (
                 <div className="matchup__detail">
-                    <div className="section-label">{t('counters.duel.title')}</div>
-                    <div className="demand-grid" style={{ marginTop: 'var(--space-2)' }}>
-                        <DuelColumn title={`${subjectName} →`} side={matchup.duel.attacker} />
-                        <DuelColumn title={`${opponentName} →`} side={matchup.duel.defender} />
-                    </div>
-
-                    <hr className="divider" />
-
-                    <div className="section-label">{t('counters.duel.breakdown')}</div>
-                    <div className="scroll-x">
-                        <table className="damage-table">
-                            <tbody>
-                                {matchup.duel.attacker.breakdown.components.map((component) => (
-                                    <tr key={component.armourClass}>
-                                        <td>{t(`armourClasses.${component.armourClass}`)}</td>
-                                        <td>
-                                            {component.attack} - {component.armour}
-                                        </td>
-                                        <td>{component.net}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                            <tfoot>
-                                {matchup.duel.attacker.breakdown.volley.extra === 0 ? null : (
-                                    <tr>
-                                        <td>
-                                            {t('counters.duel.volley', {
-                                                count: matchup.duel.attacker.breakdown.volley.extra,
-                                            })}
-                                        </td>
-                                        <td />
-                                        <td>
-                                            {matchup.duel.attacker.breakdown.volley.extra *
-                                                matchup.duel.attacker.breakdown.volley.each}
-                                        </td>
-                                    </tr>
-                                )}
-                                <tr>
-                                    <td>{t('counters.duel.damagePerHit')}</td>
-                                    <td />
-                                    <td>{matchup.duel.attacker.damagePerHit}</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-
-                    <p className="card__hint" style={{ marginTop: 'var(--space-2)' }}>
-                        {t('counters.duel.minimumDamage')}
-                    </p>
+                    <DuelBreakdown matchup={matchup} subjectName={subjectName} opponentName={opponentName} />
 
                     <div className="matchup__actions">
                         <Link className="chip" to={`/unit/${matchup.opponent.key}`}>
